@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raygaon Voter Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Syne:wght@500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="login-active">
+  <div class="app-shell">
+    <header class="app-header">
+      <div style="display:flex;align-items:center;gap:1.5rem;">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="title">Raygaon Voter System</div>
+      </div>
+      <div class="meta">
+        <!-- Guest mode badge removed -->
+        <button class="signout-btn" id="signOutBtn" style="display:none;">
+          <i class="fas fa-sign-out-alt"></i> Sign Out
+        </button>
+      </div>
+
+    </header>
+
+    <main class="main-area">
+      <section id="landingSection">
+        <button class="primary" id="showLoginBtn">Login</button>
+      </section>
+      <section id="authSection" style="display: none;">
+        <article class="auth-card">
+          <button class="auth-card-close" id="closeAuthBtn" type="button">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="role-toggle">
+            <button class="role-button active" type="button" data-role-tab="admin">Admin</button>
+            <button class="role-button" type="button" data-role-tab="user">User</button>
+          </div>
+
+          <div class="login-variant active" id="adminLoginBlock">
+            <h2>Admin Login</h2>
+            <form id="adminLoginForm">
+              <div>
+                <label for="adminEmail">Official Email</label>
+                <input type="email" id="adminEmail" placeholder="Enter official email" required />
+              </div>
+              <div>
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" placeholder="••••••••" required />
+              </div>
+              <button class="primary" type="submit"
+                style="width: 100%; margin-top: 1.25rem; margin-bottom: 0.75rem;">Admin Login</button>
+              <small id="adminStatus" aria-live="polite"
+                style="color: var(--danger);display:block;margin-top:0.4rem;text-align:center;"></small>
+            </form>
+          </div>
+
+          <div class="login-variant" id="userLoginBlock">
+            <h2>User Login</h2>
+            <p style="color: var(--text-muted); text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem;">
+              Secure access required. Please sign in using your Google account to enter the dashboard.
+            </p>
+            <button class="primary" type="button" id="googleSignIn"
+              style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 0.8rem;">
+              <i class="fab fa-google"></i> Sign in with Google
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <section id="dashboard">
+        <aside class="sidebar">
+          <div class="nav-group">
+            <button class="nav-button active" data-target="overviewSection">
+              <i class="fas fa-tachometer-alt"></i> Overview
+            </button>
+            <button class="nav-button" data-target="addVoterSection" data-requires-admin="true">
+              <i class="fas fa-user-plus"></i> Add Voter
+            </button>
+            <button class="nav-button" data-target="staffSection" data-requires-admin="true">
+              <i class="fas fa-chalkboard-teacher"></i> Staff Info
+            </button>
+            <button class="nav-button" data-target="searchVoterSection">
+              <i class="fas fa-search"></i> Search Voter
+            </button>
+            <button class="nav-button" data-target="analyticsSection">
+              <i class="fas fa-chart-pie"></i> Analytics
+            </button>
+            <button class="nav-button" data-target="directorySection">
+              <i class="fas fa-address-book"></i> Voter Directory
+            </button>
+            <button class="nav-button" data-target="staffDirectorySection">
+              <i class="fas fa-users"></i> Staff Directory
+            </button>
+            <button class="nav-button" data-target="userLoginsSection" data-requires-admin="true">
+              <i class="fas fa-user-shield"></i> User Logins
+            </button>
+            <button class="nav-button" data-target="manageAdminSection" data-requires-admin="true">
+              <i class="fas fa-user-cog"></i> Manage Admin
+            </button>
+          </div>
+        </aside>
+
+        <div>
+          <section id="overviewSection" class="panel active">
+            <h2>Dashboard Overview</h2>
+            <p id="welcomeText">Welcome.</p>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <h3>Total Registered Voters</h3>
+                <p id="totalVoters">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Female Voters</h3>
+                <p id="femaleVoters">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Male Voters</h3>
+                <p id="maleVoters">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Staff Records</h3>
+                <p id="staffCount">0</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="addVoterSection" class="panel">
+            <h2>Add Voter</h2>
+            <p>Enter voter information for any Maharashtra district. Taluka options refresh based on the selected
+              district.</p>
+            <div class="import-panel">
+              <h4><i class="fas fa-file-import"></i> Bulk Import Voters</h4>
+              <p style="color: var(--text-muted); margin-top: 0.5rem;">Upload a CSV file to add multiple voters at once.
+              </p>
+              <div class="import-toolbar">
+                <button type="button" class="download-btn" id="downloadVoterSample">
+                  <i class="fas fa-file-download"></i> Download Sample CSV
+                </button>
+                <label class="file-label">
+                  <i class="fas fa-upload"></i> Import CSV
+                  <input type="file" id="importVoterCSV" accept=".csv" />
+                </label>
+                <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> Headers must match
+                  template.</small>
+              </div>
+            </div>
+            <form id="voterForm">
+              <div class="grid-two">
+                <div>
+                  <label for="boothNo">Booth No.</label>
+                  <select id="boothNo" required>
+                    <option value="">Select booth</option>
+                    <option value="2">Booth 2</option>
+                    <option value="3">Booth 3</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="listNo">Voter List No.</label>
+                  <input type="text" id="listNo" required />
+                </div>
+                <div>
+                  <label for="voterName">Voter Name</label>
+                  <input type="text" id="voterName" required />
+                </div>
+                <div>
+                  <label for="epicNo">EPIC No.</label>
+                  <input type="text" id="epicNo" required />
+                </div>
+                <div>
+                  <label for="mobileNo">Mobile No.</label>
+                  <input type="tel" id="mobileNo" pattern="[0-9]{10}" maxlength="10" required />
+                </div>
+                <div>
+                  <label for="districtSelect">District (Maharashtra)</label>
+                  <select id="districtSelect" required></select>
+                </div>
+                <div>
+                  <label for="talukaSelect">Taluka</label>
+                  <select id="talukaSelect" required></select>
+                </div>
+                <div>
+                  <label for="genderSelect">Gender</label>
+                  <select id="genderSelect" required>
+                    <option value="">Select gender</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="casteSelect">Caste</label>
+                  <select id="casteSelect" required></select>
+                </div>
+                <div>
+                  <label for="villageName">Village</label>
+                  <input type="text" id="villageName" value="Raygaon" required />
+                </div>
+              </div>
+              <div>
+                <label for="address">Address</label>
+                <textarea id="address" placeholder="House / Street / Landmark" required></textarea>
+              </div>
+              <button class="primary" type="submit">Save Voter</button>
+            </form>
+          </section>
+
+          <section id="staffSection" class="panel">
+            <h2>Staff Information (Village: Raygaon)</h2>
+            <div class="import-panel">
+              <h4><i class="fas fa-file-import"></i> Import Staff Data</h4>
+              <p style="color: var(--text-muted); margin-top: 0.5rem;">Download the sample sheet, fill it, and upload it
+                back.</p>
+              <div class="import-toolbar">
+                <button type="button" class="download-btn" id="downloadStaffSample">
+                  <i class="fas fa-file-download"></i> Download Sample CSV
+                </button>
+                <label class="file-label">
+                  <i class="fas fa-upload"></i> Import CSV
+                  <input type="file" id="importStaffCSV" accept=".csv" />
+                </label>
+                <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> Headers must match
+                  template.</small>
+              </div>
+            </div>
+            <form id="staffForm">
+              <div class="grid-two">
+                <div>
+                  <label for="staffName">Name of Staff</label>
+                  <input type="text" id="staffName" required />
+                </div>
+                <div>
+                  <label for="staffBooth">Booth No.</label>
+                  <select id="staffBooth" required>
+                    <option value="">Select booth</option>
+                    <option value="2">Booth 2</option>
+                    <option value="3">Booth 3</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="staffCaste">Caste</label>
+                  <select id="staffCaste" required></select>
+                </div>
+                <div>
+                  <label for="staffDesignation">Designation</label>
+                  <input type="text" id="staffDesignation" required />
+                </div>
+                <div>
+                  <label for="staffCollege">Working College / Office</label>
+                  <input type="text" id="staffCollege" required />
+                </div>
+                <div>
+                  <label for="staffMobile">Mobile No.</label>
+                  <input type="tel" id="staffMobile" pattern="[0-9]{10}" maxlength="10" required />
+                </div>
+                <div>
+                  <label for="staffHouseCount">Total Voters in House</label>
+                  <input type="number" id="staffHouseCount" min="0" required />
+                </div>
+              </div>
+              <button class="primary" type="submit">Save Staff Record</button>
+            </form>
+          </section>
+
+          <section id="searchVoterSection" class="panel">
+            <h2>Search Voter</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Search for a voter by name or EPIC number and
+              print their slip</p>
+
+            <div style="max-width: 600px;">
+              <div style="margin-bottom: 1.5rem;">
+                <label for="searchVoterInput">Enter Voter Name or EPIC Number</label>
+                <input type="text" id="searchVoterInput" placeholder="Type name or EPIC number..."
+                  style="margin-top: 0.5rem;" />
+              </div>
+
+              <div id="searchResults" style="margin-top: 1.5rem;"></div>
+            </div>
+          </section>
+
+          <section id="analyticsSection" class="panel">
+            <h2>Analytics</h2>
+            <div class="role-toggle" style="margin-bottom: 1.5rem;">
+              <button class="role-button active" type="button" data-analytics-tab="boothNo">Booth Wise</button>
+              <button class="role-button" type="button" data-analytics-tab="caste">Caste Wise</button>
+              <button class="role-button" type="button" data-analytics-tab="gender">Gender Wise</button>
+              <button class="role-button" type="button" data-analytics-tab="district">District Wise</button>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th id="analyticsCategoryHeader">Category</th>
+                    <th>Total Voters</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Other</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="analyticsBody">
+                  <tr>
+                    <td colspan="6">Loading analytics...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="directorySection" class="panel">
+            <h2>Voter Directory</h2>
+            <div class="import-toolbar"
+              style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <div style="flex: 1; text-align: center;">
+                <p style="margin:0;color:var(--muted);font-size:0.9rem;">Filter voters by district, taluka, caste, or
+                  gender and export to Excel.</p>
+              </div>
+              <button type="button" class="export-btn" id="exportVoterDirectory">
+                <i class="fas fa-file-excel"></i> Export Excel
+              </button>
+            </div>
+            <div class="filters">
+              <input type="text" id="searchText" placeholder="Search name / EPIC" />
+              <select id="filterDistrict">
+                <option value="">All Districts</option>
+              </select>
+              <select id="filterTaluka">
+                <option value="">All Talukas</option>
+              </select>
+              <select id="filterCaste">
+                <option value="">All Castes</option>
+              </select>
+              <select id="filterGender">
+                <option value="">All Genders</option>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>List No.</th>
+                    <th>Name</th>
+                    <th>EPIC</th>
+                    <th>Booth</th>
+                    <th>District</th>
+                    <th>Taluka</th>
+                    <th>Caste</th>
+                    <th>Gender</th>
+                    <th>Mobile</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="voterTableBody">
+                  <tr>
+                    <td colspan="11">No voter records found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="staffDirectorySection" class="panel">
+            <h2>Raygaon Staff Directory</h2>
+            <div class="import-toolbar"
+              style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <div style="flex: 1; text-align: center;">
+                <p style="margin:0;color:var(--muted);font-size:0.9rem;">Filter Raygaon staff by booth and caste, then
+                  export to Excel.</p>
+              </div>
+              <button type="button" class="export-btn" id="exportStaffDirectory">
+                <i class="fas fa-file-excel"></i> Export Excel
+              </button>
+            </div>
+            <div class="filters">
+              <input type="text" id="staffSearchText" placeholder="Search staff by name" />
+              <select id="staffFilterBooth">
+                <option value="">All Booths</option>
+              </select>
+              <select id="staffFilterCaste">
+                <option value="">All Castes</option>
+              </select>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Booth</th>
+                    <th>Caste</th>
+                    <th>Designation</th>
+                    <th>Workplace</th>
+                    <th>Mobile</th>
+                    <th>House Voters</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="staffDirectoryBody">
+                  <tr>
+                    <td colspan="8">No staff records found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="userLoginsSection" class="panel">
+            <h2>User Logins</h2>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">List of users who have logged in via Google.</p>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Last Login</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="userLoginsBody">
+                  <tr>
+                    <td colspan="4">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="manageAdminSection" class="panel">
+            <h2>Manage Admin Logins</h2>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Create new admin accounts that can access the
+              dashboard.</p>
+
+            <form id="createAdminForm"
+              style="background: rgba(30, 41, 59, 0.4); border: 1px solid var(--bg-card-border); padding: 1.5rem; border-radius: 1rem; margin-bottom: 2rem;">
+              <div class="grid-two">
+                <div>
+                  <label for="newAdminName">Full Name</label>
+                  <input type="text" id="newAdminName" placeholder="Enter name" required />
+                </div>
+                <div>
+                  <label for="newAdminEmail">Email Address</label>
+                  <input type="email" id="newAdminEmail" placeholder="Enter email" required />
+                </div>
+                <div>
+                  <label for="newAdminPassword">Password</label>
+                  <input type="password" id="newAdminPassword" placeholder="Set password" required />
+                </div>
+              </div>
+              <button class="primary" type="submit" style="margin-top: 1rem;">Create Admin Account</button>
+            </form>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminListBody">
+                  <tr>
+                    <td colspan="4">Loading admins...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal" id="editVoterModal">
+    <div class="modal-card">
+      <header class="modal-header" style="align-items: center;">
+        <h3 style="margin:0;">Edit Voter Record</h3>
+        <button class="modal-close" type="button" id="editModalClose">&times;</button>
+      </header>
+      <form id="editVoterForm">
+        <div class="grid-two">
+          <div>
+            <label for="editListNo">Voter List No.</label>
+            <input type="text" id="editListNo" required />
+          </div>
+          <div>
+            <label for="editBoothNo">Booth No.</label>
+            <input type="text" id="editBoothNo" required />
+          </div>
+          <div>
+            <label for="editVoterName">Voter Name</label>
+            <input type="text" id="editVoterName" required />
+          </div>
+          <div>
+            <label for="editEpicNo">EPIC No.</label>
+            <input type="text" id="editEpicNo" required />
+          </div>
+          <div>
+            <label for="editMobileNo">Mobile No.</label>
+            <input type="tel" id="editMobileNo" maxlength="10" />
+          </div>
+          <div>
+            <label for="editDistrict">District</label>
+            <input type="text" id="editDistrict" required />
+          </div>
+          <div>
+            <label for="editTaluka">Taluka</label>
+            <input type="text" id="editTaluka" required />
+          </div>
+          <div>
+            <label for="editGender">Gender</label>
+            <input type="text" id="editGender" />
+          </div>
+          <div>
+            <label for="editCaste">Caste</label>
+            <input type="text" id="editCaste" />
+          </div>
+          <div>
+            <label for="editVillage">Village</label>
+            <input type="text" id="editVillage" />
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <label for="editAddress">Address</label>
+          <textarea id="editAddress" rows="3"></textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.2rem;flex-wrap:wrap;">
+          <button type="button" class="ghost" id="editModalCancel">Cancel</button>
+          <button type="submit" class="primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="analyticsModal">
+    <div class="modal-card fullscreen">
+      <header class="modal-header"
+        style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+        <!-- Left: Chip -->
+        <div>
+          <span id="analyticsModalChip"
+            style="font-size: 0.9rem; color: var(--primary); font-weight: 600; text-transform: uppercase;"></span>
+        </div>
+        <!-- Center: Title -->
+        <h3 id="analyticsModalTitle" style="margin:0; font-family:'Syne',sans-serif; text-align:center;">Voter List</h3>
+        <!-- Right: Actions -->
+        <div style="display:flex; gap:1rem; align-items:center; justify-content: flex-end;">
+          <button class="ghost" type="button" id="analyticsModalExport"
+            style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+            <i class="fas fa-file-excel"></i> Export
+          </button>
+          <button class="modal-close" type="button" id="analyticsModalClose" style="line-height:1;">&times;</button>
+        </div>
+      </header>
+      <div class="analytics-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>List No.</th>
+              <th>Name</th>
+              <th>EPIC</th>
+              <th>Booth</th>
+              <th>District</th>
+              <th>Taluka</th>
+              <th>Caste</th>
+              <th>Gender</th>
+              <th>Mobile</th>
+              <th>Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="analyticsList"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="editStaffModal">
+    <div class="modal-card">
+      <header class="modal-header" style="align-items: center;">
+        <h3 style="margin:0;">Edit Staff Record</h3>
+        <button class="modal-close" type="button" id="editStaffModalClose">&times;</button>
+      </header>
+      <form id="editStaffForm">
+        <div class="grid-two">
+          <div>
+            <label for="editStaffName">Name</label>
+            <input type="text" id="editStaffName" required />
+          </div>
+          <div>
+            <label for="editStaffBooth">Booth No.</label>
+            <input type="text" id="editStaffBooth" required />
+          </div>
+          <div>
+            <label for="editStaffCaste">Caste</label>
+            <input type="text" id="editStaffCaste" />
+          </div>
+          <div>
+            <label for="editStaffDesignation">Designation</label>
+            <input type="text" id="editStaffDesignation" required />
+          </div>
+          <div>
+            <label for="editStaffWorkplace">Workplace</label>
+            <input type="text" id="editStaffWorkplace" required />
+          </div>
+          <div>
+            <label for="editStaffMobile">Mobile</label>
+            <input type="tel" id="editStaffMobile" maxlength="10" />
+          </div>
+          <div>
+            <label for="editStaffHouse">House Voters</label>
+            <input type="number" id="editStaffHouse" min="0" />
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.2rem;flex-wrap:wrap;">
+          <button type="button" class="ghost" id="editStaffModalCancel">Cancel</button>
+          <button type="submit" class="primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // Firebase configuration (public client keys intentionally exposed per Firebase guidelines)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBal190E90bHyKbgf41ipQF6cFqYuI5pNo",
+      authDomain: "raygaon-voter-system.firebaseapp.com",
+      databaseURL: "https://raygaon-voter-system-default-rtdb.firebaseio.com",
+      projectId: "raygaon-voter-system",
+      storageBucket: "raygaon-voter-system.firebasestorage.app",
+      messagingSenderId: "493283837074",
+      appId: "1:493283837074:web:77de29cba0ba3afd4d124b",
+      measurementId: "G-7RENM3JGMD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    const ADMIN_CREDENTIALS = {
+      email: "ghadage.adhikrao3@gmail.com",
+      password: "adhik1993",
+      displayName: "Adhikrao Ghadage"
+    };
+    const ADMIN_SESSION_KEY = "raygaon-admin-session";
+
+    const districtTalukaMap = {
+      "Ahmednagar": ["Akole", "Jamkhed", "Karjat", "Kopargaon", "Nagar", "Nevasa", "Parner", "Pathardi", "Rahata", "Rahuri", "Sangamner", "Shevgaon", "Shrigonda", "Shrirampur"],
+      "Akola": ["Akola", "Akot", "Balapur", "Barshitakli", "Murtizapur", "Patur", "Telhara"],
+      "Amravati": ["Achalpur", "Amravati", "Anjangaon", "Bhatkuli", "Chandur Bazar", "Chandur Railway", "Chikhaldara", "Daryapur", "Dhamangaon", "Morshi", "Nandgaon-Khandeshwar", "Teosa", "Warud"],
+      "Chhatrapati Sambhajinagar": ["Aurangabad", "Gangapur", "Kannad", "Khuldabad", "Paithan", "Phulambri", "Sillod", "Soegaon", "Vaijapur"],
+      "Beed": ["Ambejogai", "Ashti", "Beed", "Dharur", "Georai", "Kaij", "Majalgaon", "Parli", "Patoda", "Shirur (Kasar)", "Wadwani"],
+      "Bhandara": ["Bhandara", "Lakhandur", "Lakhani", "Mohadi", "Pauni", "Sakoli", "Tumsar"],
+      "Buldhana": ["Buldhana", "Chikhli", "Deulgaon Raja", "Jalgaon Jamod", "Khamgaon", "Lonar", "Malkapur", "Mehkar", "Motala", "Nandura", "Sangrampur", "Shegaon", "Sindkhed Raja"],
+      "Chandrapur": ["Ballarpur", "Bhadravati", "Brahmapuri", "Chandrapur", "Chimur", "Gondpipri", "Jiwati", "Korpana", "Mul", "Nagbhid", "Pombhurna", "Rajura", "Saoli", "Sindewahi", "Warora"],
+      "Dhule": ["Dhule", "Sakri", "Shirpur", "Shindkheda"],
+      "Gadchiroli": ["Aheri", "Armori", "Bhamragad", "Chamorshi", "Desaiganj", "Dhanora", "Etapalli", "Gadchiroli", "Korchi", "Kurkheda", "Mulchera", "Sironcha"],
+      "Gondia": ["Amgaon", "Arjuni Morgaon", "Deori", "Goregaon", "Gondia", "Sadak Arjuni", "Salekasa", "Tirora"],
+      "Hingoli": ["Aundha", "Basmath", "Hingoli", "Kalamnuri", "Sengaon"],
+      "Jalgaon": ["Amalner", "Bhadgaon", "Bhusawal", "Bodwad", "Chalisgaon", "Chopda", "Dharangaon", "Erandol", "Jalgaon", "Jamner", "Muktainagar", "Pachora", "Parola", "Raver", "Yawal"],
+      "Jalna": ["Ambad", "Badnapur", "Bhokardan", "Ghansawangi", "Jafferabad", "Jalna", "Mantha", "Partur"],
+      "Kolhapur": ["Ajra", "Bavda", "Bhudargad", "Chandgad", "Gadhinglaj", "Gaganbawada", "Hatkanangle", "Kagal", "Karveer", "Panhala", "Radhanagari", "Shahuwadi"],
+      "Latur": ["Ahmedpur", "Ausa", "Chakur", "Deoni", "Jalkot", "Latur", "Nilanga", "Renapur", "Shirur (Anantpal)", "Udgir"],
+      "Mumbai": ["Andheri", "Borivali", "Kurla", "Fort", "Malabar Hill", "Mohammad Ali Road", "Byculla", "Dadar"],
+      "Mumbai City": ["Fort", "Malabar Hill", "Mohammad Ali Road", "Byculla", "Dadar"],
+      "Mumbai Suburban": ["Andheri", "Borivali", "Kurla"],
+      "Nagpur": ["Bhiwapur", "Hingna", "Kalameshwar", "Kamthi", "Katol", "Kuhi", "Mauda", "Nagpur Rural", "Narkhed", "Parshivni", "Ramtek", "Savner", "Umred"],
+      "Nanded": ["Ardhapur", "Bhokar", "Biloli", "Degloor", "Dharmabad", "Hadgaon", "Himayatnagar", "Kandhar", "Kinwat", "Loha", "Mahoor", "Mudkhed", "Mukhed", "Naigaon", "Nanded"],
+      "Nandurbar": ["Akkalkuwa", "Akrani", "Nandurbar", "Navapur", "Shahada", "Talode"],
+      "Nashik": ["Baglan", "Chandwad", "Deola", "Dindori", "Igatpuri", "Kalwan", "Malegaon", "Nandgaon", "Nashik", "Niphad", "Peint", "Sinnar", "Surgana", "Trimbakeshwar", "Yeola"],
+      "Osmanabad (Dharashiv)": ["Bhoom", "Kalamb", "Lohara", "Nilanga", "Osmanabad", "Paranda", "Tuljapur", "Umarga", "Washi"],
+      "Palghar": ["Dahanu", "Jawhar", "Mokhada", "Palghar", "Talasari", "Vasai", "Vikramgad", "Wada"],
+      "Parbhani": ["Gangakhed", "Jintur", "Manwat", "Palam", "Parbhani", "Pathri", "Purna", "Sailu", "Sonpeth"],
+      "Pune": ["Ambegaon", "Baramati", "Bhor", "Daund", "Haveli", "Indapur", "Junnar", "Khed", "Maval", "Mulshi", "Pune City", "Purandar", "Shirur", "Velhe"],
+      "Raigad": ["Alibag", "Karjat", "Khalapur", "Mahad", "Mangaon", "Mhasla", "Murud", "Panvel", "Pen", "Poladpur", "Roha", "Shrivardhan", "Sudhagad", "Uran"],
+      "Ratnagiri": ["Chiplun", "Dapoli", "Guhagar", "Khed", "Lanja", "Mandangad", "Rajapur", "Ratnagiri", "Sangameshwar"],
+      "Sangli": ["Atpadi", "Jat", "Kadegaon", "Kavathe Mahankal", "Khanapur", "Miraj", "Palus", "Shirala", "Tasgaon", "Walwa"],
+      "Satara": ["Jaoli", "Karad", "Khatav", "Khandala", "Koregaon", "Mahabaleshwar", "Man", "Patan", "Phaltan", "Satara", "Wai"],
+      "Sindhudurg": ["Devgad", "Dodamarg", "Kankavli", "Kudal", "Malwan", "Sawantwadi", "Vaibhavwadi", "Vengurla"],
+      "Solapur": ["Akkalkot", "Barshi", "Karmala", "Mangalwedha", "Madha", "Mohol", "Pandharpur", "Sangole", "Solapur North", "Solapur South"],
+      "Thane": ["Ambarnath", "Bhiwandi", "Kalyan", "Murbad", "Shahapur", "Thane", "Ulhasnagar"],
+      "Wardha": ["Arvi", "Ashti", "Deoli", "Hinganghat", "Karanja", "Samudrapur", "Seloo", "Wardha"],
+      "Washim": ["Karanja", "Malegaon", "Mangrulpir", "Manora", "Risod", "Washim"],
+      "Yavatmal": ["Arni", "Babulgaon", "Darwha", "Digras", "Ghatanji", "Kalamb", "Kelapur", "Mahagaon", "Maregaon", "Ner", "Pandharkaoda", "Pusad", "Ralegaon", "Umarkhed", "Wani", "Yavatmal"]
+    };
+
+    const casteOptions = ["Maratha", "General", "SC", "ST", "OBC", "VJNT", "NT", "SBC", "EWS", "Other"];
+    const voterCSVHeaders = ["boothNo", "listNo", "voterName", "epicNo", "mobileNo", "district", "taluka", "gender", "caste", "village", "address"];
+    const staffCSVHeaders = ["name", "boothNo", "caste", "designation", "workplace", "mobile", "houseVoters"];
+    const voterSampleData = [
+      voterCSVHeaders,
+      ["2", "101", "Aarav Patil", "ABC1234567", "9876543210", "Pune", "Haveli", "Male", "OBC", "Raygaon", "House No. 10, Ward 3"],
+      ["3", "102", "Sneha Deshmukh", "XYZ7654321", "8765432109", "Nashik", "Sinnar", "Female", "General", "Raygaon", "Opp. Gram Panchayat"]
+    ];
+    const staffSampleData = [
+      staffCSVHeaders,
+      ["Rahul Kulkarni", "2", "OBC", "Booth Manager", "Raygaon College", "9988776655", "6"],
+      ["Priya Jadhav", "3", "SC", "Supervisor", "Raygaon High School", "8877665544", "4"]
+    ];
+
+    const state = {
+      role: "guest",
+      profile: null,
+      voters: [],
+      staff: [],
+      users: [],
+      admins: []
+    };
+
+    const refs = {
+      authSection: document.getElementById("authSection"),
+      dashboard: document.getElementById("dashboard"),
+      statusBadge: document.getElementById("statusBadge"),
+      welcomeText: document.getElementById("welcomeText"),
+      signOutBtn: document.getElementById("signOutBtn"),
+      adminStatus: document.getElementById("adminStatus"),
+      navButtons: document.querySelectorAll(".nav-button"),
+      panels: document.querySelectorAll("section.panel"),
+      voterTableBody: document.getElementById("voterTableBody"),
+      filterDistrict: document.getElementById("filterDistrict"),
+      filterTaluka: document.getElementById("filterTaluka"),
+      filterCaste: document.getElementById("filterCaste"),
+      filterGender: document.getElementById("filterGender"),
+      searchText: document.getElementById("searchText"),
+      exportVoterDirectory: document.getElementById("exportVoterDirectory"),
+      toast: document.getElementById("toast"),
+      voterImportInput: document.getElementById("importVoterCSV"),
+      staffImportInput: document.getElementById("importStaffCSV"),
+      voterSampleBtn: document.getElementById("downloadVoterSample"),
+      staffSampleBtn: document.getElementById("downloadStaffSample"),
+      editModal: document.getElementById("editVoterModal"),
+      editModalClose: document.getElementById("editModalClose"),
+      editModalCancel: document.getElementById("editModalCancel"),
+      editForm: document.getElementById("editVoterForm"),
+      editFields: {
+        listNo: document.getElementById("editListNo"),
+        boothNo: document.getElementById("editBoothNo"),
+        voterName: document.getElementById("editVoterName"),
+        epicNo: document.getElementById("editEpicNo"),
+        mobileNo: document.getElementById("editMobileNo"),
+        district: document.getElementById("editDistrict"),
+        taluka: document.getElementById("editTaluka"),
+        gender: document.getElementById("editGender"),
+        caste: document.getElementById("editCaste"),
+        village: document.getElementById("editVillage"),
+        address: document.getElementById("editAddress")
+      },
+      analyticsModal: document.getElementById("analyticsModal"),
+      analyticsModalClose: document.getElementById("analyticsModalClose"),
+      analyticsModalExport: document.getElementById("analyticsModalExport"),
+      analyticsList: document.getElementById("analyticsList"),
+      analyticsModal: document.getElementById("analyticsModal"),
+      analyticsModalChip: document.getElementById("analyticsModalChip"),
+      analyticsModalTitle: document.getElementById("analyticsModalTitle"),
+      analyticsSection: document.getElementById("analyticsSection"),
+      boothAnalyticsBody: document.getElementById("boothAnalyticsBody"),
+      staffFilterBooth: document.getElementById("staffFilterBooth"),
+      staffFilterCaste: document.getElementById("staffFilterCaste"),
+      staffSearchText: document.getElementById("staffSearchText"),
+      staffDirectoryBody: document.getElementById("staffDirectoryBody"),
+      exportStaffDirectory: document.getElementById("exportStaffDirectory"),
+      staffModal: document.getElementById("editStaffModal"),
+      staffModalClose: document.getElementById("editStaffModalClose"),
+      staffModalCancel: document.getElementById("editStaffModalCancel"),
+      staffEditForm: document.getElementById("editStaffForm"),
+      staffEditFields: {
+        name: document.getElementById("editStaffName"),
+        boothNo: document.getElementById("editStaffBooth"),
+        caste: document.getElementById("editStaffCaste"),
+        designation: document.getElementById("editStaffDesignation"),
+        workplace: document.getElementById("editStaffWorkplace"),
+        mobile: document.getElementById("editStaffMobile"),
+        houseVoters: document.getElementById("editStaffHouse")
+      },
+      userLoginsBody: document.getElementById("userLoginsBody"),
+      createAdminForm: document.getElementById("createAdminForm"),
+      adminListBody: document.getElementById("adminListBody")
+    };
+    let editingVoterId = null;
+    let editingStaffId = null;
+    let analyticsFilterMeta = null;
+
+    function populateDistricts(selectEl) {
+      Object.keys(districtTalukaMap).sort().forEach(district => {
+        const option = document.createElement("option");
+        option.value = district;
+        option.textContent = district;
+        selectEl.appendChild(option);
+      });
+    }
+
+    function populateCastes(selectEl) {
+      casteOptions.forEach(c => {
+        const option = document.createElement("option");
+        option.value = c;
+        option.textContent = c;
+        selectEl.appendChild(option);
+      });
+    }
+
+    populateDistricts(document.getElementById("districtSelect"));
+    populateDistricts(refs.filterDistrict);
+    populateCastes(document.getElementById("casteSelect"));
+    populateCastes(document.getElementById("staffCaste"));
+    populateCastes(refs.filterCaste);
+
+    function setTalukas(selectEl, district) {
+      selectEl.innerHTML = "<option value=''>Select taluka</option>";
+      if (!district || !districtTalukaMap[district]) return;
+      districtTalukaMap[district].forEach(taluka => {
+        const option = document.createElement("option");
+        option.value = taluka;
+        option.textContent = taluka;
+        selectEl.appendChild(option);
+      });
+    }
+
+    document.getElementById("districtSelect").addEventListener("change", (e) => {
+      setTalukas(document.getElementById("talukaSelect"), e.target.value);
+    });
+
+    refs.filterDistrict.addEventListener("change", (e) => {
+      setTalukas(refs.filterTaluka, e.target.value);
+      renderVoterTable();
+    });
+
+    [refs.filterTaluka, refs.filterCaste, refs.filterGender, refs.searchText].forEach(el => {
+      el.addEventListener("input", renderVoterTable);
+      el.addEventListener("change", renderVoterTable);
+    });
+
+    function showToast(message, variant = "success") {
+      refs.toast.textContent = message;
+      refs.toast.className = `toast show ${variant}`;
+      setTimeout(() => refs.toast.className = "toast", 3200);
+    }
+
+    function setRole(role, profile) {
+      state.role = role;
+      state.profile = profile;
+      document.body.classList.add("dashboard-active");
+      document.body.classList.remove("login-active");
+      document.getElementById("landingSection").style.display = "none";
+      refs.authSection.style.display = "none";
+      refs.dashboard.classList.add("visible");
+      refs.signOutBtn.style.display = "inline-flex";
+      if (refs.statusBadge) {
+        refs.statusBadge.textContent = role === "admin" ? "Admin" : "User";
+        refs.statusBadge.style.background = role === "admin" ? "rgba(52, 211, 153, 0.1)" : "var(--accent-soft)";
+        refs.statusBadge.style.color = role === "admin" ? "var(--success)" : "var(--accent)";
+      }
+      const name = profile?.displayName || (role === "admin" ? "Adhikrao Ghadage" : "User");
+      refs.welcomeText.textContent = `Welcome, ${name}!`;
+      toggleAdminSections(role === "admin");
+      renderVoterTable();
+      renderStaffDirectory();
+      if (role === "admin") {
+        localStorage.setItem(ADMIN_SESSION_KEY, "true");
+        renderUserLogins();
+        renderAdmins();
+      } else {
+        localStorage.removeItem(ADMIN_SESSION_KEY);
+        if (profile) saveUserInfo(profile);
+      }
+    }
+
+    async function saveUserInfo(user) {
+      if (!user) return;
+      const userRef = ref(db, `users/${user.uid}`);
+      const payload = {
+        uid: user.uid,
+        displayName: user.displayName || "User",
+        email: user.email || "No Email",
+        photoURL: user.photoURL || "",
+        lastLogin: Date.now(),
+        status: "Active"
+      };
+      await update(userRef, payload);
+    }
+
+    function resetToGuest() {
+      state.role = "guest";
+      state.profile = null;
+      document.body.classList.add("login-active");
+      document.body.classList.remove("dashboard-active");
+      refs.authSection.style.display = "none";
+      document.getElementById("landingSection").style.display = "block";
+      refs.dashboard.classList.remove("visible");
+      refs.signOutBtn.style.display = "none";
+      if (refs.statusBadge) {
+        refs.statusBadge.textContent = "Please Login";
+        refs.statusBadge.style.background = "rgba(239, 68, 68, 0.1)";
+        refs.statusBadge.style.color = "var(--danger)";
+      }
+      localStorage.removeItem(ADMIN_SESSION_KEY);
+      renderVoterTable();
+    }
+
+    function toggleAdminSections(isAdmin) {
+      document.querySelectorAll('[data-requires-admin="true"]').forEach(btn => {
+        btn.classList.toggle("locked", !isAdmin);
+        if (btn.dataset.requiresAdmin === "true") {
+          btn.style.display = isAdmin ? "block" : "none";
+        }
+      });
+      const voterForm = document.getElementById("voterForm");
+      const staffForm = document.getElementById("staffForm");
+      voterForm?.querySelectorAll("input, select, textarea, button").forEach(el => {
+        el.disabled = !isAdmin && el.tagName === "BUTTON";
+      });
+      staffForm?.querySelectorAll("input, select, button").forEach(el => {
+        el.disabled = !isAdmin && el.tagName === "BUTTON";
+      });
+      const addVoterSection = document.getElementById("addVoterSection");
+      const staffSection = document.getElementById("staffSection");
+      if (addVoterSection) addVoterSection.style.opacity = isAdmin ? "1" : "0.4";
+      if (staffSection) staffSection.style.opacity = isAdmin ? "1" : "0.4";
+    }
+
+    refs.navButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (btn.dataset.requiresAdmin === "true" && state.role !== "admin") {
+          showToast("Admin access required", "error");
+          return;
+        }
+        refs.navButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        refs.panels.forEach(panel => panel.classList.remove("active"));
+        const target = document.getElementById(btn.dataset.target);
+        if (target) target.classList.add("active");
+      });
+    });
+
+    document.getElementById("adminLoginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("adminEmail").value.trim();
+      const password = document.getElementById("adminPassword").value.trim();
+
+      // Check hardcoded admin
+      if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+        refs.adminStatus.textContent = "";
+        setRole("admin", { displayName: ADMIN_CREDENTIALS.displayName, email });
+        showToast("Admin login successful", "success");
+        return;
+      }
+
+      // Check database admins
+      const foundAdmin = state.admins.find(a => a.email === email && a.password === password);
+      if (foundAdmin) {
+        refs.adminStatus.textContent = "";
+        setRole("admin", { displayName: foundAdmin.name, email });
+        showToast("Admin login successful", "success");
+      } else {
+        refs.adminStatus.textContent = "Incorrect credentials";
+        showToast("Login failed", "error");
+      }
+    });
+
+    document.getElementById("googleSignIn").addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        setRole("user", result.user);
+        showToast("Google login successful", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Google sign-in failed", "error");
+      }
+    });
+
+    refs.signOutBtn.addEventListener("click", async () => {
+      if (state.role === "admin") {
+        resetToGuest();
+        showToast("Admin signed out", "success");
+      } else {
+        await signOut(auth);
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setRole("user", user);
+      } else if (state.role !== "admin") {
+        resetToGuest();
+      }
+    });
+
+    document.getElementById("voterForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (state.role !== "admin") return showToast("Admin access required", "error");
+      const payload = {
+        boothNo: document.getElementById("boothNo").value,
+        listNo: document.getElementById("listNo").value.trim(),
+        voterName: document.getElementById("voterName").value.trim(),
+        epicNo: document.getElementById("epicNo").value.trim().toUpperCase(),
+        mobileNo: document.getElementById("mobileNo").value.trim(),
+        district: document.getElementById("districtSelect").value,
+        taluka: document.getElementById("talukaSelect").value,
+        gender: document.getElementById("genderSelect").value,
+        caste: document.getElementById("casteSelect").value,
+        village: document.getElementById("villageName").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        createdAt: Date.now()
+      };
+      try {
+        await push(ref(db, "voters"), payload);
+        (e.target).reset();
+        setTalukas(document.getElementById("talukaSelect"), "");
+        showToast("Voter saved", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Failed to save voter", "error");
+      }
+    });
+
+    document.getElementById("staffForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (state.role !== "admin") return showToast("Admin access required", "error");
+      const payload = {
+        village: "Raygaon",
+        name: document.getElementById("staffName").value.trim(),
+        boothNo: document.getElementById("staffBooth").value,
+        caste: document.getElementById("staffCaste").value,
+        designation: document.getElementById("staffDesignation").value.trim(),
+        workplace: document.getElementById("staffCollege").value.trim(),
+        mobile: document.getElementById("staffMobile").value.trim(),
+        houseVoters: Number(document.getElementById("staffHouseCount").value || 0),
+        createdAt: Date.now()
+      };
+      try {
+        await push(ref(db, "staff"), payload);
+        (e.target).reset();
+        showToast("Staff saved", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Failed to save staff record", "error");
+      }
+    });
+
+    refs.voterSampleBtn.addEventListener("click", () => {
+      downloadSampleCSV("voter-import-sample.csv", voterSampleData);
+    });
+
+    refs.staffSampleBtn.addEventListener("click", () => {
+      downloadSampleCSV("staff-import-sample.csv", staffSampleData);
+    });
+
+    refs.voterTableBody.addEventListener("click", (event) => {
+      const target = event.target.closest("button");
+      if (!target) return;
+      const action = target.dataset.action;
+      const id = target.dataset.id;
+      if (!action || !id) return;
+
+      const voter = state.voters.find(v => v.id === id);
+      if (!voter) return;
+
+      if (action === "print") {
+        printVoterSlip(voter);
+        return;
+      }
+
+      if (state.role !== "admin") {
+        showToast("Admin access required", "error");
+        return;
+      }
+
+      if (action === "edit") {
+        openEditModal(voter);
+      } else if (action === "delete") {
+        const confirmed = confirm(`Delete voter ${voter.voterName}?`);
+        if (!confirmed) return;
+        remove(ref(db, `voters/${id}`))
+          .then(() => showToast("Voter deleted", "success"))
+          .catch(err => {
+            console.error(err);
+            showToast("Failed to delete voter", "error");
+          });
+      }
+    });
+
+    function openEditModal(voter) {
+      editingVoterId = voter.id;
+      const f = refs.editFields;
+      f.listNo.value = voter.listNo || "";
+      f.boothNo.value = voter.boothNo || "";
+      f.voterName.value = voter.voterName || "";
+      f.epicNo.value = voter.epicNo || "";
+      f.mobileNo.value = voter.mobileNo || "";
+      f.district.value = voter.district || "";
+      f.taluka.value = voter.taluka || "";
+      f.gender.value = voter.gender || "";
+      f.caste.value = voter.caste || "";
+      f.village.value = voter.village || "";
+      f.address.value = voter.address || "";
+      refs.editModal.classList.add("visible");
+    }
+
+    function closeEditModal() {
+      refs.editModal.classList.remove("visible");
+      refs.editForm.reset();
+      editingVoterId = null;
+    }
+
+    refs.editModalClose.addEventListener("click", closeEditModal);
+    refs.editModalCancel.addEventListener("click", closeEditModal);
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && refs.editModal.classList.contains("visible")) {
+        closeEditModal();
+      }
+    });
+
+    refs.editForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!editingVoterId) return;
+      if (state.role !== "admin") {
+        showToast("Admin access required", "error");
+        return;
+      }
+      const payload = {
+        listNo: refs.editFields.listNo.value.trim(),
+        boothNo: refs.editFields.boothNo.value.trim(),
+        voterName: refs.editFields.voterName.value.trim(),
+        epicNo: refs.editFields.epicNo.value.trim().toUpperCase(),
+        mobileNo: refs.editFields.mobileNo.value.trim(),
+        district: refs.editFields.district.value.trim(),
+        taluka: refs.editFields.taluka.value.trim(),
+        gender: refs.editFields.gender.value.trim(),
+        caste: refs.editFields.caste.value.trim(),
+        village: refs.editFields.village.value.trim(),
+        address: refs.editFields.address.value.trim()
+      };
+      try {
+        await update(ref(db, `voters/${editingVoterId}`), payload);
+        showToast("Voter updated", "success");
+        closeEditModal();
+      } catch (error) {
+        console.error(error);
+        showToast("Failed to update voter", "error");
+      }
+    });
+
+    refs.voterImportInput.addEventListener("change", (event) => {
+      handleCSVImport(event.target.files?.[0], "voter");
+      event.target.value = "";
+    });
+
+    refs.staffImportInput.addEventListener("change", (event) => {
+      handleCSVImport(event.target.files?.[0], "staff");
+      event.target.value = "";
+    });
+
+    refs.staffFilterBooth.addEventListener("change", renderStaffDirectory);
+    refs.staffFilterCaste.addEventListener("change", renderStaffDirectory);
+    refs.staffSearchText.addEventListener("input", renderStaffDirectory);
+    refs.exportStaffDirectory.addEventListener("click", exportStaffDirectory);
+    refs.exportVoterDirectory.addEventListener("click", exportVoterDirectory);
+
+    refs.createAdminForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (state.role !== "admin") return showToast("Admin access required", "error");
+      const name = document.getElementById("newAdminName").value.trim();
+      const email = document.getElementById("newAdminEmail").value.trim();
+      const password = document.getElementById("newAdminPassword").value.trim();
+
+      if (state.admins.some(a => a.email === email)) {
+        return showToast("This email is already an admin", "error");
+      }
+
+      const payload = {
+        name,
+        email,
+        password,
+        createdAt: Date.now()
+      };
+
+      try {
+        await push(ref(db, "admins"), payload);
+        refs.createAdminForm.reset();
+        showToast("New admin created!", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Failed to create admin", "error");
+      }
+    });
+
+    refs.adminListBody.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".delete");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      if (confirm("Are you sure you want to remove this admin?")) {
+        try {
+          await remove(ref(db, `admins/${id}`));
+          showToast("Admin removed", "success");
+        } catch (err) {
+          showToast("Failed to remove admin", "error");
+        }
+      }
+    });
+
+    refs.staffDirectoryBody.addEventListener("click", (event) => {
+      const button = event.target.closest?.("button[data-staff-action]");
+      if (!button) return;
+      const { staffAction, id } = button.dataset;
+      if (!staffAction || !id) return;
+      if (state.role !== "admin") {
+        showToast("Admin access required", "error");
+        return;
+      }
+      const staffMember = state.staff.find(s => s.id === id);
+      if (!staffMember) return;
+      if (staffAction === "edit") {
+        openStaffModal(staffMember);
+      } else if (staffAction === "delete") {
+        const confirmed = confirm(`Delete staff member ${staffMember.name}?`);
+        if (!confirmed) return;
+        remove(ref(db, `staff/${id}`))
+          .then(() => showToast("Staff deleted", "success"))
+          .catch(err => {
+            console.error(err);
+            showToast("Failed to delete staff", "error");
+          });
+      }
+    });
+
+    // Analytics State
+    let currentAnalyticsTab = "boothNo"; // boothNo, caste, gender, district
+
+    // Analytics Tab Switching
+    const analyticsTabs = document.querySelectorAll("[data-analytics-tab]");
+    analyticsTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        analyticsTabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentAnalyticsTab = tab.dataset.analyticsTab;
+        renderAnalytics();
+      });
+    });
+
+    function renderAnalytics() {
+      const tbody = document.getElementById("analyticsBody");
+      if (!tbody) return;
+
+      const headerMap = {
+        "boothNo": "Booth Number",
+        "caste": "Caste Category",
+        "gender": "Gender",
+        "district": "District"
+      };
+      document.getElementById("analyticsCategoryHeader").textContent = headerMap[currentAnalyticsTab];
+
+      if (!state.voters.length) {
+        tbody.innerHTML = "<tr><td colspan='6'>No voter data yet.</td></tr>";
+        return;
+      }
+
+      const map = new Map();
+      state.voters.forEach(voter => {
+        let key = voter[currentAnalyticsTab] || "Unassigned";
+        // Normalizing
+        if (currentAnalyticsTab === "boothNo" && !voter.boothNo) key = "Unassigned";
+
+        if (!map.has(key)) {
+          map.set(key, { total: 0, male: 0, female: 0, other: 0, voters: [] });
+        }
+        const bucket = map.get(key);
+        bucket.total += 1;
+        if (voter.gender === "Male") bucket.male += 1;
+        else if (voter.gender === "Female") bucket.female += 1;
+        else bucket.other += 1;
+        bucket.voters.push(voter);
+      });
+
+      const rows = Array.from(map.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([label, data]) => {
+          return `
+        <tr>
+          <td>${label}</td>
+          <td>${data.total}</td>
+          <td>${data.male}</td>
+          <td>${data.female}</td>
+          <td>${data.other}</td>
+          <td>
+            <div class="table-actions">
+              <button class="action-btn edit" data-group-key="${label}" data-action="view-group">
+                 <i class="fas fa-eye"></i> View
+              </button>
+              <button class="action-btn" data-group-key="${label}" data-action="export-group">
+                 <i class="fas fa-file-export"></i> Export
+              </button>
+            </div>
+          </td>
+        </tr>`;
+        }).join("");
+      tbody.innerHTML = rows;
+    }
+
+    refs.analyticsSection?.addEventListener("click", (event) => {
+      const actionBtn = event.target.closest?.("button[data-action]");
+      if (!actionBtn) return;
+
+      const groupKey = actionBtn.dataset.groupKey;
+      if (!groupKey) return;
+
+      // Filter based on current tab logic
+      const voters = state.voters.filter(v => {
+        let val = v[currentAnalyticsTab] || "Unassigned";
+        if (currentAnalyticsTab === "boothNo" && !v.boothNo) val = "Unassigned";
+        return val === groupKey;
+      });
+
+      if (!voters.length) {
+        showToast("No voters in this category", "error");
+        return;
+      }
+
+      if (actionBtn.dataset.action === "view-group") {
+        analyticsFilterMeta = { label: `${currentAnalyticsTab}: ${groupKey}`, voters };
+        refs.analyticsModalChip.textContent = `${currentAnalyticsTab.toUpperCase()} > ${groupKey}`;
+        refs.analyticsModalTitle.textContent = `Voters List`;
+
+        refs.analyticsList.innerHTML = voters.map(v => {
+          const actions = state.role === "admin"
+            ? `<div class="table-actions">
+                <button class="action-btn edit" data-action="edit" data-id="${v.id}">Edit</button>
+                <button class="action-btn delete" data-action="delete" data-id="${v.id}">Delete</button>
+              </div>`
+            : "<span style='color:var(--muted);'>Read-only</span>";
+
+          return `
+          <tr>
+            <td>${v.listNo || ""}</td>
+            <td>${v.voterName || ""}</td>
+            <td>${v.epicNo || ""}</td>
+            <td>${v.boothNo || ""}</td>
+            <td>${v.district || ""}</td>
+            <td>${v.taluka || ""}</td>
+            <td>${v.caste || ""}</td>
+            <td>${v.gender || ""}</td>
+            <td>${v.mobileNo || ""}</td>
+            <td>${v.address || ""}</td>
+            <td>${actions}</td>
+          </tr>`;
+        }).join("");
+        refs.analyticsModal.classList.add("visible");
+      } else if (actionBtn.dataset.action === "export-group") {
+        const headers = ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
+        const rows = voters.map(v => [
+          v.listNo || "",
+          v.voterName || "",
+          v.epicNo || "",
+          v.boothNo || "",
+          v.district || "",
+          v.taluka || "",
+          v.caste || "",
+          v.gender || "",
+          v.mobileNo || "",
+          v.address || ""
+        ]);
+        const csv = [headers, ...rows].map(row => row.map(value => `"${`${value}`.replace(/"/g, '""')}"`).join(",")).join("\r\n");
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `analytics-${currentAnalyticsTab}-${groupKey}.csv`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showToast(`Exported ${groupKey} list`, "success");
+      }
+    });
+
+    // Handle Edit/Delete in Analytics Modal
+    refs.analyticsList.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const action = target.dataset.action;
+      const id = target.dataset.id;
+      if (!action || !id) return;
+
+      if (state.role !== "admin") {
+        showToast("Admin access required", "error");
+        return;
+      }
+
+      const voter = state.voters.find(v => v.id === id);
+      if (!voter) return;
+
+      if (action === "edit") {
+        openEditModal(voter);
+      } else if (action === "delete") {
+        const confirmed = confirm(`Delete voter ${voter.voterName}?`);
+        if (!confirmed) return;
+        remove(ref(db, `voters/${id}`))
+          .then(() => {
+            showToast("Voter deleted", "success");
+            // Refresh modal if open
+            if (analyticsFilterMeta) {
+              const updatedVoters = analyticsFilterMeta.voters.filter(v => v.id !== id);
+              analyticsFilterMeta.voters = updatedVoters;
+              // Re-trigger render logic or simply remove row?
+              // Simplest is to remove row from DOM
+              target.closest("tr")?.remove();
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            showToast("Failed to delete voter", "error");
+          });
+      }
+    });
+
+    function closeAnalyticsModal() {
+      refs.analyticsModal.classList.remove("visible");
+      analyticsFilterMeta = null;
+      refs.analyticsList.innerHTML = "<tr><td colspan='10'>No voters found.</td></tr>";
+    }
+
+    refs.analyticsModalClose.addEventListener("click", closeAnalyticsModal);
+    refs.analyticsModalExport.addEventListener("click", () => {
+      if (!analyticsFilterMeta?.voters?.length) {
+        showToast("Nothing to export", "error");
+        return;
+      }
+      const headers = ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
+      const rows = analyticsFilterMeta.voters.map(v => [
+        v.listNo || "",
+        v.voterName || "",
+        v.epicNo || "",
+        v.boothNo || "",
+        v.district || "",
+        v.taluka || "",
+        v.caste || "",
+        v.gender || "",
+        v.mobileNo || "",
+        v.address || ""
+      ]);
+      const csv = [headers, ...rows].map(row => row.map(value => {
+        const safe = `${value}`.replace(/"/g, '""');
+        return `"${safe}"`;
+      }).join(",")).join("\r\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${analyticsFilterMeta.label || "analytics"}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast("Exported analytics CSV", "success");
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && refs.analyticsModal.classList.contains("visible")) {
+        closeAnalyticsModal();
+      }
+    });
+
+    function printVoterSlip(voter) {
+      const printWindow = window.open('', '_blank', 'width=300,height=400');
+      const content = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Voter Slip</title>
+          <style>
+            @media print {
+              @page {
+                size: 58mm auto;
+                margin: 0;
+              }
+            }
+            body {
+              font-family: 'Courier New', monospace;
+              width: 58mm;
+              margin: 0;
+              padding: 8px;
+              font-size: 11px;
+              line-height: 1.4;
+            }
+            .header {
+              text-align: center;
+              font-weight: bold;
+              font-size: 13px;
+              margin-bottom: 8px;
+              border-bottom: 1px dashed #000;
+              padding-bottom: 6px;
+            }
+            .field {
+              margin: 6px 0;
+              display: flex;
+              flex-direction: column;
+            }
+            .label {
+              font-weight: bold;
+              font-size: 10px;
+              color: #333;
+            }
+            .value {
+              font-size: 12px;
+              font-weight: bold;
+              margin-top: 2px;
+            }
+            .footer {
+              margin-top: 10px;
+              padding-top: 6px;
+              border-top: 1px dashed #000;
+              text-align: center;
+              font-size: 9px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">RAYGAON VOTER SLIP</div>
+          <div class="field">
+            <span class="label">VOTER NAME:</span>
+            <span class="value">${voter.voterName || 'N/A'}</span>
+          </div>
+          <div class="field">
+            <span class="label">VOTER LIST SR NO:</span>
+            <span class="value">${voter.listNo || 'N/A'}</span>
+          </div>
+          <div class="field">
+            <span class="label">BOOTH:</span>
+            <span class="value">${voter.boothNo || 'N/A'}</span>
+          </div>
+          <div class="footer">
+            Printed: ${new Date().toLocaleString()}
+          </div>
+        </body>
+        </html>
+      `;
+
+      printWindow.document.write(content);
+      printWindow.document.close();
+
+      printWindow.onload = function () {
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 250);
+      };
+
+      showToast("Print dialog opened", "success");
+    }
+
+    // Search Voter Functionality
+    const searchVoterInput = document.getElementById("searchVoterInput");
+    const searchResults = document.getElementById("searchResults");
+
+    if (searchVoterInput) {
+      searchVoterInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim().toLowerCase();
+
+        if (!query) {
+          searchResults.innerHTML = "";
+          return;
+        }
+
+        const matches = state.voters.filter(v =>
+          v.voterName?.toLowerCase().includes(query) ||
+          v.epicNo?.toLowerCase().includes(query)
+        );
+
+        if (matches.length === 0) {
+          searchResults.innerHTML = `
+            <div style="padding: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 0.75rem; color: var(--text);">
+              <i class="fas fa-exclamation-circle"></i> No voters found matching "${e.target.value}"
+            </div>
+          `;
+          return;
+        }
+
+        searchResults.innerHTML = `
+          <div style="margin-bottom: 0.75rem; color: var(--text-muted);">
+            Found ${matches.length} voter(s)
+          </div>
+          ${matches.map(v => `
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid var(--bg-card-border); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 0.75rem;">
+              <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start;">
+                <div>
+                  <div style="font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">
+                    ${v.voterName || 'N/A'}
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">
+                    <div><strong>EPIC:</strong> ${v.epicNo || 'N/A'}</div>
+                    <div><strong>List No:</strong> ${v.listNo || 'N/A'}</div>
+                    <div><strong>Booth:</strong> ${v.boothNo || 'N/A'}</div>
+                    <div><strong>District:</strong> ${v.district || 'N/A'}</div>
+                  </div>
+                </div>
+                <button class="primary search-print-btn" data-voter-id="${v.id}" style="white-space: nowrap;">
+                  <i class="fas fa-print"></i> Print Slip
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        `;
+      });
+
+      // Handle print button clicks in search results
+      searchResults.addEventListener("click", (e) => {
+        const printBtn = e.target.closest(".search-print-btn");
+        if (!printBtn) return;
+
+        const voterId = printBtn.dataset.voterId;
+        const voter = state.voters.find(v => v.id === voterId);
+        if (voter) {
+          printVoterSlip(voter);
+        }
+      });
+    }
+
+    function downloadSampleCSV(filename, rows) {
+      const csv = rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      if (!lines.length) return { headers: [], rows: [] };
+
+      // Helper to split CSV line respecting quotes
+      const splitLine = (line) => {
+        const values = [];
+        let current = '';
+        let inQuote = false;
+
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+
+          if (char === '"') {
+            inQuote = !inQuote;
+          } else if (char === ',' && !inQuote) {
+            values.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        values.push(current.trim());
+        return values.map(v => v.replace(/^"|"$/g, '').replace(/""/g, '"'));
+      };
+
+      const headers = splitLine(lines.shift());
+      const rows = lines.map(line => {
+        const values = splitLine(line);
+        const entry = {};
+        headers.forEach((header, idx) => entry[header] = values[idx] ?? "");
+        return entry;
+      });
+      return { headers, rows };
+    }
+
+    async function handleCSVImport(file, type) {
+      if (!file) return;
+      if (state.role !== "admin") {
+        showToast("Admin access required", "error");
+        return;
+      }
+      const reader = new FileReader();
+
+      // Feedback to user that import has started
+      showToast("Importing data... Please wait (Import chalu ahe)", "info");
+
+      reader.onload = async ({ target }) => {
+        try {
+          const { headers, rows } = parseCSV(target.result || "");
+          const expected = type === "voter" ? voterCSVHeaders : staffCSVHeaders;
+          if (!expected.every(field => headers.includes(field))) {
+            showToast(`Missing required headers: ${expected.join(", ")}`, "error");
+            return;
+          }
+          if (!rows.length) {
+            showToast("No records found in CSV", "error");
+            return;
+          }
+          if (type === "voter") {
+            await importVotersFromRows(rows);
+          } else {
+            await importStaffFromRows(rows);
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("Failed to parse CSV", "error");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function importVotersFromRows(rows) {
+      const inserts = rows.map(row => {
+        const payload = {
+          boothNo: row.boothNo || "",
+          listNo: row.listNo || "",
+          voterName: row.voterName || "",
+          epicNo: (row.epicNo || "").toUpperCase(),
+          mobileNo: row.mobileNo || "",
+          district: row.district || "",
+          taluka: row.taluka || "",
+          gender: row.gender || "",
+          caste: row.caste || "",
+          village: row.village || "",
+          address: row.address || "",
+          createdAt: Date.now()
+        };
+        return push(ref(db, "voters"), payload);
+      });
+      await Promise.all(inserts);
+      showToast(`Import Completed! Added ${rows.length} voters.`, "success");
+    }
+
+    async function importStaffFromRows(rows) {
+      const inserts = rows.map(row => {
+        const payload = {
+          village: "Raygaon",
+          name: row.name || "",
+          boothNo: row.boothNo || "",
+          caste: row.caste || "",
+          designation: row.designation || "",
+          workplace: row.workplace || "",
+          mobile: row.mobile || "",
+          houseVoters: Number(row.houseVoters || 0),
+          createdAt: Date.now()
+        };
+        return push(ref(db, "staff"), payload);
+      });
+      await Promise.all(inserts);
+      showToast(`Import Completed! Added ${rows.length} staff records.`, "success");
+    }
+
+    function subscribeToData() {
+      onValue(ref(db, "voters"), (snapshot) => {
+        const data = snapshot.val() || {};
+        state.voters = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+        updateOverview();
+        renderVoterTable();
+        renderAnalytics();
+      });
+      onValue(ref(db, "staff"), (snapshot) => {
+        const data = snapshot.val() || {};
+        state.staff = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+        updateOverview();
+      });
+      onValue(ref(db, "users"), (snapshot) => {
+        const data = snapshot.val() || {};
+        state.users = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+        renderUserLogins();
+      });
+      onValue(ref(db, "admins"), (snapshot) => {
+        const data = snapshot.val() || {};
+        state.admins = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+        renderAdmins();
+      });
+    }
+
+    function updateOverview() {
+      const total = state.voters.length;
+      const female = state.voters.filter(v => (v.gender || "").toLowerCase() === "female").length;
+      const male = state.voters.filter(v => (v.gender || "").toLowerCase() === "male").length;
+      document.getElementById("totalVoters").textContent = total;
+      document.getElementById("femaleVoters").textContent = female;
+      document.getElementById("maleVoters").textContent = male;
+      document.getElementById("staffCount").textContent = state.staff.length;
+      populateStaffFilters();
+      renderStaffDirectory();
+    }
+
+    function populateStaffFilters() {
+      const booths = Array.from(new Set(state.staff.map(s => s.boothNo).filter(Boolean))).sort();
+      const castes = Array.from(new Set(state.staff.map(s => s.caste).filter(Boolean))).sort();
+      refs.staffFilterBooth.innerHTML = "<option value=''>All Booths</option>" + booths.map(booth => `<option value="${booth}">${booth}</option>`).join("");
+      refs.staffFilterCaste.innerHTML = "<option value=''>All Castes</option>" + castes.map(caste => `<option value="${caste}">${caste}</option>`).join("");
+    }
+
+    function getFilteredStaff() {
+      const boothFilter = refs.staffFilterBooth.value;
+      const casteFilter = refs.staffFilterCaste.value;
+      const query = (refs.staffSearchText.value || "").trim().toLowerCase();
+
+      return state.staff.filter(staff => {
+        if (boothFilter && staff.boothNo !== boothFilter) return false;
+        if (casteFilter && staff.caste !== casteFilter) return false;
+        if (query && !((staff.name || "").toLowerCase().includes(query))) return false;
+        return true;
+      });
+    }
+
+    function renderStaffDirectory() {
+      if (!state.staff.length) {
+        refs.staffDirectoryBody.innerHTML = "<tr><td colspan='8'>No staff records found.</td></tr>";
+        return;
+      }
+      const rows = getFilteredStaff()
+        .map(staff => {
+          const actions = state.role === "admin"
+            ? `<div class="table-actions">
+                <button class="action-btn edit" data-staff-action="edit" data-id="${staff.id}">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="action-btn delete" data-staff-action="delete" data-id="${staff.id}">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+              </div>`
+            : "<span style='color:var(--muted);'>Read-only</span>";
+          return `
+          <tr>
+            <td>${staff.name || ""}</td>
+            <td>${staff.boothNo || ""}</td>
+            <td>${staff.caste || ""}</td>
+            <td>${staff.designation || ""}</td>
+            <td>${staff.workplace || ""}</td>
+            <td>${staff.mobile || ""}</td>
+            <td>${staff.houseVoters || "0"}</td>
+            <td>${actions}</td>
+          </tr>`;
+        }).join("");
+      refs.staffDirectoryBody.innerHTML = rows || "<tr><td colspan='8'>No staff records match current filters.</td></tr>";
+    }
+
+    function renderUserLogins() {
+      if (!refs.userLoginsBody) return;
+      if (state.role !== "admin") return;
+
+      if (!state.users.length) {
+        refs.userLoginsBody.innerHTML = "<tr><td colspan='4'>No user logins tracked yet.</td></tr>";
+        return;
+      }
+
+      const rows = state.users
+        .sort((a, b) => (b.lastLogin || 0) - (a.lastLogin || 0))
+        .map(u => `
+          <tr>
+            <td>${u.displayName}</td>
+            <td>${u.email}</td>
+            <td>${new Date(u.lastLogin).toLocaleString()}</td>
+            <td><span class="status-badge" style="background:rgba(16,185,129,0.1); color:var(--success); border-color:var(--success);">${u.status}</span></td>
+          </tr>
+        `).join("");
+      refs.userLoginsBody.innerHTML = rows;
+    }
+
+    function renderAdmins() {
+      if (!refs.adminListBody || state.role !== "admin") return;
+
+      if (!state.admins.length) {
+        refs.adminListBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding: 2rem; color: var(--text-muted);'>No additional admin accounts found.</td></tr>";
+        return;
+      }
+
+      const rows = state.admins.map(a => `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">
+                ${(a.name || 'A')[0].toUpperCase()}
+              </div>
+              ${a.name}
+            </div>
+          </td>
+          <td>${a.email}</td>
+          <td>${new Date(a.createdAt).toLocaleString()}</td>
+          <td>
+            <button class="action-btn delete" data-id="${a.id}">
+              <i class="fas fa-trash-alt"></i> Remove
+            </button>
+          </td>
+        </tr>
+      `).join("");
+      refs.adminListBody.innerHTML = rows;
+    }
+
+    function openStaffModal(staff) {
+      editingStaffId = staff.id;
+      const f = refs.staffEditFields;
+      f.name.value = staff.name || "";
+      f.boothNo.value = staff.boothNo || "";
+      f.caste.value = staff.caste || "";
+      f.designation.value = staff.designation || "";
+      f.workplace.value = staff.workplace || "";
+      f.mobile.value = staff.mobile || "";
+      f.houseVoters.value = staff.houseVoters ?? "";
+      refs.staffModal.classList.add("visible");
+    }
+
+    function closeStaffModal() {
+      refs.staffModal.classList.remove("visible");
+      refs.staffEditForm.reset();
+      editingStaffId = null;
+    }
+
+    refs.staffModalClose.addEventListener("click", closeStaffModal);
+    refs.staffModalCancel.addEventListener("click", closeStaffModal);
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && refs.staffModal.classList.contains("visible")) {
+        closeStaffModal();
+      }
+    });
+
+    refs.staffEditForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!editingStaffId) return;
+      if (state.role !== "admin") {
+        showToast("Admin access required", "error");
+        return;
+      }
+      const payload = {
+        name: refs.staffEditFields.name.value.trim(),
+        boothNo: refs.staffEditFields.boothNo.value.trim(),
+        caste: refs.staffEditFields.caste.value.trim(),
+        designation: refs.staffEditFields.designation.value.trim(),
+        workplace: refs.staffEditFields.workplace.value.trim(),
+        mobile: refs.staffEditFields.mobile.value.trim(),
+        houseVoters: Number(refs.staffEditFields.houseVoters.value || 0)
+      };
+      try {
+        await update(ref(db, `staff/${editingStaffId}`), payload);
+        showToast("Staff updated", "success");
+        closeStaffModal();
+      } catch (error) {
+        console.error(error);
+        showToast("Failed to update staff", "error");
+      }
+    });
+
+    function exportStaffDirectory() {
+      const filtered = getFilteredStaff();
+      if (!filtered.length) {
+        showToast("No staff records to export", "error");
+        return;
+      }
+
+      const boothFilter = refs.staffFilterBooth.value || "All Booths";
+      const casteFilter = refs.staffFilterCaste.value || "All Castes";
+
+      // Added a descriptive title row at the top as requested
+      const titleRow = [`Raygaon Staff Directory (Filter: Booth-${boothFilter}, Caste-${casteFilter})`];
+      const headers = ["Name", "Booth", "Caste", "Designation", "Workplace", "Mobile", "House Voters"];
+      const rows = filtered.map(staff => [
+        staff.name || "",
+        staff.boothNo || "",
+        staff.caste || "",
+        staff.designation || "",
+        staff.workplace || "",
+        staff.mobile || "",
+        staff.houseVoters ?? "0"
+      ]);
+
+      const csvContent = [
+        titleRow.join(","),
+        headers.join(","),
+        ...rows.map(row => row.map(value => `"${`${value}`.replace(/"/g, '""')}"`).join(","))
+      ].join("\r\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Raygaon_Staff_${boothFilter}_${casteFilter}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast("Staff directory exported successfully", "success");
+    }
+
+    function exportVoterDirectory() {
+      const filtered = state.voters.filter(passesFilters);
+      if (!filtered.length) {
+        showToast("No voter records to export", "error");
+        return;
+      }
+
+      const title = `Raygaon Voter Directory Exported: ${new Date().toLocaleDateString()}`;
+      const headers = ["List No", "Name", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
+      const rows = filtered.map(v => [
+        v.listNo || "",
+        v.voterName || "",
+        v.epicNo || "",
+        v.boothNo || "",
+        v.district || "",
+        v.taluka || "",
+        v.caste || "",
+        v.gender || "",
+        v.mobileNo || "",
+        v.address || ""
+      ]);
+
+      const csvContent = [
+        title,
+        headers.join(","),
+        ...rows.map(row => row.map(value => `"${`${value}`.replace(/"/g, '""')}"`).join(","))
+      ].join("\r\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Raygaon_Voters_${new Date().toISOString().split("T")[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast("Voter directory exported successfully", "success");
+    }
+
+    function passesFilters(voter) {
+      const { value: district } = refs.filterDistrict;
+      const { value: taluka } = refs.filterTaluka;
+      const { value: caste } = refs.filterCaste;
+      const { value: gender } = refs.filterGender;
+      const query = refs.searchText.value.trim().toLowerCase();
+
+      const vDistrict = (voter.district || "").toLowerCase();
+      const vTaluka = (voter.taluka || "").toLowerCase();
+      const vCaste = (voter.caste || "").toLowerCase();
+      const vGender = (voter.gender || "").toLowerCase();
+
+      if (district && vDistrict !== district.toLowerCase()) return false;
+      if (taluka && vTaluka !== taluka.toLowerCase()) return false;
+      if (caste && vCaste !== caste.toLowerCase()) return false;
+      if (gender && vGender !== gender.toLowerCase()) return false;
+      if (query && !(`${voter.voterName}`.toLowerCase().includes(query) || `${voter.epicNo}`.toLowerCase().includes(query))) return false;
+      return true;
+    }
+
+    function renderVoterTable() {
+      console.log("Rendering voter table. User role:", state.role);
+      if (!state.voters.length) {
+        refs.voterTableBody.innerHTML = "<tr><td colspan='11'>No voter records yet.</td></tr>";
+        return;
+      }
+      const filtered = state.voters.filter(passesFilters);
+      if (!filtered.length) {
+        refs.voterTableBody.innerHTML = "<tr><td colspan='11'>No data matches the current filters.</td></tr>";
+        return;
+      }
+      const rows = filtered
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .map(v => {
+          const actions = state.role === "admin"
+            ? `<div class="table-actions">
+                <button class="action-btn edit" data-action="edit" data-id="${v.id}">Edit</button>
+                <button class="action-btn delete" data-action="delete" data-id="${v.id}">Delete</button>
+                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> Print</button>
+              </div>`
+            : `<div class="table-actions">
+                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> Print</button>
+              </div>`;
+          console.log("Actions for voter", v.voterName, ":", actions.substring(0, 50));
+          return `
+          <tr>
+            <td>${v.listNo}</td>
+            <td>${v.voterName}</td>
+            <td>${v.epicNo}</td>
+            <td>${v.boothNo}</td>
+            <td>${v.district}</td>
+            <td>${v.taluka}</td>
+            <td>${v.caste}</td>
+            <td>${v.gender}</td>
+            <td>${v.mobileNo}</td>
+            <td>${v.address || ""}</td>
+            <td>${actions}</td>
+          </tr>`;
+        }).join("");
+      refs.voterTableBody.innerHTML = rows;
+      console.log("Voter table rendered with", filtered.length, "rows");
+    }
+
+    function renderAggregates() {
+      const aggregates = {
+        districtAggregate: groupCount(state.voters, "district"),
+        talukaAggregate: groupCount(state.voters, "taluka"),
+        casteAggregate: groupCount(state.voters, "caste"),
+        genderAggregate: groupCount(state.voters, "gender")
+      };
+      Object.entries(aggregates).forEach(([key, list]) => {
+        const target = document.getElementById(key);
+        if (!list.length) {
+          target.innerHTML = "<li>No data yet.</li>";
+          return;
+        }
+        target.innerHTML = list.map(([label, count]) => `
+          <li>
+            <span>${label}</span>
+            <button type="button" class="bucket-count" data-agg="${key}" data-label="${label}">${count}</button>
+          </li>`).join("");
+      });
+    }
+
+    function groupCount(items, key) {
+      const map = new Map();
+      items.forEach(item => {
+        const value = item[key] || "Other";
+        map.set(value, (map.get(value) || 0) + 1);
+      });
+      return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+    }
+
+    document.getElementById("showLoginBtn").addEventListener("click", () => {
+      document.body.classList.add("login-active");
+      document.body.classList.remove("dashboard-active");
+      document.getElementById("landingSection").style.display = "none";
+      document.getElementById("authSection").style.display = "grid";
+    });
+
+    document.getElementById("closeAuthBtn").addEventListener("click", () => {
+      document.getElementById("authSection").style.display = "none";
+      document.getElementById("landingSection").style.display = "flex";
+    });
+
+    const roleButtons = document.querySelectorAll(".auth-card .role-button");
+    const adminLoginBlock = document.getElementById("adminLoginBlock");
+    const userLoginBlock = document.getElementById("userLoginBlock");
+
+    roleButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        roleButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        const role = button.dataset.roleTab;
+        const isAdmin = role === "admin";
+        adminLoginBlock.classList.toggle("active", isAdmin);
+        userLoginBlock.classList.toggle("active", !isAdmin);
+      });
+    });
+
+    if (localStorage.getItem(ADMIN_SESSION_KEY) === "true") {
+      setRole("admin", { displayName: ADMIN_CREDENTIALS.displayName, email: ADMIN_CREDENTIALS.email });
+    }
+
+    subscribeToData();
+
+    // Mobile Menu Logic
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const sidebar = document.querySelector(".sidebar");
+
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+      });
+
+      // Close sidebar when clicking outside
+      document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 900 &&
+          sidebar.classList.contains("open") &&
+          !sidebar.contains(e.target) &&
+          e.target !== mobileMenuBtn) {
+          sidebar.classList.remove("open");
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
