@@ -1288,7 +1288,9 @@
       if (staffSection) staffSection.style.opacity = isAdmin ? "1" : "0.4";
     }
 
+    const sidebar = document.querySelector(".sidebar");
     const sidebarOverlay = document.getElementById("sidebarOverlay");
+
     refs.navButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         if (btn.dataset.requiresAdmin === "true" && state.role !== "admin") {
@@ -1301,9 +1303,11 @@
         const target = document.getElementById(btn.dataset.target);
         if (target) target.classList.add("active");
 
-        // Auto-hide sidebar on selection
-        sidebar.classList.remove("open");
-        sidebarOverlay.classList.remove("visible");
+        // Auto-hide sidebar on selection (especially for mobile)
+        if (sidebar && sidebarOverlay) {
+          sidebar.classList.remove("open");
+          sidebarOverlay.classList.remove("visible");
+        }
       });
     });
 
@@ -2596,25 +2600,27 @@
 
     subscribeToData();
 
-    // Mobile Menu Logic
+    // Mobile Menu Toggle Logic
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-    const sidebar = document.querySelector(".sidebar");
-
     if (mobileMenuBtn) {
       mobileMenuBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        sidebar.classList.toggle("open");
-        sidebarOverlay.classList.toggle("visible");
+        if (sidebar && sidebarOverlay) {
+          sidebar.classList.toggle("open");
+          sidebarOverlay.classList.toggle("visible");
+        }
       });
 
-      sidebarOverlay.addEventListener("click", () => {
-        sidebar.classList.remove("open");
-        sidebarOverlay.classList.remove("visible");
-      });
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener("click", () => {
+          sidebar.classList.remove("open");
+          sidebarOverlay.classList.remove("visible");
+        });
+      }
 
-      // Close sidebar when clicking outside using existing logic
+      // Close sidebar when clicking outside
       document.addEventListener("click", (e) => {
-        if (sidebar.classList.contains("open") &&
+        if (sidebar && sidebar.classList.contains("open") &&
           !sidebar.contains(e.target) &&
           e.target !== mobileMenuBtn) {
           sidebar.classList.remove("open");
