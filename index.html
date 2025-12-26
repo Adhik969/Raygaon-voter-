@@ -24,9 +24,12 @@
         <div class="title">Raygaon Voter System</div>
       </div>
       <div class="meta">
-        <!-- Guest mode badge removed -->
+        <select id="langSelect" class="lang-selector">
+          <option value="en">English</option>
+          <option value="mr">मराठी</option>
+        </select>
         <button class="signout-btn" id="signOutBtn" style="display:none;">
-          <i class="fas fa-sign-out-alt"></i> Sign Out
+          <i class="fas fa-sign-out-alt"></i> <span data-translate="sign_out">Sign Out</span>
         </button>
       </div>
 
@@ -81,206 +84,226 @@
         <aside class="sidebar">
           <div class="nav-group">
             <button class="nav-button active" data-target="overviewSection">
-              <i class="fas fa-tachometer-alt"></i> Overview
+              <i class="fas fa-tachometer-alt"></i> <span data-translate="nav_overview">Overview</span>
             </button>
             <button class="nav-button" data-target="addVoterSection" data-requires-admin="true">
-              <i class="fas fa-user-plus"></i> Add Voter
+              <i class="fas fa-user-plus"></i> <span data-translate="nav_add_voter">Add Voter</span>
             </button>
             <button class="nav-button" data-target="staffSection" data-requires-admin="true">
-              <i class="fas fa-chalkboard-teacher"></i> Staff Info
+              <i class="fas fa-chalkboard-teacher"></i> <span data-translate="nav_staff_info">Staff Info</span>
             </button>
             <button class="nav-button" data-target="searchVoterSection">
-              <i class="fas fa-search"></i> Search Voter
+              <i class="fas fa-search"></i> <span data-translate="nav_search">Search Voter</span>
             </button>
             <button class="nav-button" data-target="analyticsSection">
-              <i class="fas fa-chart-pie"></i> Analytics
+              <i class="fas fa-chart-pie"></i> <span data-translate="nav_analytics">Analytics</span>
             </button>
             <button class="nav-button" data-target="directorySection">
-              <i class="fas fa-address-book"></i> Voter Directory
+              <i class="fas fa-address-book"></i> <span data-translate="nav_directory">Voter Directory</span>
             </button>
             <button class="nav-button" data-target="staffDirectorySection">
-              <i class="fas fa-users"></i> Staff Directory
+              <i class="fas fa-users"></i> <span data-translate="nav_staff_directory">Staff Directory</span>
             </button>
             <button class="nav-button" data-target="userLoginsSection" data-requires-admin="true">
-              <i class="fas fa-user-shield"></i> User Logins
+              <i class="fas fa-user-shield"></i> <span data-translate="nav_user_logins">User Logins</span>
             </button>
             <button class="nav-button" data-target="manageAdminSection" data-requires-admin="true">
-              <i class="fas fa-user-cog"></i> Manage Admin
+              <i class="fas fa-user-cog"></i> <span data-translate="nav_manage_admin">Manage Admin</span>
             </button>
           </div>
         </aside>
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
         <div>
           <section id="overviewSection" class="panel active">
-            <h2>Dashboard Overview</h2>
+            <h2 data-translate="dash_overview">Dashboard Overview</h2>
             <p id="welcomeText">Welcome.</p>
-            <div class="stat-grid">
+            <div class="stat-grid" id="mainStatsGrid">
               <div class="stat-card">
-                <h3>Total Registered Voters</h3>
+                <h3 data-translate="total_voters">Total Registered Voters</h3>
                 <p id="totalVoters">0</p>
               </div>
               <div class="stat-card">
-                <h3>Female Voters</h3>
+                <h3 data-translate="female_voters">Female Voters</h3>
                 <p id="femaleVoters">0</p>
               </div>
               <div class="stat-card">
-                <h3>Male Voters</h3>
+                <h3 data-translate="male_voters">Male Voters</h3>
                 <p id="maleVoters">0</p>
               </div>
               <div class="stat-card">
-                <h3>Staff Records</h3>
+                <h3 data-translate="staff_count">Staff Records</h3>
                 <p id="staffCount">0</p>
               </div>
+            </div>
+
+            <div id="boothStatsGrid" class="stat-grid" style="margin-top: 1.5rem;">
+              <!-- Booth cards will be injected here -->
             </div>
           </section>
 
           <section id="addVoterSection" class="panel">
-            <h2>Add Voter</h2>
-            <p>Enter voter information for any Maharashtra district. Taluka options refresh based on the selected
+            <h2 data-translate="nav_add_voter">Add Voter</h2>
+            <p data-translate="add_voter_desc">Enter voter information for any Maharashtra district. Taluka options
+              refresh based on the selected
               district.</p>
             <div class="import-panel">
-              <h4><i class="fas fa-file-import"></i> Bulk Import Voters</h4>
-              <p style="color: var(--text-muted); margin-top: 0.5rem;">Upload a CSV file to add multiple voters at once.
-              </p>
+              <h4 data-translate="bulk_import_voters"><i class="fas fa-file-import"></i> Bulk Import Voters</h4>
+              <p style="color: var(--text-muted); margin-top: 0.5rem;" data-translate="bulk_import_desc">Upload a CSV
+                file to add multiple voters at once.</p>
               <div class="import-toolbar">
                 <button type="button" class="download-btn" id="downloadVoterSample">
-                  <i class="fas fa-file-download"></i> Download Sample CSV
+                  <i class="fas fa-file-download"></i> <span data-translate="download_sample_csv">Download Sample
+                    CSV</span>
                 </button>
                 <label class="file-label">
-                  <i class="fas fa-upload"></i> Import CSV
+                  <i class="fas fa-upload"></i> <span data-translate="import_csv">Import CSV</span>
                   <input type="file" id="importVoterCSV" accept=".csv" />
                 </label>
-                <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> Headers must match
-                  template.</small>
+                <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> <span
+                    data-translate="headers_match_template">Headers must match template.</span></small>
               </div>
             </div>
             <form id="voterForm">
               <div class="grid-two">
                 <div>
-                  <label for="boothNo">Booth No.</label>
+                  <label for="boothNo" data-translate="booth_no_label">Booth No.</label>
                   <select id="boothNo" required>
-                    <option value="">Select booth</option>
+                    <option value="" data-translate="select_booth">Select booth</option>
                     <option value="2">Booth 2</option>
                     <option value="3">Booth 3</option>
                   </select>
                 </div>
                 <div>
-                  <label for="listNo">Voter List No.</label>
+                  <label for="listNo" data-translate="voter_list_no_label">Voter List No.</label>
                   <input type="text" id="listNo" required />
                 </div>
                 <div>
-                  <label for="voterName">Voter Name</label>
+                  <label for="voterName" data-translate="voter_name_label">Voter Name</label>
                   <input type="text" id="voterName" required />
                 </div>
                 <div>
-                  <label for="epicNo">EPIC No.</label>
+                  <label for="epicNo" data-translate="epic_no_label">EPIC No.</label>
                   <input type="text" id="epicNo" required />
                 </div>
                 <div>
-                  <label for="mobileNo">Mobile No.</label>
+                  <label for="mobileNo" data-translate="mobile_no_label">Mobile No.</label>
                   <input type="tel" id="mobileNo" pattern="[0-9]{10}" maxlength="10" required />
                 </div>
                 <div>
-                  <label for="districtSelect">District (Maharashtra)</label>
+                  <label for="districtSelect" data-translate="district_label">District (Maharashtra)</label>
                   <select id="districtSelect" required></select>
                 </div>
                 <div>
-                  <label for="talukaSelect">Taluka</label>
+                  <label for="talukaSelect" data-translate="taluka_label">Taluka</label>
                   <select id="talukaSelect" required></select>
                 </div>
                 <div>
-                  <label for="genderSelect">Gender</label>
+                  <label for="genderSelect" data-translate="gender_label">Gender</label>
                   <select id="genderSelect" required>
-                    <option value="">Select gender</option>
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                    <option value="Other">Other</option>
+                    <option value="" data-translate="select_gender">Select gender</option>
+                    <option value="Female" data-translate="female_header">Female</option>
+                    <option value="Male" data-translate="male_header">Male</option>
+                    <option value="Other" data-translate="other_header">Other</option>
                   </select>
                 </div>
                 <div>
-                  <label for="casteSelect">Caste</label>
+                  <label for="villageName" data-translate="village_label">Village</label>
+                  <input type="text" id="villageName" value="Raygaon" required />
+                </div>
+                <div>
+                  <label for="casteSelect" data-translate="caste_label">Caste</label>
                   <select id="casteSelect" required></select>
                 </div>
                 <div>
-                  <label for="villageName">Village</label>
-                  <input type="text" id="villageName" value="Raygaon" required />
+                  <label for="voterType" data-translate="voter_type_label">Voter Type</label>
+                  <select id="voterType" required>
+                    <option value="" data-translate="select_type">Select Type</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                  </select>
                 </div>
               </div>
               <div>
-                <label for="address">Address</label>
-                <textarea id="address" placeholder="House / Street / Landmark" required></textarea>
+                <label for="address" data-translate="address_label">Address</label>
+                <textarea id="address" data-translate-placeholder="address_placeholder"
+                  placeholder="House / Street / Landmark" required></textarea>
               </div>
-              <button class="primary" type="submit">Save Voter</button>
+              <button class="primary" type="submit" data-translate="save_voter_btn">Save Voter</button>
             </form>
           </section>
 
           <section id="staffSection" class="panel">
-            <h2>Staff Information (Village: Raygaon)</h2>
+            <h2 data-translate="staff_info_title">Staff Information (Village: Raygaon)</h2>
             <div class="import-panel">
-              <h4><i class="fas fa-file-import"></i> Import Staff Data</h4>
-              <p style="color: var(--text-muted); margin-top: 0.5rem;">Download the sample sheet, fill it, and upload it
-                back.</p>
+              <h4 data-translate="import_staff_data"><i class="fas fa-file-import"></i> Import Staff Data</h4>
+              <p style="color: var(--text-muted); margin-top: 0.5rem;" data-translate="download_sample_sheet_desc">
+                Download the sample sheet, fill it, and upload it back.</p>
               <div class="import-toolbar">
                 <button type="button" class="download-btn" id="downloadStaffSample">
-                  <i class="fas fa-file-download"></i> Download Sample CSV
+                  <i class="fas fa-file-download"></i> <span data-translate="download_sample_csv">Download Sample
+                    CSV</span>
                 </button>
                 <label class="file-label">
-                  <i class="fas fa-upload"></i> Import CSV
+                  <i class="fas fa-upload"></i> <span data-translate="import_csv">Import CSV</span>
                   <input type="file" id="importStaffCSV" accept=".csv" />
                 </label>
-                <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> Headers must match
-                  template.</small>
+                <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> <span
+                    data-translate="headers_match_template">Headers must match template.</span></small>
               </div>
             </div>
             <form id="staffForm">
               <div class="grid-two">
                 <div>
-                  <label for="staffName">Name of Staff</label>
+                  <label for="staffName" data-translate="staff_name_label">Name of Staff</label>
                   <input type="text" id="staffName" required />
                 </div>
                 <div>
-                  <label for="staffBooth">Booth No.</label>
+                  <label for="staffBooth" data-translate="booth_no_label">Booth No.</label>
                   <select id="staffBooth" required>
-                    <option value="">Select booth</option>
+                    <option value="" data-translate="select_booth">Select booth</option>
                     <option value="2">Booth 2</option>
                     <option value="3">Booth 3</option>
                   </select>
                 </div>
                 <div>
-                  <label for="staffCaste">Caste</label>
+                  <label for="staffCaste" data-translate="caste_label">Caste</label>
                   <select id="staffCaste" required></select>
                 </div>
                 <div>
-                  <label for="staffDesignation">Designation</label>
+                  <label for="staffDesignation" data-translate="staff_designation_label">Designation</label>
                   <input type="text" id="staffDesignation" required />
                 </div>
                 <div>
-                  <label for="staffCollege">Working College / Office</label>
+                  <label for="staffCollege" data-translate="staff_workplace_label">Working College / Office</label>
                   <input type="text" id="staffCollege" required />
                 </div>
                 <div>
-                  <label for="staffMobile">Mobile No.</label>
+                  <label for="staffMobile" data-translate="mobile_no_label">Mobile No.</label>
                   <input type="tel" id="staffMobile" pattern="[0-9]{10}" maxlength="10" required />
                 </div>
                 <div>
-                  <label for="staffHouseCount">Total Voters in House</label>
+                  <label for="staffHouseCount" data-translate="staff_house_count_label">Total Voters in House</label>
                   <input type="number" id="staffHouseCount" min="0" required />
                 </div>
               </div>
-              <button class="primary" type="submit">Save Staff Record</button>
+              <button class="primary" type="submit" data-translate="save_staff_record_btn">Save Staff Record</button>
             </form>
           </section>
 
           <section id="searchVoterSection" class="panel">
-            <h2>Search Voter</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Search for a voter by name or EPIC number and
+            <h2 data-translate="search_voter_title">Search Voter</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;" data-translate="search_voter_desc">Search for a
+              voter by name or EPIC number and
               print their slip</p>
 
             <div style="max-width: 600px;">
               <div style="margin-bottom: 1.5rem;">
-                <label for="searchVoterInput">Enter Voter Name or EPIC Number</label>
-                <input type="text" id="searchVoterInput" placeholder="Type name or EPIC number..."
-                  style="margin-top: 0.5rem;" />
+                <label for="searchVoterInput" data-translate="enter_search_query_label">Enter Voter Name or EPIC
+                  Number</label>
+                <input type="text" id="searchVoterInput" data-translate-placeholder="search_query_placeholder"
+                  placeholder="Type name or EPIC number..." style="margin-top: 0.5rem;" />
               </div>
 
               <div id="searchResults" style="margin-top: 1.5rem;"></div>
@@ -288,28 +311,32 @@
           </section>
 
           <section id="analyticsSection" class="panel">
-            <h2>Analytics</h2>
+            <h2 data-translate="analytics_title">Analytics</h2>
             <div class="role-toggle" style="margin-bottom: 1.5rem;">
-              <button class="role-button active" type="button" data-analytics-tab="boothNo">Booth Wise</button>
-              <button class="role-button" type="button" data-analytics-tab="caste">Caste Wise</button>
-              <button class="role-button" type="button" data-analytics-tab="gender">Gender Wise</button>
-              <button class="role-button" type="button" data-analytics-tab="district">District Wise</button>
+              <button class="role-button active" type="button" data-analytics-tab="boothNo"
+                data-translate="booth_wise">Booth Wise</button>
+              <button class="role-button" type="button" data-analytics-tab="caste" data-translate="caste_wise">Caste
+                Wise</button>
+              <button class="role-button" type="button" data-analytics-tab="gender" data-translate="gender_wise">Gender
+                Wise</button>
+              <button class="role-button" type="button" data-analytics-tab="district"
+                data-translate="district_wise">District Wise</button>
             </div>
             <div class="table-wrapper">
               <table>
                 <thead>
                   <tr>
-                    <th id="analyticsCategoryHeader">Category</th>
-                    <th>Total Voters</th>
-                    <th>Male</th>
-                    <th>Female</th>
-                    <th>Other</th>
-                    <th>Actions</th>
+                    <th id="analyticsCategoryHeader" data-translate="category_header">Category</th>
+                    <th data-translate="total_voters_header">Total Voters</th>
+                    <th data-translate="male_header">Male</th>
+                    <th data-translate="female_header">Female</th>
+                    <th data-translate="other_header">Other</th>
+                    <th data-translate="actions">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="analyticsBody">
                   <tr>
-                    <td colspan="6">Loading analytics...</td>
+                    <td colspan="6" data-translate="loading_analytics">Loading analytics...</td>
                   </tr>
                 </tbody>
               </table>
@@ -317,33 +344,44 @@
           </section>
 
           <section id="directorySection" class="panel">
-            <h2>Voter Directory</h2>
+            <h2 data-translate="voter_directory_title">Voter Directory</h2>
             <div class="import-toolbar"
               style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
               <div style="flex: 1; text-align: center;">
-                <p style="margin:0;color:var(--muted);font-size:0.9rem;">Filter voters by district, taluka, caste, or
-                  gender and export to Excel.</p>
+                <p style="margin:0;color:var(--muted);font-size:0.9rem;" data-translate="filter_voters_desc">Filter
+                  voters by district, taluka, caste,
+                  gender, or voter type and export to Excel.</p>
               </div>
               <button type="button" class="export-btn" id="exportVoterDirectory">
-                <i class="fas fa-file-excel"></i> Export Excel
+                <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
               </button>
             </div>
             <div class="filters">
-              <input type="text" id="searchText" placeholder="Search name / EPIC" />
+              <input type="text" id="searchText" data-translate-placeholder="search_placeholder"
+                placeholder="Search name / EPIC" />
               <select id="filterDistrict">
-                <option value="">All Districts</option>
+                <option value="" data-translate="all_districts">All Districts</option>
               </select>
               <select id="filterTaluka">
-                <option value="">All Talukas</option>
+                <option value="" data-translate="all_talukas">All Talukas</option>
+              </select>
+              <select id="filterBooth">
+                <option value="" data-translate="all_booths">All Booths</option>
               </select>
               <select id="filterCaste">
-                <option value="">All Castes</option>
+                <option value="" data-translate="all_castes">All Castes</option>
               </select>
               <select id="filterGender">
-                <option value="">All Genders</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Other">Other</option>
+                <option value="" data-translate="all_genders">All Genders</option>
+                <option value="Female" data-translate="female_header">Female</option>
+                <option value="Male" data-translate="male_header">Male</option>
+                <option value="Other" data-translate="other_header">Other</option>
+              </select>
+              <select id="filterVoterType">
+                <option value="" data-translate="all_types">All Types</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
               </select>
             </div>
             <div class="table-wrapper">
@@ -360,6 +398,7 @@
                     <th>Gender</th>
                     <th>Mobile</th>
                     <th>Address</th>
+                    <th>Type</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -373,43 +412,45 @@
           </section>
 
           <section id="staffDirectorySection" class="panel">
-            <h2>Raygaon Staff Directory</h2>
+            <h2 data-translate="staff_directory_title">Raygaon Staff Directory</h2>
             <div class="import-toolbar"
               style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
               <div style="flex: 1; text-align: center;">
-                <p style="margin:0;color:var(--muted);font-size:0.9rem;">Filter Raygaon staff by booth and caste, then
+                <p style="margin:0;color:var(--muted);font-size:0.9rem;" data-translate="filter_staff_desc">Filter
+                  Raygaon staff by booth and caste, then
                   export to Excel.</p>
               </div>
               <button type="button" class="export-btn" id="exportStaffDirectory">
-                <i class="fas fa-file-excel"></i> Export Excel
+                <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
               </button>
             </div>
             <div class="filters">
-              <input type="text" id="staffSearchText" placeholder="Search staff by name" />
+              <input type="text" id="staffSearchText" data-translate-placeholder="staff_search_placeholder"
+                placeholder="Search staff by name" />
               <select id="staffFilterBooth">
-                <option value="">All Booths</option>
+                <option value="" data-translate="all_booths">All Booths</option>
               </select>
               <select id="staffFilterCaste">
-                <option value="">All Castes</option>
+                <option value="" data-translate="all_castes">All Castes</option>
               </select>
             </div>
             <div class="table-wrapper">
               <table>
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Booth</th>
-                    <th>Caste</th>
-                    <th>Designation</th>
-                    <th>Workplace</th>
-                    <th>Mobile</th>
-                    <th>House Voters</th>
-                    <th>Actions</th>
+                    <th data-translate="name_col">Name</th>
+                    <th data-translate="booth">Booth</th>
+                    <th data-translate="caste">Caste</th>
+                    <th data-translate="staff_designation_label">Designation</th>
+                    <th data-translate="staff_workplace_label">Workplace</th>
+                    <th data-translate="mobile">Mobile</th>
+                    <th data-translate="house_voters_col">House Voters</th>
+                    <th data-translate="actions">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="staffDirectoryBody">
                   <tr>
-                    <td colspan="8">No staff records found.</td>
+                    <td colspan="8" data-translate="no_staff_found">No staff records found.</td>
                   </tr>
                 </tbody>
               </table>
@@ -417,16 +458,17 @@
           </section>
 
           <section id="userLoginsSection" class="panel">
-            <h2>User Logins</h2>
-            <p style="color:var(--text-muted); margin-bottom:1.5rem;">List of users who have logged in via Google.</p>
+            <h2 data-translate="user_logins_title">User Logins</h2>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;" data-translate="user_logins_desc">List of users
+              who have logged in via Google.</p>
             <div class="table-wrapper">
               <table>
                 <thead>
                   <tr>
-                    <th>User Name</th>
-                    <th>Email</th>
-                    <th>Last Login</th>
-                    <th>Status</th>
+                    <th data-translate="user_name_col">User Name</th>
+                    <th data-translate="email_col">Email</th>
+                    <th data-translate="last_login_col">Last Login</th>
+                    <th data-translate="status_col">Status</th>
                   </tr>
                 </thead>
                 <tbody id="userLoginsBody">
@@ -439,42 +481,47 @@
           </section>
 
           <section id="manageAdminSection" class="panel">
-            <h2>Manage Admin Logins</h2>
-            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Create new admin accounts that can access the
+            <h2 data-translate="manage_admin_title">Manage Admin Logins</h2>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;" data-translate="manage_admin_desc">Create new
+              admin accounts that can access the
               dashboard.</p>
 
             <form id="createAdminForm"
               style="background: rgba(30, 41, 59, 0.4); border: 1px solid var(--bg-card-border); padding: 1.5rem; border-radius: 1rem; margin-bottom: 2rem;">
               <div class="grid-two">
                 <div>
-                  <label for="newAdminName">Full Name</label>
-                  <input type="text" id="newAdminName" placeholder="Enter name" required />
+                  <label for="newAdminName" data-translate="full_name_label">Full Name</label>
+                  <input type="text" id="newAdminName" data-translate-placeholder="full_name_placeholder"
+                    placeholder="Enter name" required />
                 </div>
                 <div>
-                  <label for="newAdminEmail">Email Address</label>
-                  <input type="email" id="newAdminEmail" placeholder="Enter email" required />
+                  <label for="newAdminEmail" data-translate="email_address_label">Email Address</label>
+                  <input type="email" id="newAdminEmail" data-translate-placeholder="email_placeholder"
+                    placeholder="Enter email" required />
                 </div>
                 <div>
-                  <label for="newAdminPassword">Password</label>
-                  <input type="password" id="newAdminPassword" placeholder="Set password" required />
+                  <label for="newAdminPassword" data-translate="password_label">Password</label>
+                  <input type="password" id="newAdminPassword" data-translate-placeholder="password_placeholder"
+                    placeholder="Set password" required />
                 </div>
               </div>
-              <button class="primary" type="submit" style="margin-top: 1rem;">Create Admin Account</button>
+              <button class="primary" type="submit" style="margin-top: 1rem;" data-translate="create_admin_btn">Create
+                Admin Account</button>
             </form>
 
             <div class="table-wrapper">
               <table>
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
+                    <th data-translate="name">Name</th>
+                    <th data-translate="email_col">Email</th>
+                    <th data-translate="created_at_col">Created At</th>
+                    <th data-translate="actions">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="adminListBody">
                   <tr>
-                    <td colspan="4">Loading admins...</td>
+                    <td colspan="4" data-translate="loading">Loading admins...</td>
                   </tr>
                 </tbody>
               </table>
@@ -490,59 +537,68 @@
   <div class="modal" id="editVoterModal">
     <div class="modal-card">
       <header class="modal-header" style="align-items: center;">
-        <h3 style="margin:0;">Edit Voter Record</h3>
+        <h3 style="margin:0;" data-translate="edit_voter_title">Edit Voter Record</h3>
         <button class="modal-close" type="button" id="editModalClose">&times;</button>
       </header>
       <form id="editVoterForm">
         <div class="grid-two">
           <div>
-            <label for="editListNo">Voter List No.</label>
+            <label for="editListNo" data-translate="voter_list_no_label">Voter List No.</label>
             <input type="text" id="editListNo" required />
           </div>
           <div>
-            <label for="editBoothNo">Booth No.</label>
+            <label for="editBoothNo" data-translate="booth_no_label">Booth No.</label>
             <input type="text" id="editBoothNo" required />
           </div>
           <div>
-            <label for="editVoterName">Voter Name</label>
+            <label for="editVoterName" data-translate="voter_name_label">Voter Name</label>
             <input type="text" id="editVoterName" required />
           </div>
           <div>
-            <label for="editEpicNo">EPIC No.</label>
+            <label for="editEpicNo" data-translate="epic_no_label">EPIC No.</label>
             <input type="text" id="editEpicNo" required />
           </div>
           <div>
-            <label for="editMobileNo">Mobile No.</label>
+            <label for="editMobileNo" data-translate="mobile_no_label">Mobile No.</label>
             <input type="tel" id="editMobileNo" maxlength="10" />
           </div>
           <div>
-            <label for="editDistrict">District</label>
+            <label for="editDistrict" data-translate="district">District</label>
             <input type="text" id="editDistrict" required />
           </div>
           <div>
-            <label for="editTaluka">Taluka</label>
+            <label for="editTaluka" data-translate="taluka">Taluka</label>
             <input type="text" id="editTaluka" required />
           </div>
           <div>
-            <label for="editGender">Gender</label>
+            <label for="editGender" data-translate="gender">Gender</label>
             <input type="text" id="editGender" />
           </div>
           <div>
-            <label for="editCaste">Caste</label>
+            <label for="editVillage" data-translate="village_label">Village</label>
+            <input type="text" id="editVillage" />
+          </div>
+          <div>
+            <label for="editCaste" data-translate="caste">Caste</label>
             <input type="text" id="editCaste" />
           </div>
           <div>
-            <label for="editVillage">Village</label>
-            <input type="text" id="editVillage" />
+            <label for="editVoterType" data-translate="voter_type_label">Voter Type</label>
+            <select id="editVoterType" required>
+              <option value="" data-translate="select_type">Select Type</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+            </select>
           </div>
         </div>
         <div style="margin-top:1rem;">
-          <label for="editAddress">Address</label>
+          <label for="editAddress" data-translate="address_label">Address</label>
           <textarea id="editAddress" rows="3"></textarea>
         </div>
         <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.2rem;flex-wrap:wrap;">
-          <button type="button" class="ghost" id="editModalCancel">Cancel</button>
-          <button type="submit" class="primary">Save Changes</button>
+          <button type="button" class="ghost" id="editModalCancel" data-translate="cancel_btn">Cancel</button>
+          <button type="submit" class="primary" data-translate="save_changes_btn">Save Changes</button>
         </div>
       </form>
     </div>
@@ -558,12 +614,13 @@
             style="font-size: 0.9rem; color: var(--primary); font-weight: 600; text-transform: uppercase;"></span>
         </div>
         <!-- Center: Title -->
-        <h3 id="analyticsModalTitle" style="margin:0; font-family:'Syne',sans-serif; text-align:center;">Voter List</h3>
+        <h3 id="analyticsModalTitle" style="margin:0; font-family:'Syne',sans-serif; text-align:center;"
+          data-translate="voter_list_modal_title">Voter List</h3>
         <!-- Right: Actions -->
         <div style="display:flex; gap:1rem; align-items:center; justify-content: flex-end;">
           <button class="ghost" type="button" id="analyticsModalExport"
             style="padding: 0.5rem 1rem; font-size: 0.85rem;">
-            <i class="fas fa-file-excel"></i> Export
+            <i class="fas fa-file-excel"></i> <span data-translate="export">Export</span>
           </button>
           <button class="modal-close" type="button" id="analyticsModalClose" style="line-height:1;">&times;</button>
         </div>
@@ -600,37 +657,37 @@
       <form id="editStaffForm">
         <div class="grid-two">
           <div>
-            <label for="editStaffName">Name</label>
+            <label for="editStaffName" data-translate="name">Name</label>
             <input type="text" id="editStaffName" required />
           </div>
           <div>
-            <label for="editStaffBooth">Booth No.</label>
+            <label for="editStaffBooth" data-translate="booth_no_label">Booth No.</label>
             <input type="text" id="editStaffBooth" required />
           </div>
           <div>
-            <label for="editStaffCaste">Caste</label>
+            <label for="editStaffCaste" data-translate="caste">Caste</label>
             <input type="text" id="editStaffCaste" />
           </div>
           <div>
-            <label for="editStaffDesignation">Designation</label>
+            <label for="editStaffDesignation" data-translate="staff_designation_label">Designation</label>
             <input type="text" id="editStaffDesignation" required />
           </div>
           <div>
-            <label for="editStaffWorkplace">Workplace</label>
+            <label for="editStaffWorkplace" data-translate="staff_workplace_label">Workplace</label>
             <input type="text" id="editStaffWorkplace" required />
           </div>
           <div>
-            <label for="editStaffMobile">Mobile</label>
+            <label for="editStaffMobile" data-translate="mobile">Mobile</label>
             <input type="tel" id="editStaffMobile" maxlength="10" />
           </div>
           <div>
-            <label for="editStaffHouse">House Voters</label>
+            <label for="editStaffHouse" data-translate="house_voters_col">House Voters</label>
             <input type="number" id="editStaffHouse" min="0" />
           </div>
         </div>
         <div style="display:flex;justify-content:flex-end;gap:0.75rem;margin-top:1.2rem;flex-wrap:wrap;">
-          <button type="button" class="ghost" id="editStaffModalCancel">Cancel</button>
-          <button type="submit" class="primary">Save Changes</button>
+          <button type="button" class="ghost" id="editStaffModalCancel" data-translate="cancel_btn">Cancel</button>
+          <button type="submit" class="primary" data-translate="save_changes_btn">Save Changes</button>
         </div>
       </form>
     </div>
@@ -640,7 +697,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     // Firebase configuration (public client keys intentionally exposed per Firebase guidelines)
     const firebaseConfig = {
@@ -707,12 +764,12 @@
     };
 
     const casteOptions = ["Maratha", "General", "SC", "ST", "OBC", "VJNT", "NT", "SBC", "EWS", "Other"];
-    const voterCSVHeaders = ["boothNo", "listNo", "voterName", "epicNo", "mobileNo", "district", "taluka", "gender", "caste", "village", "address"];
+    const voterCSVHeaders = ["boothNo", "listNo", "voterName", "epicNo", "mobileNo", "district", "taluka", "gender", "voterType", "caste", "village", "address"];
     const staffCSVHeaders = ["name", "boothNo", "caste", "designation", "workplace", "mobile", "houseVoters"];
     const voterSampleData = [
       voterCSVHeaders,
-      ["2", "101", "Aarav Patil", "ABC1234567", "9876543210", "Pune", "Haveli", "Male", "OBC", "Raygaon", "House No. 10, Ward 3"],
-      ["3", "102", "Sneha Deshmukh", "XYZ7654321", "8765432109", "Nashik", "Sinnar", "Female", "General", "Raygaon", "Opp. Gram Panchayat"]
+      ["2", "101", "Aarav Patil", "ABC1234567", "9876543210", "Pune", "Haveli", "Male", "A", "OBC", "Raygaon", "House No. 10, Ward 3"],
+      ["3", "102", "Sneha Deshmukh", "XYZ7654321", "8765432109", "Nashik", "Sinnar", "Female", "B", "General", "Raygaon", "Opp. Gram Panchayat"]
     ];
     const staffSampleData = [
       staffCSVHeaders,
@@ -721,6 +778,7 @@
     ];
 
     const state = {
+      lang: localStorage.getItem("raygaon-lang") || "en",
       role: "guest",
       profile: null,
       voters: [],
@@ -728,6 +786,293 @@
       users: [],
       admins: []
     };
+
+    const dictionary = {
+      en: {
+        sign_out: "Sign Out",
+        nav_overview: "Overview",
+        nav_add_voter: "Add Voter",
+        nav_staff_info: "Staff Info",
+        nav_search: "Search Voter",
+        nav_analytics: "Analytics",
+        nav_directory: "Voter Directory",
+        nav_staff_directory: "Staff Directory",
+        nav_user_logins: "User Logins",
+        nav_manage_admin: "Manage Admin",
+        dash_overview: "Dashboard Overview",
+        total_voters: "Total Registered Voters",
+        female_voters: "Female Voters",
+        male_voters: "Male Voters",
+        staff_count: "Staff Records",
+        add_voter_desc: "Enter voter information for any Maharashtra district. Taluka options refresh based on the selected district.",
+        welcome: "Welcome",
+        booth: "Booth",
+        voters: "Voters",
+        actions: "Actions",
+        name: "Name",
+        epic: "EPIC",
+        district: "District",
+        taluka: "Taluka",
+        caste: "Caste",
+        gender: "Gender",
+        mobile: "Mobile",
+        address: "Address",
+        type: "Type",
+        list_no: "List No.",
+        edit: "Edit",
+        delete: "Delete",
+        print: "Print",
+        view: "View",
+        export: "Export",
+        booth_voters: "Booth {0} Voters",
+        voter_type_label: "Voter Type",
+        select_type: "Select Type",
+        address_label: "Address",
+        address_placeholder: "House / Street / Landmark",
+        save_voter_btn: "Save Voter",
+        staff_info_title: "Staff Information (Village: Raygaon)",
+        import_staff_data: "Import Staff Data",
+        download_sample_sheet_desc: "Download the sample sheet, fill it, and upload it back.",
+        staff_name_label: "Name of Staff",
+        staff_designation_label: "Designation",
+        staff_workplace_label: "Working College / Office",
+        staff_house_count_label: "Total Voters in House",
+        save_staff_record_btn: "Save Staff Record",
+        search_voter_title: "Search Voter",
+        search_voter_desc: "Search for a voter by name or EPIC number and print their slip",
+        enter_search_query_label: "Enter Voter Name or EPIC Number",
+        search_query_placeholder: "Type name or EPIC number...",
+        analytics_title: "Analytics",
+        booth_wise: "Booth Wise",
+        caste_wise: "Caste Wise",
+        gender_wise: "Gender Wise",
+        district_wise: "District Wise",
+        category_header: "Category",
+        total_voters_header: "Total Voters",
+        male_header: "Male",
+        female_header: "Female",
+        other_header: "Other",
+        loading_analytics: "Loading analytics...",
+        voter_directory_title: "Voter Directory",
+        export_excel_btn: "Export Excel",
+        filter_voters_desc: "Filter voters by district, taluka, caste, gender, or voter type and export to Excel.",
+        search_placeholder: "Search name / EPIC",
+        all_districts: "All Districts",
+        all_talukas: "All Talukas",
+        all_castes: "All Castes",
+        all_genders: "All Genders",
+        all_types: "All Types",
+        staff_directory_title: "Raygaon Staff Directory",
+        filter_staff_desc: "Filter Raygaon staff by booth and caste, then export to Excel.",
+        staff_search_placeholder: "Search staff by name",
+        all_booths: "All Booths",
+        name_col: "Name",
+        house_voters_col: "House Voters",
+        no_staff_found: "No staff records found.",
+        bulk_import_voters: "Bulk Import Voters",
+        bulk_import_desc: "Upload a CSV file to add multiple voters at once.",
+        download_sample_csv: "Download Sample CSV",
+        import_csv: "Import CSV",
+        headers_match_template: "Headers must match template.",
+        booth_no_label: "Booth No.",
+        select_booth: "Select booth",
+        voter_list_no_label: "Voter List No.",
+        voter_name_label: "Voter Name",
+        epic_no_label: "EPIC No.",
+        mobile_no_label: "Mobile No.",
+        district_label: "District (Maharashtra)",
+        taluka_label: "Taluka",
+        gender_label: "Gender",
+        select_gender: "Select gender",
+        village_label: "Village",
+        caste_label: "Caste",
+        edit_voter_title: "Edit Voter Record",
+        cancel_btn: "Cancel",
+        save_changes_btn: "Save Changes",
+        edit_staff_title: "Edit Staff Record",
+        email_col: "Email",
+        last_login_col: "Last Login",
+        status_col: "Status",
+        manage_admin_title: "Manage Admin Logins",
+        manage_admin_desc: "Create new admin accounts that can access the dashboard.",
+        full_name_label: "Full Name",
+        full_name_placeholder: "Enter name",
+        email_address_label: "Email Address",
+        email_placeholder: "Enter email",
+        password_label: "Password",
+        password_placeholder: "Set password",
+        create_admin_btn: "Create Admin Account",
+        created_at_col: "Created At",
+        loading: "Loading...",
+        user_logins_title: "User Logins",
+        user_logins_desc: "List of users who have logged in via Google.",
+        user_name_col: "User Name"
+      },
+      mr: {
+        sign_out: "साइन आउट",
+        nav_overview: "डॅशबोर्ड माहिती",
+        nav_add_voter: "मतदार जोडा",
+        nav_staff_info: "कर्मचारी माहिती",
+        nav_search: "मतदार शोधा",
+        nav_analytics: "माहिती विश्लेषण",
+        nav_directory: "मतदार यादी",
+        nav_staff_directory: "कर्मचारी यादी",
+        nav_user_logins: "वापरकर्ता लॉगिन",
+        nav_manage_admin: "ॲडमिन व्यवस्थापन",
+        dash_overview: "डॅशबोर्ड सारांश",
+        total_voters: "एकूण नोंदणीकृत मतदार",
+        female_voters: "महिला मतदार",
+        male_voters: "पुरुष मतदार",
+        staff_count: "एकूण कर्मचारी",
+        add_voter_desc: "महाराष्ट्र जिल्ह्यातील कोणत्याही मतदाराची माहिती भरा. जिल्हा निवडल्यानंतर तालुक्याचे पर्याय दिसतील.",
+        welcome: "स्वागत आहे",
+        booth: "बुथ",
+        voters: "मतदार",
+        actions: "क्रिया",
+        name: "नाव",
+        epic: "एपिक (EPIC) क्र.",
+        district: "जिल्हा",
+        taluka: "तालुका",
+        caste: "जात",
+        gender: "लिंग",
+        mobile: "मोबाईल",
+        address: "पत्ता",
+        type: "प्रकार",
+        list_no: "यादी क्र.",
+        edit: "सुधारा",
+        delete: "काढून टाका",
+        print: "प्रिंट करा",
+        view: "पहा",
+        export: "एक्सपोर्ट",
+        booth_voters: "बुथ {0} मतदार",
+        voter_type_label: "मतदार प्रकार",
+        select_type: "प्रकार निवडा",
+        address_label: "पत्ता",
+        address_placeholder: "घर क्रमांक / गल्ली / खूण",
+        save_voter_btn: "मतदार जतन करा",
+        staff_info_title: "कर्मचारी माहिती (गाव: रायगाव)",
+        import_staff_data: "कर्मचारी डेटा इंपोर्ट करा",
+        download_sample_sheet_desc: "नमुना शीट डाउनलोड करा, भरा आणि पुन्हा अपलोड करा.",
+        staff_name_label: "कर्मचाऱ्याचे नाव",
+        staff_designation_label: "पद / हुद्दा",
+        staff_workplace_label: "कार्यरत कार्यालय / महाविद्यालय",
+        staff_house_count_label: "घरातील एकूण मतदार",
+        save_staff_record_btn: "कर्मचारी माहिती जतन करा",
+        search_voter_title: "मतदार शोधा",
+        search_voter_desc: "नाव किंवा एपिक क्रमांकाने मतदार शोधा आणि स्लिप प्रिंट करा",
+        enter_search_query_label: "मतदाराचे नाव किंवा एपिक क्र. टाका",
+        search_query_placeholder: "नाव किंवा एपिक क्र. टाईप करा...",
+        analytics_title: "माहिती विश्लेषण",
+        booth_wise: "बुथ नुुसार",
+        caste_wise: "जात नुसार",
+        gender_wise: "लिंग नुसार",
+        district_wise: "जिल्हा नुसार",
+        category_header: "वर्गवारी",
+        total_voters_header: "एकूण मतदार",
+        male_header: "पुरुष",
+        female_header: "महिला",
+        other_header: "इतर",
+        loading_analytics: "माहिती लोड होत आहे...",
+        voter_directory_title: "मतदार यादी",
+        export_excel_btn: "Excel एक्सपोर्ट",
+        filter_voters_desc: "जिल्हा, तालुका, जात, लिंग किंवा मतदार प्रकारानुसार फिल्टर करा आणि Excel मध्ये काढा.",
+        search_placeholder: "नाव / एपिक शोधा",
+        all_districts: "सर्व जिल्हे",
+        all_talukas: "सर्व तालुके",
+        all_castes: "सर्व जाती",
+        all_genders: "सर्व लिंग",
+        all_types: "सर्व प्रकार",
+        staff_directory_title: "रायगाव कर्मचारी यादी",
+        filter_staff_desc: "बुथ आणि जातीनुसार रायगाव कर्मचारी फिल्टर करा आणि Excel मध्ये काढा.",
+        staff_search_placeholder: "नावाने कर्मचारी शोधा",
+        all_booths: "सर्व बुथ",
+        name_col: "नाव",
+        house_voters_col: "घरातील मतदार",
+        no_staff_found: "कर्मचारी रेकॉर्ड सापडले नाहीत.",
+        bulk_import_voters: "मोठ्या प्रमाणात मतदार इंपोर्ट करा",
+        bulk_import_desc: "अनेक मतदार एकाच वेळी जोडण्यासाठी CSV फाईल अपलोड करा.",
+        download_sample_csv: "नमुना CSV डाउनलोड करा",
+        import_csv: "CSV इंपोर्ट करा",
+        headers_match_template: "हेडर्स टेम्प्लेटशी जुळले पाहिजेत.",
+        booth_no_label: "बुथ क्रमांक",
+        select_booth: "बुथ निवडा",
+        voter_list_no_label: "मतदार यादी क्रमांक",
+        voter_name_label: "मतदाराचे नाव",
+        epic_no_label: "एपिक (EPIC) क्रमांक",
+        mobile_no_label: "मोबाईल क्रमांक",
+        district_label: "जिल्हा (महाराष्ट्र)",
+        taluka_label: "तालुका",
+        gender_label: "लिंग",
+        select_gender: "लिंग निवडा",
+        village_label: "गाव",
+        caste_label: "जात",
+        edit_voter_title: "मतदार माहिती सुधारा",
+        cancel_btn: "रद्द करा",
+        save_changes_btn: "बदल जतन करा",
+        edit_staff_title: "कर्मचारी माहिती सुधारा",
+        voter_list_modal_title: "मतदार यादी",
+        email_col: "ईमेल",
+        last_login_col: "शेवटचे लॉगिन",
+        status_col: "स्थिती",
+        manage_admin_title: "ॲडमिन लॉगिन व्यवस्थापन",
+        manage_admin_desc: "डॅशबोर्डवर प्रवेश करण्यासाठी नवीन ॲडमिन खाती तयार करा.",
+        full_name_label: "पूर्ण नाव",
+        full_name_placeholder: "नाव टाका",
+        email_address_label: "ईमेल पत्ता",
+        email_placeholder: "ईमेल टाका",
+        password_label: "पासवर्ड",
+        password_placeholder: "पासवर्ड निवडा",
+        create_admin_btn: "ॲडमिन खाते तयार करा",
+        created_at_col: "तयार केल्याची वेळ",
+        loading: "लोड होत आहे...",
+        user_logins_title: "वापरकर्ता लॉगिन",
+        user_logins_desc: "गुगलद्वारे लॉगिन केलेल्या वापरकर्त्यांची यादी.",
+        user_name_col: "वापरकर्त्याचे नाव"
+      }
+    };
+
+    function applyTranslations() {
+      const lang = state.lang;
+      // Text content translations
+      document.querySelectorAll("[data-translate]").forEach(el => {
+        const key = el.getAttribute("data-translate");
+        if (dictionary[lang][key]) {
+          // If it has FontAwesome icon, preserve it
+          const icon = el.querySelector("i");
+          if (icon) {
+            const iconClone = icon.cloneNode(true);
+            el.textContent = " " + dictionary[lang][key];
+            el.prepend(iconClone);
+          } else {
+            el.textContent = dictionary[lang][key];
+          }
+        }
+      });
+
+      // Placeholder translations
+      document.querySelectorAll("[data-translate-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-translate-placeholder");
+        if (dictionary[lang][key]) {
+          el.setAttribute("placeholder", dictionary[lang][key]);
+        }
+      });
+
+      const name = state.profile?.displayName || (state.role === "admin" ? "Adhikrao Ghadage" : (state.lang === "mr" ? "वापरकर्ता" : "User"));
+      refs.welcomeText.textContent = `${dictionary[state.lang].welcome}, ${name}!`;
+    }
+
+    document.getElementById("langSelect").addEventListener("change", (e) => {
+      state.lang = e.target.value;
+      localStorage.setItem("raygaon-lang", state.lang);
+      applyTranslations();
+      renderVoterTable();
+      renderStaffDirectory();
+      renderAnalytics();
+      updateOverview();
+    });
+
+    // Set initial value
+    document.getElementById("langSelect").value = state.lang;
 
     const refs = {
       authSection: document.getElementById("authSection"),
@@ -741,8 +1086,10 @@
       voterTableBody: document.getElementById("voterTableBody"),
       filterDistrict: document.getElementById("filterDistrict"),
       filterTaluka: document.getElementById("filterTaluka"),
+      filterBooth: document.getElementById("filterBooth"),
       filterCaste: document.getElementById("filterCaste"),
       filterGender: document.getElementById("filterGender"),
+      filterVoterType: document.getElementById("filterVoterType"),
       searchText: document.getElementById("searchText"),
       exportVoterDirectory: document.getElementById("exportVoterDirectory"),
       toast: document.getElementById("toast"),
@@ -763,6 +1110,7 @@
         district: document.getElementById("editDistrict"),
         taluka: document.getElementById("editTaluka"),
         gender: document.getElementById("editGender"),
+        voterType: document.getElementById("editVoterType"),
         caste: document.getElementById("editCaste"),
         village: document.getElementById("editVillage"),
         address: document.getElementById("editAddress")
@@ -846,7 +1194,7 @@
       renderVoterTable();
     });
 
-    [refs.filterTaluka, refs.filterCaste, refs.filterGender, refs.searchText].forEach(el => {
+    [refs.filterTaluka, refs.filterCaste, refs.filterGender, refs.filterVoterType, refs.filterBooth, refs.searchText].forEach(el => {
       el.addEventListener("input", renderVoterTable);
       el.addEventListener("change", renderVoterTable);
     });
@@ -854,7 +1202,7 @@
     function showToast(message, variant = "success") {
       refs.toast.textContent = message;
       refs.toast.className = `toast show ${variant}`;
-      setTimeout(() => refs.toast.className = "toast", 3200);
+      setTimeout(() => refs.toast.className = "toast", 2000);
     }
 
     function setRole(role, profile) {
@@ -871,8 +1219,9 @@
         refs.statusBadge.style.background = role === "admin" ? "rgba(52, 211, 153, 0.1)" : "var(--accent-soft)";
         refs.statusBadge.style.color = role === "admin" ? "var(--success)" : "var(--accent)";
       }
-      const name = profile?.displayName || (role === "admin" ? "Adhikrao Ghadage" : "User");
-      refs.welcomeText.textContent = `Welcome, ${name}!`;
+      const name = profile?.displayName || (role === "admin" ? "Adhikrao Ghadage" : (state.lang === "mr" ? "वापरकर्ता" : "User"));
+      refs.welcomeText.textContent = `${dictionary[state.lang].welcome}, ${name}!`;
+      applyTranslations();
       toggleAdminSections(role === "admin");
       renderVoterTable();
       renderStaffDirectory();
@@ -939,6 +1288,7 @@
       if (staffSection) staffSection.style.opacity = isAdmin ? "1" : "0.4";
     }
 
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
     refs.navButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         if (btn.dataset.requiresAdmin === "true" && state.role !== "admin") {
@@ -950,7 +1300,22 @@
         refs.panels.forEach(panel => panel.classList.remove("active"));
         const target = document.getElementById(btn.dataset.target);
         if (target) target.classList.add("active");
+
+        // Auto-hide sidebar on selection
+        sidebar.classList.remove("open");
+        sidebarOverlay.classList.remove("visible");
       });
+    });
+
+    // Auth Handlers - Check for Redirect Result on Load
+    getRedirectResult(auth).then((result) => {
+      if (result) {
+        setRole("user", result.user);
+        const name = result.user.displayName || 'User';
+        showToast(`Welcome ${name} to User Dashboard!`, "success");
+      }
+    }).catch((error) => {
+      console.error("Redirect Login Error:", error);
     });
 
     document.getElementById("adminLoginForm").addEventListener("submit", (e) => {
@@ -962,7 +1327,7 @@
       if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
         refs.adminStatus.textContent = "";
         setRole("admin", { displayName: ADMIN_CREDENTIALS.displayName, email });
-        showToast("Admin login successful", "success");
+        showToast(`Welcome ${ADMIN_CREDENTIALS.displayName} to Admin Dashboard!`, "success");
         return;
       }
 
@@ -971,21 +1336,35 @@
       if (foundAdmin) {
         refs.adminStatus.textContent = "";
         setRole("admin", { displayName: foundAdmin.name, email });
-        showToast("Admin login successful", "success");
+        showToast(`Welcome ${foundAdmin.name} to Admin Dashboard!`, "success");
       } else {
         refs.adminStatus.textContent = "Incorrect credentials";
         showToast("Login failed", "error");
       }
     });
 
-    document.getElementById("googleSignIn").addEventListener("click", async () => {
+    const googleBtn = document.getElementById("googleSignIn");
+    googleBtn.addEventListener("click", async () => {
       try {
-        const result = await signInWithPopup(auth, provider);
-        setRole("user", result.user);
-        showToast("Google login successful", "success");
+        googleBtn.disabled = true;
+        // Try Popup First
+        await signInWithPopup(auth, provider).then(result => {
+          setRole("user", result.user);
+          const name = result.user.displayName || 'User';
+          showToast(`Welcome ${name} to User Dashboard!`, "success");
+        }).catch(err => {
+          // If Popup is blocked or fails due to COOP, try Redirect
+          if (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request" || err.message.includes("Cross-Origin-Opener-Policy")) {
+            console.log("Switching to Redirect mode...");
+            return signInWithRedirect(auth, provider);
+          }
+          throw err;
+        });
       } catch (error) {
-        console.error(error);
-        showToast("Google sign-in failed", "error");
+        console.error("Login Error:", error);
+        showToast(state.lang === 'mr' ? "गुगल साइन-इन अयशस्वी झाले" : "Google sign-in failed", "error");
+      } finally {
+        googleBtn.disabled = false;
       }
     });
 
@@ -1008,7 +1387,8 @@
 
     document.getElementById("voterForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (state.role !== "admin") return showToast("Admin access required", "error");
+      const lang = state.lang;
+      if (state.role !== "admin") return showToast(lang === 'mr' ? "ॲडमिन प्रवेश आवश्यक आहे" : "Admin access required", "error");
       const payload = {
         boothNo: document.getElementById("boothNo").value,
         listNo: document.getElementById("listNo").value.trim(),
@@ -1018,6 +1398,7 @@
         district: document.getElementById("districtSelect").value,
         taluka: document.getElementById("talukaSelect").value,
         gender: document.getElementById("genderSelect").value,
+        voterType: document.getElementById("voterType").value,
         caste: document.getElementById("casteSelect").value,
         village: document.getElementById("villageName").value.trim(),
         address: document.getElementById("address").value.trim(),
@@ -1027,16 +1408,17 @@
         await push(ref(db, "voters"), payload);
         (e.target).reset();
         setTalukas(document.getElementById("talukaSelect"), "");
-        showToast("Voter saved", "success");
+        showToast(lang === 'mr' ? "मतदार जतन केला" : "Voter saved", "success");
       } catch (error) {
         console.error(error);
-        showToast("Failed to save voter", "error");
+        showToast(lang === 'mr' ? "मतदार जतन करण्यात अयशस्वी" : "Failed to save voter", "error");
       }
     });
 
     document.getElementById("staffForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (state.role !== "admin") return showToast("Admin access required", "error");
+      const lang = state.lang;
+      if (state.role !== "admin") return showToast(lang === 'mr' ? "ॲडमिन प्रवेश आवश्यक आहे" : "Admin access required", "error");
       const payload = {
         village: "Raygaon",
         name: document.getElementById("staffName").value.trim(),
@@ -1051,10 +1433,10 @@
       try {
         await push(ref(db, "staff"), payload);
         (e.target).reset();
-        showToast("Staff saved", "success");
+        showToast(lang === 'mr' ? "कर्मचारी माहिती जतन केली" : "Staff saved", "success");
       } catch (error) {
         console.error(error);
-        showToast("Failed to save staff record", "error");
+        showToast(lang === 'mr' ? "कर्मचारी माहिती जतन करण्यात अयशस्वी" : "Failed to save staff record", "error");
       }
     });
 
@@ -1111,6 +1493,7 @@
       f.district.value = voter.district || "";
       f.taluka.value = voter.taluka || "";
       f.gender.value = voter.gender || "";
+      f.voterType.value = voter.voterType || "";
       f.caste.value = voter.caste || "";
       f.village.value = voter.village || "";
       f.address.value = voter.address || "";
@@ -1147,6 +1530,7 @@
         district: refs.editFields.district.value.trim(),
         taluka: refs.editFields.taluka.value.trim(),
         gender: refs.editFields.gender.value.trim(),
+        voterType: refs.editFields.voterType.value,
         caste: refs.editFields.caste.value.trim(),
         village: refs.editFields.village.value.trim(),
         address: refs.editFields.address.value.trim()
@@ -1171,6 +1555,10 @@
       event.target.value = "";
     });
 
+    refs.filterCaste.addEventListener("change", renderVoterTable);
+    refs.filterGender.addEventListener("change", renderVoterTable);
+    refs.filterVoterType.addEventListener("change", renderVoterTable);
+    refs.searchText.addEventListener("input", renderVoterTable);
     refs.staffFilterBooth.addEventListener("change", renderStaffDirectory);
     refs.staffFilterCaste.addEventListener("change", renderStaffDirectory);
     refs.staffSearchText.addEventListener("input", renderStaffDirectory);
@@ -1262,16 +1650,17 @@
       const tbody = document.getElementById("analyticsBody");
       if (!tbody) return;
 
+      const lang = state.lang;
       const headerMap = {
-        "boothNo": "Booth Number",
-        "caste": "Caste Category",
-        "gender": "Gender",
-        "district": "District"
+        "boothNo": lang === "mr" ? "बुथ क्रमांक" : "Booth Number",
+        "caste": lang === "mr" ? "जात वर्गवारी" : "Caste Category",
+        "gender": lang === "mr" ? "लिंग" : "Gender",
+        "district": lang === "mr" ? "जिल्हा" : "District"
       };
       document.getElementById("analyticsCategoryHeader").textContent = headerMap[currentAnalyticsTab];
 
       if (!state.voters.length) {
-        tbody.innerHTML = "<tr><td colspan='6'>No voter data yet.</td></tr>";
+        tbody.innerHTML = `<tr><td colspan='6'>${dictionary[lang].loading_analytics}</td></tr>`;
         return;
       }
 
@@ -1286,8 +1675,9 @@
         }
         const bucket = map.get(key);
         bucket.total += 1;
-        if (voter.gender === "Male") bucket.male += 1;
-        else if (voter.gender === "Female") bucket.female += 1;
+        const g = (voter.gender || "").toLowerCase();
+        if (g === "male") bucket.male += 1;
+        else if (g === "female") bucket.female += 1;
         else bucket.other += 1;
         bucket.voters.push(voter);
       });
@@ -1452,6 +1842,7 @@
         v.taluka || "",
         v.caste || "",
         v.gender || "",
+        v.voterType || "",
         v.mobileNo || "",
         v.address || ""
       ]);
@@ -1678,14 +2069,15 @@
 
     async function handleCSVImport(file, type) {
       if (!file) return;
+      const lang = state.lang;
       if (state.role !== "admin") {
-        showToast("Admin access required", "error");
+        showToast(lang === 'mr' ? "ॲडमिन प्रवेश आवश्यक आहे" : "Admin access required", "error");
         return;
       }
       const reader = new FileReader();
 
       // Feedback to user that import has started
-      showToast("Importing data... Please wait (Import chalu ahe)", "info");
+      showToast(lang === 'mr' ? "डेटा इंपोर्ट होत आहे... कृपया थांबा" : "Importing data... Please wait", "info");
 
       reader.onload = async ({ target }) => {
         try {
@@ -1723,6 +2115,7 @@
           district: row.district || "",
           taluka: row.taluka || "",
           gender: row.gender || "",
+          voterType: row.voterType || "",
           caste: row.caste || "",
           village: row.village || "",
           address: row.address || "",
@@ -1786,15 +2179,54 @@
       document.getElementById("femaleVoters").textContent = female;
       document.getElementById("maleVoters").textContent = male;
       document.getElementById("staffCount").textContent = state.staff.length;
+
+      // Booth-wise Summary
+      const boothMap = {};
+      state.voters.forEach(v => {
+        const b = v.boothNo || "Unspecified";
+        if (!boothMap[b]) boothMap[b] = 0;
+        boothMap[b]++;
+      });
+
+      const boothGrid = document.getElementById("boothStatsGrid");
+      if (boothGrid) {
+        if (Object.keys(boothMap).length === 0) {
+          boothGrid.innerHTML = "";
+        } else {
+          boothGrid.innerHTML = Object.entries(boothMap)
+            .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
+            .map(([booth, count]) => {
+              const label = state.lang === "mr" ? `बुथ ${booth} मतदार` : `Booth ${booth} Voters`;
+              return `
+              <div class="stat-card">
+                <h3>${label}</h3>
+                <p>${count}</p>
+              </div>
+            `}).join("");
+        }
+      }
+
       populateStaffFilters();
+      populateVoterFilters();
       renderStaffDirectory();
     }
 
     function populateStaffFilters() {
-      const booths = Array.from(new Set(state.staff.map(s => s.boothNo).filter(Boolean))).sort();
+      const booths = Array.from(new Set(state.staff.map(s => s.boothNo).filter(Boolean))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
       const castes = Array.from(new Set(state.staff.map(s => s.caste).filter(Boolean))).sort();
-      refs.staffFilterBooth.innerHTML = "<option value=''>All Booths</option>" + booths.map(booth => `<option value="${booth}">${booth}</option>`).join("");
-      refs.staffFilterCaste.innerHTML = "<option value=''>All Castes</option>" + castes.map(caste => `<option value="${caste}">${caste}</option>`).join("");
+      refs.staffFilterBooth.innerHTML = `<option value="">${state.lang === 'mr' ? 'सर्व बुथ' : 'All Booths'}</option>` + booths.map(booth => `<option value="${booth}">${booth}</option>`).join("");
+      refs.staffFilterCaste.innerHTML = `<option value="">${state.lang === 'mr' ? 'सर्व जाती' : 'All Castes'}</option>` + castes.map(caste => `<option value="${caste}">${caste}</option>`).join("");
+    }
+
+    function populateVoterFilters() {
+      const booths = Array.from(new Set(state.voters.map(v => v.boothNo).filter(Boolean))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      const currentBooth = refs.filterBooth?.value || "";
+      if (refs.filterBooth) {
+        refs.filterBooth.innerHTML = `<option value="">${state.lang === 'mr' ? 'सर्व बुथ' : 'All Booths'}</option>` + booths.map(booth => `<option value="${booth}">${booth}</option>`).join("");
+        if (currentBooth && booths.includes(currentBooth)) {
+          refs.filterBooth.value = currentBooth;
+        }
+      }
     }
 
     function getFilteredStaff() {
@@ -1993,19 +2425,22 @@
       }
 
       const title = `Raygaon Voter Directory Exported: ${new Date().toLocaleDateString()}`;
-      const headers = ["List No", "Name", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
-      const rows = filtered.map(v => [
-        v.listNo || "",
-        v.voterName || "",
-        v.epicNo || "",
-        v.boothNo || "",
-        v.district || "",
-        v.taluka || "",
-        v.caste || "",
-        v.gender || "",
-        v.mobileNo || "",
-        v.address || ""
-      ]);
+      const headers = ["List No", "Name", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type"];
+      const rows = filtered
+        .sort((a, b) => Number(a.listNo || 0) - Number(b.listNo || 0))
+        .map(v => [
+          v.listNo || "",
+          v.voterName || "",
+          v.epicNo || "",
+          v.boothNo || "",
+          v.district || "",
+          v.taluka || "",
+          v.caste || "",
+          v.gender || "",
+          v.mobileNo || "",
+          v.address || "",
+          v.voterType || ""
+        ]);
 
       const csvContent = [
         title,
@@ -2025,47 +2460,52 @@
     function passesFilters(voter) {
       const { value: district } = refs.filterDistrict;
       const { value: taluka } = refs.filterTaluka;
+      const { value: booth } = refs.filterBooth;
       const { value: caste } = refs.filterCaste;
       const { value: gender } = refs.filterGender;
+      const { value: type } = refs.filterVoterType;
       const query = refs.searchText.value.trim().toLowerCase();
 
       const vDistrict = (voter.district || "").toLowerCase();
       const vTaluka = (voter.taluka || "").toLowerCase();
+      const vBooth = (voter.boothNo || "").toLowerCase();
       const vCaste = (voter.caste || "").toLowerCase();
       const vGender = (voter.gender || "").toLowerCase();
 
       if (district && vDistrict !== district.toLowerCase()) return false;
       if (taluka && vTaluka !== taluka.toLowerCase()) return false;
+      if (booth && vBooth !== booth.toLowerCase()) return false;
       if (caste && vCaste !== caste.toLowerCase()) return false;
       if (gender && vGender !== gender.toLowerCase()) return false;
+      if (type && voter.voterType !== type) return false;
       if (query && !(`${voter.voterName}`.toLowerCase().includes(query) || `${voter.epicNo}`.toLowerCase().includes(query))) return false;
       return true;
     }
 
     function renderVoterTable() {
       console.log("Rendering voter table. User role:", state.role);
+      const lang = state.lang;
       if (!state.voters.length) {
-        refs.voterTableBody.innerHTML = "<tr><td colspan='11'>No voter records yet.</td></tr>";
+        refs.voterTableBody.innerHTML = `<tr><td colspan='12'>${lang === 'mr' ? 'अद्याप मतदारांची नोंद नाही.' : 'No voter records yet.'}</td></tr>`;
         return;
       }
       const filtered = state.voters.filter(passesFilters);
       if (!filtered.length) {
-        refs.voterTableBody.innerHTML = "<tr><td colspan='11'>No data matches the current filters.</td></tr>";
+        refs.voterTableBody.innerHTML = `<tr><td colspan='12'>${lang === 'mr' ? 'फिल्टरनुसार माहिती सापडली नाही.' : 'No data matches the current filters.'}</td></tr>`;
         return;
       }
       const rows = filtered
-        .sort((a, b) => b.createdAt - a.createdAt)
+        .sort((a, b) => Number(a.listNo || 0) - Number(b.listNo || 0))
         .map(v => {
           const actions = state.role === "admin"
             ? `<div class="table-actions">
-                <button class="action-btn edit" data-action="edit" data-id="${v.id}">Edit</button>
-                <button class="action-btn delete" data-action="delete" data-id="${v.id}">Delete</button>
-                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> Print</button>
+                <button class="action-btn edit" data-action="edit" data-id="${v.id}">${dictionary[lang].edit}</button>
+                <button class="action-btn delete" data-action="delete" data-id="${v.id}">${dictionary[lang].delete}</button>
+                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> ${dictionary[lang].print}</button>
               </div>`
             : `<div class="table-actions">
-                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> Print</button>
+                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> ${dictionary[lang].print}</button>
               </div>`;
-          console.log("Actions for voter", v.voterName, ":", actions.substring(0, 50));
           return `
           <tr>
             <td>${v.listNo}</td>
@@ -2078,10 +2518,18 @@
             <td>${v.gender}</td>
             <td>${v.mobileNo}</td>
             <td>${v.address || ""}</td>
+            <td>${v.voterType || "-"}</td>
             <td>${actions}</td>
           </tr>`;
         }).join("");
       refs.voterTableBody.innerHTML = rows;
+
+      // Update Table Headers based on language
+      const headers = refs.voterTableBody.closest("table").querySelectorAll("thead th");
+      const labels = lang === "mr"
+        ? ["यादी क्र.", "नाव", "EPIC", "बुथ", "जिल्हा", "तालुका", "जात", "लिंग", "मोबाईल", "पत्ता", "प्रकार", "क्रिया"]
+        : ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type", "Actions"];
+      headers.forEach((th, i) => { if (labels[i]) th.textContent = labels[i]; });
       console.log("Voter table rendered with", filtered.length, "rows");
     }
 
@@ -2156,15 +2604,21 @@
       mobileMenuBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         sidebar.classList.toggle("open");
+        sidebarOverlay.classList.toggle("visible");
       });
 
-      // Close sidebar when clicking outside
+      sidebarOverlay.addEventListener("click", () => {
+        sidebar.classList.remove("open");
+        sidebarOverlay.classList.remove("visible");
+      });
+
+      // Close sidebar when clicking outside using existing logic
       document.addEventListener("click", (e) => {
-        if (window.innerWidth <= 900 &&
-          sidebar.classList.contains("open") &&
+        if (sidebar.classList.contains("open") &&
           !sidebar.contains(e.target) &&
           e.target !== mobileMenuBtn) {
           sidebar.classList.remove("open");
+          sidebarOverlay.classList.remove("visible");
         }
       });
     }
