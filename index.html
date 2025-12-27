@@ -86,23 +86,23 @@
             <button class="nav-button active" data-target="overviewSection">
               <i class="fas fa-tachometer-alt"></i> <span data-translate="nav_overview">Overview</span>
             </button>
-            <button class="nav-button" data-target="addVoterSection" data-requires-admin="true">
-              <i class="fas fa-user-plus"></i> <span data-translate="nav_add_voter">Add Voter</span>
-            </button>
-            <button class="nav-button" data-target="staffSection" data-requires-admin="true">
-              <i class="fas fa-chalkboard-teacher"></i> <span data-translate="nav_staff_info">Staff Info</span>
-            </button>
             <button class="nav-button" data-target="searchVoterSection">
               <i class="fas fa-search"></i> <span data-translate="nav_search">Search Voter</span>
             </button>
-            <button class="nav-button" data-target="analyticsSection">
-              <i class="fas fa-chart-pie"></i> <span data-translate="nav_analytics">Analytics</span>
+            <button class="nav-button" data-target="addVoterSection" data-requires-admin="true">
+              <i class="fas fa-user-plus"></i> <span data-translate="nav_add_voter">Add Voter</span>
             </button>
             <button class="nav-button" data-target="directorySection">
               <i class="fas fa-address-book"></i> <span data-translate="nav_directory">Voter Directory</span>
             </button>
+            <button class="nav-button" data-target="staffSection" data-requires-admin="true">
+              <i class="fas fa-chalkboard-teacher"></i> <span data-translate="nav_staff_info">Staff Info</span>
+            </button>
             <button class="nav-button" data-target="staffDirectorySection">
               <i class="fas fa-users"></i> <span data-translate="nav_staff_directory">Staff Directory</span>
+            </button>
+            <button class="nav-button" data-target="analyticsSection">
+              <i class="fas fa-chart-pie"></i> <span data-translate="nav_analytics">Analytics</span>
             </button>
             <button class="nav-button" data-target="userLoginsSection" data-requires-admin="true">
               <i class="fas fa-user-shield"></i> <span data-translate="nav_user_logins">User Logins</span>
@@ -162,6 +162,13 @@
                 </label>
                 <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> <span
                     data-translate="headers_match_template">Headers must match template.</span></small>
+              </div>
+              <div class="import-progress-container" id="voterProgressContainer">
+                <div class="import-progress-bar" id="voterProgressBar"></div>
+              </div>
+              <div class="import-stats" id="voterImportStats">
+                <span id="voterProgressPercent">0%</span>
+                <span id="voterProgressCount">0 / 0</span>
               </div>
             </div>
             <form id="voterForm">
@@ -252,6 +259,13 @@
                 <small style="color: var(--text-muted);"><i class="fas fa-info-circle"></i> <span
                     data-translate="headers_match_template">Headers must match template.</span></small>
               </div>
+              <div class="import-progress-container" id="staffProgressContainer">
+                <div class="import-progress-bar" id="staffProgressBar"></div>
+              </div>
+              <div class="import-stats" id="staffImportStats">
+                <span id="staffProgressPercent">0%</span>
+                <span id="staffProgressCount">0 / 0</span>
+              </div>
             </div>
             <form id="staffForm">
               <div class="grid-two">
@@ -292,21 +306,21 @@
             </form>
           </section>
 
-          <section id="searchVoterSection" class="panel">
+          <section id="searchVoterSection" class="panel" style="text-align: center;">
             <h2 data-translate="search_voter_title">Search Voter</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;" data-translate="search_voter_desc">Search for a
+            <p style="color: var(--text-muted); margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;"
+              data-translate="search_voter_desc">Search for a
               voter by name or EPIC number and
               print their slip</p>
 
-            <div style="max-width: 600px;">
-              <div style="margin-bottom: 1.5rem;">
-                <label for="searchVoterInput" data-translate="enter_search_query_label">Enter Voter Name or EPIC
-                  Number</label>
+            <div class="search-container">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
                 <input type="text" id="searchVoterInput" data-translate-placeholder="search_query_placeholder"
-                  placeholder="Type name or EPIC number..." style="margin-top: 0.5rem;" />
+                  placeholder="Type name or EPIC number..." autocomplete="off" />
               </div>
 
-              <div id="searchResults" style="margin-top: 1.5rem;"></div>
+              <div id="searchResults"></div>
             </div>
           </section>
 
@@ -1097,6 +1111,20 @@
       staffImportInput: document.getElementById("importStaffCSV"),
       voterSampleBtn: document.getElementById("downloadVoterSample"),
       staffSampleBtn: document.getElementById("downloadStaffSample"),
+      voterProgress: {
+        container: document.getElementById("voterProgressContainer"),
+        bar: document.getElementById("voterProgressBar"),
+        stats: document.getElementById("voterImportStats"),
+        percent: document.getElementById("voterProgressPercent"),
+        count: document.getElementById("voterProgressCount")
+      },
+      staffProgress: {
+        container: document.getElementById("staffProgressContainer"),
+        bar: document.getElementById("staffProgressBar"),
+        stats: document.getElementById("staffImportStats"),
+        percent: document.getElementById("staffProgressPercent"),
+        count: document.getElementById("staffProgressCount")
+      },
       editModal: document.getElementById("editVoterModal"),
       editModalClose: document.getElementById("editModalClose"),
       editModalCancel: document.getElementById("editModalCancel"),
@@ -1978,35 +2006,40 @@
 
         if (matches.length === 0) {
           searchResults.innerHTML = `
-            <div style="padding: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 0.75rem; color: var(--text);">
-              <i class="fas fa-exclamation-circle"></i> No voters found matching "${e.target.value}"
+            <div class="no-results">
+              <i class="fas fa-search-minus"></i>
+              <p>No voters found matching "${e.target.value}"</p>
             </div>
           `;
           return;
         }
 
         searchResults.innerHTML = `
-          <div style="margin-bottom: 0.75rem; color: var(--text-muted);">
+          <div class="results-count">
             Found ${matches.length} voter(s)
           </div>
           ${matches.map(v => `
-            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid var(--bg-card-border); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 0.75rem;">
-              <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start;">
-                <div>
-                  <div style="font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">
-                    ${v.voterName || 'N/A'}
+            <div class="result-card">
+              <div class="result-info">
+                <h4>${v.voterName || 'N/A'}</h4>
+                <div class="result-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-id-card"></i> <strong>EPIC:</strong> ${v.epicNo || 'N/A'}
                   </div>
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">
-                    <div><strong>EPIC:</strong> ${v.epicNo || 'N/A'}</div>
-                    <div><strong>List No:</strong> ${v.listNo || 'N/A'}</div>
-                    <div><strong>Booth:</strong> ${v.boothNo || 'N/A'}</div>
-                    <div><strong>District:</strong> ${v.district || 'N/A'}</div>
+                  <div class="meta-item">
+                    <i class="fas fa-list-ol"></i> <strong>List No:</strong> ${v.listNo || 'N/A'}
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i> <strong>Booth:</strong> ${v.boothNo || 'N/A'}
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-city"></i> <strong>District:</strong> ${v.district || 'N/A'}
                   </div>
                 </div>
-                <button class="primary search-print-btn" data-voter-id="${v.id}" style="white-space: nowrap;">
-                  <i class="fas fa-print"></i> Print Slip
-                </button>
               </div>
+              <button class="primary search-print-btn" data-voter-id="${v.id}" style="white-space: nowrap;">
+                <i class="fas fa-print"></i> Print Slip
+              </button>
             </div>
           `).join('')}
         `;
@@ -2109,7 +2142,17 @@
     }
 
     async function importVotersFromRows(rows) {
-      const inserts = rows.map(row => {
+      const total = rows.length;
+      const { container, bar, stats, percent, count } = refs.voterProgress;
+
+      container.style.display = "block";
+      stats.style.display = "flex";
+      bar.style.width = "0%";
+      percent.textContent = "0%";
+      count.textContent = `0 / ${total}`;
+
+      let done = 0;
+      for (const row of rows) {
         const payload = {
           boothNo: row.boothNo || "",
           listNo: row.listNo || "",
@@ -2125,14 +2168,39 @@
           address: row.address || "",
           createdAt: Date.now()
         };
-        return push(ref(db, "voters"), payload);
-      });
-      await Promise.all(inserts);
-      showToast(`Import Completed! Added ${rows.length} voters.`, "success");
+        try {
+          await push(ref(db, "voters"), payload);
+          done++;
+          const p = Math.round((done / total) * 100);
+          bar.style.width = `${p}%`;
+          percent.textContent = `${p}%`;
+          count.textContent = `${done} / ${total}`;
+        } catch (err) {
+          console.error("Row import failed:", err);
+        }
+      }
+
+      setTimeout(() => {
+        showToast(state.lang === 'mr' ? `आयात पूर्ण झाली! ${done} मतदार जोडले.` : `Import Completed! Added ${done} voters.`, "success");
+        setTimeout(() => {
+          container.style.display = "none";
+          stats.style.display = "none";
+        }, 3000);
+      }, 500);
     }
 
     async function importStaffFromRows(rows) {
-      const inserts = rows.map(row => {
+      const total = rows.length;
+      const { container, bar, stats, percent, count } = refs.staffProgress;
+
+      container.style.display = "block";
+      stats.style.display = "flex";
+      bar.style.width = "0%";
+      percent.textContent = "0%";
+      count.textContent = `0 / ${total}`;
+
+      let done = 0;
+      for (const row of rows) {
         const payload = {
           village: "Raygaon",
           name: row.name || "",
@@ -2144,10 +2212,25 @@
           houseVoters: Number(row.houseVoters || 0),
           createdAt: Date.now()
         };
-        return push(ref(db, "staff"), payload);
-      });
-      await Promise.all(inserts);
-      showToast(`Import Completed! Added ${rows.length} staff records.`, "success");
+        try {
+          await push(ref(db, "staff"), payload);
+          done++;
+          const p = Math.round((done / total) * 100);
+          bar.style.width = `${p}%`;
+          percent.textContent = `${p}%`;
+          count.textContent = `${done} / ${total}`;
+        } catch (err) {
+          console.error("Row import failed:", err);
+        }
+      }
+
+      setTimeout(() => {
+        showToast(state.lang === 'mr' ? `आयात पूर्ण झाली! ${done} कर्मचारी जोडले.` : `Import Completed! Added ${done} staff records.`, "success");
+        setTimeout(() => {
+          container.style.display = "none";
+          stats.style.display = "none";
+        }, 3000);
+      }, 500);
     }
 
     function subscribeToData() {
