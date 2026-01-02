@@ -1350,23 +1350,37 @@
 
     function toggleAdminSections(isAdmin) {
       document.querySelectorAll('[data-requires-admin="true"]').forEach(btn => {
-        btn.classList.toggle("locked", !isAdmin);
-        if (btn.dataset.requiresAdmin === "true") {
+        // Special case: Allow users to see Staff Directory nav button, but readonly
+        if (btn.dataset.target === "staffDirectorySection") {
+          btn.style.display = "block";
+        } else {
           btn.style.display = isAdmin ? "block" : "none";
         }
       });
+
+      // Hide Export Buttons for non-admins
+      if (!isAdmin) {
+        if (refs.exportStaffDirectory) refs.exportStaffDirectory.style.display = "none";
+        if (refs.exportVoterDirectory) refs.exportVoterDirectory.style.display = "none";
+      } else {
+        if (refs.exportStaffDirectory) refs.exportStaffDirectory.style.display = "inline-flex";
+        if (refs.exportVoterDirectory) refs.exportVoterDirectory.style.display = "inline-flex";
+      }
+
       const voterForm = document.getElementById("voterForm");
       const staffForm = document.getElementById("staffForm");
-      voterForm?.querySelectorAll("input, select, textarea, button").forEach(el => {
-        el.disabled = !isAdmin && el.tagName === "BUTTON";
-      });
-      staffForm?.querySelectorAll("input, select, button").forEach(el => {
-        el.disabled = !isAdmin && el.tagName === "BUTTON";
-      });
       const addVoterSection = document.getElementById("addVoterSection");
-      const staffSection = document.getElementById("staffSection");
-      if (addVoterSection) addVoterSection.style.opacity = isAdmin ? "1" : "0.4";
-      if (staffSection) staffSection.style.opacity = isAdmin ? "1" : "0.4";
+      const inputSection = document.getElementById("inputSection");
+      const staffInputSection = document.getElementById("staffInputSection"); // Assuming staff form is in a container
+
+      if (!isAdmin) {
+        if (addVoterSection) addVoterSection.style.display = "none";
+        // We can hide the input forms entirely for users to clear up UI
+        if (staffForm) staffForm.style.display = "none";
+      } else {
+        if (addVoterSection) addVoterSection.style.display = "block";
+        if (staffForm) staffForm.style.display = "block";
+      }
     }
 
     const sidebar = document.querySelector(".sidebar");
@@ -1676,6 +1690,9 @@
         btn.classList.toggle("active", btn.dataset.assignFilter === "all");
       });
 
+      // Show/Hide Save Button for Admin
+      assignRefs.save.style.display = state.role === "admin" ? "block" : "none";
+
       assignRefs.modal.classList.add("visible");
 
       renderAssignVotersList();
@@ -1754,6 +1771,16 @@
     }
 
     // Event Delegation for Checkboxes
+    assignRefs.list.addEventListener("click", (e) => {
+      if (e.target.classList.contains("assign-checkbox")) {
+        if (state.role !== "admin") {
+          e.preventDefault();
+          showToast("View Only: Admin access required to change assignments", "info");
+          return;
+        }
+      }
+    });
+
     assignRefs.list.addEventListener("change", (e) => {
       if (e.target.classList.contains("assign-checkbox")) {
         const id = e.target.dataset.id;
@@ -2719,6 +2746,40 @@
       } catch (error) {
         console.error(error);
         showToast("Failed to update staff", "error");
+      }
+    });
+
+    // Staff Directory Table Click Handler
+    refs.staffDirectoryBody.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-staff-action]");
+      if (!button) return;
+
+      const { staffAction, id } = button.dataset;
+      const staff = state.staff.find(s => s.id === id);
+      if (!staff) return;
+
+      if (staffAction === "edit") {
+        if (state.role !== "admin") {
+          showToast("Admin access required", "error");
+          return;
+        }
+        openStaffModal(staff);
+      } else if (staffAction === "delete") {
+        if (state.role !== "admin") {
+          showToast("Admin access required", "error");
+          return;
+        }
+        const confirmed = confirm(`Delete staff member ${staff.name}?`);
+        if (!confirmed) return;
+        remove(ref(db, `staff/${id}`))
+          .then(() => showToast("Staff deleted", "success"))
+          .catch(err => {
+            console.error(err);
+            showToast("Failed to delete staff", "error");
+          });
+      } else if (staffAction === "assign-voters") {
+        // Allow both admin and user to open (user gets view-only mode)
+        openAssignVotersModal(staff);
       }
     });
 
