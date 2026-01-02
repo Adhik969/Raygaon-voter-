@@ -1367,18 +1367,23 @@
         if (refs.exportVoterDirectory) refs.exportVoterDirectory.style.display = "inline-flex";
       }
 
-      const voterForm = document.getElementById("voterForm");
       const staffForm = document.getElementById("staffForm");
       const addVoterSection = document.getElementById("addVoterSection");
-      const inputSection = document.getElementById("inputSection");
-      const staffInputSection = document.getElementById("staffInputSection"); // Assuming staff form is in a container
+      const staffSection = document.getElementById("staffSection");
 
       if (!isAdmin) {
         if (addVoterSection) addVoterSection.style.display = "none";
-        // We can hide the input forms entirely for users to clear up UI
         if (staffForm) staffForm.style.display = "none";
+        // If the user happens to be on an admin-only section, redirect them
+        const activePanel = document.querySelector(".panel.active");
+        if (activePanel && activePanel.id === "addVoterSection") {
+          activePanel.classList.remove("active");
+          document.getElementById("overviewSection").classList.add("active");
+          document.querySelectorAll(".nav-button").forEach(b => b.classList.toggle("active", b.dataset.target === "overviewSection"));
+        }
       } else {
-        if (addVoterSection) addVoterSection.style.display = "block";
+        // Use empty string to let CSS (.panel { display: none; } / .panel.active { display: block; }) handle visibility
+        if (addVoterSection) addVoterSection.style.display = "";
         if (staffForm) staffForm.style.display = "block";
       }
     }
