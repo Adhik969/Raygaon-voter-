@@ -1009,3 +1009,28 @@ td:nth-child(10) {
 .import-stats span strong {
     color: #34d399;
 }
+/* Modal Footer */
+.modal-footer {
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-top: 1px solid var(--bg-card-border);
+}
+
+/* Link Button */
+.link-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.link-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

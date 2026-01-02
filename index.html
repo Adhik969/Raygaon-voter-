@@ -707,6 +707,59 @@
     </div>
   </div>
 
+  <div class="modal" id="assignVotersModal">
+    <div class="modal-card fullscreen">
+      <header class="modal-header"
+        style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+        <div></div>
+        <h3 style="margin:0; font-family:'Syne',sans-serif; text-align:center;">Assign Voters</h3>
+        <div style="display:flex; gap:1rem; align-items:center; justify-content: flex-end;">
+          <button class="modal-close" type="button" id="assignVotersClose" style="line-height:1;">&times;</button>
+        </div>
+      </header>
+      <div style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); background: var(--bg-card);">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="assignVotersSearch" placeholder="Search voters to assign..." style="width: 100%;" />
+        </div>
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <div class="role-toggle" style="margin: 0; background: rgba(0,0,0,0.3);">
+            <button class="role-button active" type="button" data-assign-filter="all">All</button>
+            <button class="role-button" type="button" data-assign-filter="assigned">Assigned</button>
+            <button class="role-button" type="button" data-assign-filter="unassigned">Unassigned</button>
+          </div>
+          <span id="assignVotersCount" style="font-weight: bold; color: var(--primary);">Selected: 0</span>
+        </div>
+      </div>
+      <div class="analytics-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px; text-align: center;">Select</th>
+              <th>Name</th>
+              <th>EPIC</th>
+              <th>Booth</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody id="assignVotersList">
+            <tr>
+              <td colspan="5">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer" style="padding: 1rem; text-align: right; border-top: 1px solid rgba(255,255,255,0.1);">
+        <button class="ghost" id="assignVotersExport"
+          style="margin-right: auto; border-color: var(--success); color: var(--success);">
+          <i class="fas fa-file-excel"></i> Export Assigned
+        </button>
+        <button class="ghost" id="assignVotersCancel" style="margin-right: 1rem;">Cancel</button>
+        <button class="primary" id="assignVotersSave">Save Assignments</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -1597,6 +1650,189 @@
     refs.exportStaffDirectory.addEventListener("click", exportStaffDirectory);
     refs.exportVoterDirectory.addEventListener("click", exportVoterDirectory);
 
+    // --- Assign Voters Feature Logic ---
+    const assignRefs = {
+      modal: document.getElementById("assignVotersModal"),
+      close: document.getElementById("assignVotersClose"),
+      cancel: document.getElementById("assignVotersCancel"),
+      save: document.getElementById("assignVotersSave"),
+      exportBtn: document.getElementById("assignVotersExport"),
+      search: document.getElementById("assignVotersSearch"),
+      list: document.getElementById("assignVotersList"),
+      count: document.getElementById("assignVotersCount"),
+    };
+
+    let currentAssignStaffId = null;
+    let currentlyAssignedVoters = new Set(); // Set of Voter IDs
+    let currentAssignFilter = "all"; // all, assigned, unassigned
+
+    function openAssignVotersModal(staff) {
+      currentAssignStaffId = staff.id;
+      currentlyAssignedVoters = new Set(staff.assignedVoters || []);
+      currentAssignFilter = "all";
+
+      // Reset filter UI
+      document.querySelectorAll("[data-assign-filter]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.assignFilter === "all");
+      });
+
+      assignRefs.modal.classList.add("visible");
+
+      renderAssignVotersList();
+    }
+
+    function closeAssignVotersModal() {
+      assignRefs.modal.classList.remove("visible");
+      currentAssignStaffId = null;
+      currentlyAssignedVoters.clear();
+      assignRefs.search.value = "";
+    }
+
+    assignRefs.close.addEventListener("click", closeAssignVotersModal);
+    assignRefs.cancel.addEventListener("click", closeAssignVotersModal);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && assignRefs.modal.classList.contains("visible")) closeAssignVotersModal();
+    });
+
+    assignRefs.search.addEventListener("input", renderAssignVotersList);
+
+    function renderAssignVotersList() {
+      const query = assignRefs.search.value.trim().toLowerCase();
+      const voters = state.voters;
+      let filtered = voters;
+
+      // Filtering by Search Query
+      if (query) {
+        filtered = filtered.filter(v =>
+          (v.voterName || "").toLowerCase().includes(query) ||
+          (v.epicNo || "").toLowerCase().includes(query)
+        );
+      }
+
+      // Filtering by Tab (Assigned/Unassigned)
+      if (currentAssignFilter === "assigned") {
+        filtered = filtered.filter(v => currentlyAssignedVoters.has(v.id));
+      } else if (currentAssignFilter === "unassigned") {
+        filtered = filtered.filter(v => !currentlyAssignedVoters.has(v.id));
+      }
+
+      // Sort: Selected first, then Alphabetical
+      filtered.sort((a, b) => {
+        const aSel = currentlyAssignedVoters.has(a.id);
+        const bSel = currentlyAssignedVoters.has(b.id);
+        if (aSel && !bSel) return -1;
+        if (!aSel && bSel) return 1;
+        return (a.voterName || "").localeCompare(b.voterName || "");
+      });
+
+      const count = currentlyAssignedVoters.size;
+      assignRefs.count.textContent = `Selected: ${count}`;
+
+      // Render limit to improve performance if list is huge
+      const renderLimit = 200;
+      const displaySet = filtered.slice(0, renderLimit);
+
+      assignRefs.list.innerHTML = displaySet.map(v => {
+        const isSelected = currentlyAssignedVoters.has(v.id);
+        const rowStyle = isSelected ? "background: rgba(16, 185, 129, 0.1);" : "";
+        return `
+          <tr style="${rowStyle}">
+            <td style="text-align: center;">
+               <input type="checkbox" class="assign-checkbox" data-id="${v.id}" ${isSelected ? "checked" : ""} style="transform: scale(1.2); cursor: pointer;" />
+            </td>
+            <td>${v.voterName || ""}</td>
+            <td>${v.epicNo || ""}</td>
+            <td>${v.boothNo || ""}</td>
+            <td style="font-size: 0.85rem;">${v.address || ""}</td>
+          </tr>
+          `;
+      }).join("");
+
+      if (filtered.length > renderLimit) {
+        assignRefs.list.innerHTML += `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">...and ${filtered.length - renderLimit} more keys. Search to find specific voters.</td></tr>`;
+      }
+    }
+
+    // Event Delegation for Checkboxes
+    assignRefs.list.addEventListener("change", (e) => {
+      if (e.target.classList.contains("assign-checkbox")) {
+        const id = e.target.dataset.id;
+        const row = e.target.closest("tr");
+        if (e.target.checked) {
+          currentlyAssignedVoters.add(id);
+          if (row) row.style.background = "rgba(16, 185, 129, 0.1)";
+        } else {
+          currentlyAssignedVoters.delete(id);
+          if (row) row.style.background = "";
+        }
+        assignRefs.count.textContent = `Selected: ${currentlyAssignedVoters.size}`;
+      }
+    });
+
+    // Assign Filter Buttons
+    document.querySelectorAll("[data-assign-filter]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-assign-filter]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentAssignFilter = btn.dataset.assignFilter;
+        renderAssignVotersList();
+      });
+    });
+
+    assignRefs.exportBtn.addEventListener("click", () => {
+      if (!currentlyAssignedVoters.size) {
+        showToast("No voters selected to export", "error");
+        return;
+      }
+
+      const votersToExport = state.voters.filter(v => currentlyAssignedVoters.has(v.id));
+      const headers = ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
+
+      const rows = votersToExport.map(v => [
+        v.listNo || "",
+        v.voterName || "",
+        v.epicNo || "",
+        v.boothNo || "",
+        v.district || "",
+        v.taluka || "",
+        v.caste || "",
+        v.gender || "",
+        v.mobileNo || "",
+        v.address || ""
+      ]);
+
+      const csv = [headers, ...rows].map(row => row.map(value => {
+        const safe = `${value}`.replace(/"/g, '""');
+        return `"${safe}"`;
+      }).join(",")).join("\r\n");
+
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `assigned-voters-${currentAssignStaffId}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast(`Exported ${votersToExport.length} assigned voters`, "success");
+    });
+
+    assignRefs.save.addEventListener("click", async () => {
+      if (!currentAssignStaffId) return;
+
+      const staffRef = ref(db, `staff/${currentAssignStaffId}`);
+      const assignedArray = Array.from(currentlyAssignedVoters);
+
+      try {
+        await update(staffRef, {
+          assignedVoters: assignedArray
+        });
+        showToast(`Assigned ${assignedArray.length} voters successfully!`, "success");
+        closeAssignVotersModal();
+      } catch (err) {
+        console.error(err);
+        showToast("Failed to save assignments", "error");
+      }
+    });
+
     refs.createAdminForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (state.role !== "admin") return showToast("Admin access required", "error");
@@ -1640,6 +1876,19 @@
     });
 
     refs.staffDirectoryBody.addEventListener("click", (event) => {
+      // Check for assign-voters button first
+      const assignBtn = event.target.closest("button[data-staff-action='assign-voters']");
+      if (assignBtn) {
+        if (state.role !== "admin") {
+          showToast("Admin access required", "error");
+          return;
+        }
+        const id = assignBtn.dataset.id;
+        const staffMember = state.staff.find(s => s.id === id);
+        if (staffMember) openAssignVotersModal(staffMember);
+        return;
+      }
+
       const button = event.target.closest?.("button[data-staff-action]");
       if (!button) return;
       const { staffAction, id } = button.dataset;
@@ -2354,7 +2603,14 @@
             <td>${staff.designation || ""}</td>
             <td>${staff.workplace || ""}</td>
             <td>${staff.mobile || ""}</td>
-            <td>${staff.houseVoters || "0"}</td>
+            <td>
+              <button class="link-btn" title="Click to assign voters" 
+                      data-staff-action="assign-voters" 
+                      data-id="${staff.id}"
+                      style="color: var(--accent); background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent); padding: 0.2rem 0.6rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                ${(staff.assignedVoters || []).length}
+              </button>
+            </td>
             <td>${actions}</td>
           </tr>`;
         }).join("");
