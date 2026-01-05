@@ -1008,7 +1008,10 @@
         loading: "Loading...",
         user_logins_title: "User Logins",
         user_logins_desc: "List of users who have logged in via Google.",
-        user_name_col: "User Name"
+        user_name_col: "User Name",
+        edit: "Edit",
+        delete: "Delete",
+        print: "Print"
       },
       mr: {
         sign_out: "साइन आउट",
@@ -1117,6 +1120,9 @@
         caste_label: "जात",
         village_label: "गाव",
         staff_house_count_label: "घरातील एकूण मतदार",
+        edit: "संपादन",
+        delete: "हटवा",
+        print: "प्रिंट"
       }
     };
 
@@ -2879,10 +2885,10 @@
           const actions = state.role === "admin"
             ? `<div class="table-actions">
                 <button class="action-btn edit" data-staff-action="edit" data-id="${staff.id}">
-                  <i class="fas fa-edit"></i> Edit
+                  <i class="fas fa-edit"></i> ${dictionary[lang].edit}
                 </button>
                 <button class="action-btn delete" data-staff-action="delete" data-id="${staff.id}">
-                  <i class="fas fa-trash-alt"></i> Delete
+                  <i class="fas fa-trash-alt"></i> ${dictionary[lang].delete}
                 </button>
               </div>`
             : "<span style='color:var(--muted);'>Read-only</span>";
