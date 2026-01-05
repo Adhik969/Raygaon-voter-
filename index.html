@@ -186,8 +186,12 @@
                   <input type="text" id="listNo" required />
                 </div>
                 <div>
-                  <label for="voterName" data-translate="voter_name_label">Voter Name</label>
+                  <label for="voterName" data-translate="voter_name_label">Voter Name (English)</label>
                   <input type="text" id="voterName" required />
+                </div>
+                <div>
+                  <label for="voterNameMr" data-translate="voter_name_mr_label">Voter Name (Marathi)</label>
+                  <input type="text" id="voterNameMr" required />
                 </div>
                 <div>
                   <label for="epicNo" data-translate="epic_no_label">EPIC No.</label>
@@ -270,8 +274,12 @@
             <form id="staffForm">
               <div class="grid-two">
                 <div>
-                  <label for="staffName" data-translate="staff_name_label">Name of Staff</label>
+                  <label for="staffName" data-translate="staff_name_label">Name of Staff (EN)</label>
                   <input type="text" id="staffName" required />
+                </div>
+                <div>
+                  <label for="staffNameMr" data-translate="staff_name_mr_label">Name of Staff (MR)</label>
+                  <input type="text" id="staffNameMr" required />
                 </div>
                 <div>
                   <label for="staffBooth" data-translate="booth_no_label">Booth No.</label>
@@ -282,16 +290,29 @@
                   </select>
                 </div>
                 <div>
-                  <label for="staffCaste" data-translate="caste_label">Caste</label>
-                  <select id="staffCaste" required></select>
+                  <label for="staffCaste" data-translate="staff_caste_label">Caste (EN)</label>
+                  <input type="text" id="staffCaste" required />
                 </div>
                 <div>
-                  <label for="staffDesignation" data-translate="staff_designation_label">Designation</label>
+                  <label for="staffCasteMr" data-translate="staff_caste_mr_label">Caste (MR)</label>
+                  <input type="text" id="staffCasteMr" required />
+                </div>
+                <div>
+                  <label for="staffDesignation" data-translate="staff_designation_label">Designation (EN)</label>
                   <input type="text" id="staffDesignation" required />
                 </div>
                 <div>
-                  <label for="staffCollege" data-translate="staff_workplace_label">Working College / Office</label>
+                  <label for="staffDesignationMr" data-translate="staff_designation_mr_label">Designation (MR)</label>
+                  <input type="text" id="staffDesignationMr" required />
+                </div>
+                <div>
+                  <label for="staffCollege" data-translate="staff_workplace_label">Working College / Office (EN)</label>
                   <input type="text" id="staffCollege" required />
+                </div>
+                <div>
+                  <label for="staffCollegeMr" data-translate="staff_workplace_mr_label">Working College / Office
+                    (MR)</label>
+                  <input type="text" id="staffCollegeMr" required />
                 </div>
                 <div>
                   <label for="staffMobile" data-translate="mobile_no_label">Mobile No.</label>
@@ -366,6 +387,10 @@
                   voters by district, taluka, caste,
                   gender, or voter type and export to Excel.</p>
               </div>
+              <button type="button" class="download-btn" id="bulkTransliterateBtn"
+                style="margin-right:0.5rem; display:none;" data-requires-admin="true">
+                <i class="fas fa-sync-alt"></i> Convert All to Marathi
+              </button>
               <button type="button" class="export-btn" id="exportVoterDirectory">
                 <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
               </button>
@@ -434,6 +459,10 @@
                   Raygaon staff by booth and caste, then
                   export to Excel.</p>
               </div>
+              <button type="button" class="download-btn" id="bulkTransliterateStaffBtn"
+                style="margin-right:0.5rem; display:none;" data-requires-admin="true">
+                <i class="fas fa-sync-alt"></i> Convert Staff to Marathi
+              </button>
               <button type="button" class="export-btn" id="exportStaffDirectory">
                 <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
               </button>
@@ -565,8 +594,12 @@
             <input type="text" id="editBoothNo" required />
           </div>
           <div>
-            <label for="editVoterName" data-translate="voter_name_label">Voter Name</label>
+            <label for="editVoterName" data-translate="voter_name_label">Voter Name (English)</label>
             <input type="text" id="editVoterName" required />
+          </div>
+          <div>
+            <label for="editVoterNameMr" data-translate="voter_name_mr_label">Voter Name (Marathi)</label>
+            <input type="text" id="editVoterNameMr" />
           </div>
           <div>
             <label for="editEpicNo" data-translate="epic_no_label">EPIC No.</label>
@@ -671,31 +704,47 @@
       <form id="editStaffForm">
         <div class="grid-two">
           <div>
-            <label for="editStaffName" data-translate="name">Name</label>
+            <label for="editStaffName" data-translate="staff_name_label">Name (EN)</label>
             <input type="text" id="editStaffName" required />
+          </div>
+          <div>
+            <label for="editStaffNameMr" data-translate="staff_name_mr_label">Name (MR)</label>
+            <input type="text" id="editStaffNameMr" />
           </div>
           <div>
             <label for="editStaffBooth" data-translate="booth_no_label">Booth No.</label>
             <input type="text" id="editStaffBooth" required />
           </div>
           <div>
-            <label for="editStaffCaste" data-translate="caste">Caste</label>
+            <label for="editStaffCaste" data-translate="staff_caste_label">Caste (EN)</label>
             <input type="text" id="editStaffCaste" />
           </div>
           <div>
-            <label for="editStaffDesignation" data-translate="staff_designation_label">Designation</label>
+            <label for="editStaffCasteMr" data-translate="staff_caste_mr_label">Caste (MR)</label>
+            <input type="text" id="editStaffCasteMr" />
+          </div>
+          <div>
+            <label for="editStaffDesignation" data-translate="staff_designation_label">Designation (EN)</label>
             <input type="text" id="editStaffDesignation" required />
           </div>
           <div>
-            <label for="editStaffWorkplace" data-translate="staff_workplace_label">Workplace</label>
+            <label for="editStaffDesignationMr" data-translate="staff_designation_mr_label">Designation (MR)</label>
+            <input type="text" id="editStaffDesignationMr" />
+          </div>
+          <div>
+            <label for="editStaffWorkplace" data-translate="staff_workplace_label">Workplace (EN)</label>
             <input type="text" id="editStaffWorkplace" required />
           </div>
           <div>
-            <label for="editStaffMobile" data-translate="mobile">Mobile</label>
+            <label for="editStaffWorkplaceMr" data-translate="staff_workplace_mr_label">Workplace (MR)</label>
+            <input type="text" id="editStaffWorkplaceMr" />
+          </div>
+          <div>
+            <label for="editStaffMobile" data-translate="mobile_no_label">Mobile</label>
             <input type="tel" id="editStaffMobile" maxlength="10" />
           </div>
           <div>
-            <label for="editStaffHouse" data-translate="house_voters_col">House Voters</label>
+            <label for="editStaffHouse" data-translate="staff_house_count_label">House Voters</label>
             <input type="number" id="editStaffHouse" min="0" />
           </div>
         </div>
@@ -724,9 +773,8 @@
         </div>
         <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
           <div class="role-toggle" style="margin: 0; background: rgba(0,0,0,0.3);">
-            <button class="role-button active" type="button" data-assign-filter="all">All</button>
+            <button class="role-button active" type="button" data-assign-filter="unassigned">Unassigned</button>
             <button class="role-button" type="button" data-assign-filter="assigned">Assigned</button>
-            <button class="role-button" type="button" data-assign-filter="unassigned">Unassigned</button>
           </div>
           <span id="assignVotersCount" style="font-weight: bold; color: var(--primary);">Selected: 0</span>
         </div>
@@ -831,12 +879,12 @@
     };
 
     const casteOptions = ["Maratha", "General", "SC", "ST", "OBC", "VJNT", "NT", "SBC", "EWS", "Other"];
-    const voterCSVHeaders = ["boothNo", "listNo", "voterName", "epicNo", "mobileNo", "district", "taluka", "gender", "voterType", "caste", "village", "address"];
+    const voterCSVHeaders = ["boothNo", "listNo", "voterName", "voterNameMr", "epicNo", "mobileNo", "district", "taluka", "gender", "voterType", "caste", "village", "address"];
     const staffCSVHeaders = ["name", "boothNo", "caste", "designation", "workplace", "mobile", "houseVoters"];
     const voterSampleData = [
       voterCSVHeaders,
-      ["2", "101", "Aarav Patil", "ABC1234567", "9876543210", "Pune", "Haveli", "Male", "A", "OBC", "Raygaon", "House No. 10, Ward 3"],
-      ["3", "102", "Sneha Deshmukh", "XYZ7654321", "8765432109", "Nashik", "Sinnar", "Female", "B", "General", "Raygaon", "Opp. Gram Panchayat"]
+      ["2", "101", "Aarav Patil", "आरव पाटील", "ABC1234567", "9876543210", "Pune", "Haveli", "Male", "A", "OBC", "Raygaon", "House No. 10, Ward 3"],
+      ["3", "102", "Sneha Deshmukh", "स्नेहा देशमुख", "XYZ7654321", "8765432109", "Nashik", "Sinnar", "Female", "B", "General", "Raygaon", "Opp. Gram Panchayat"]
     ];
     const staffSampleData = [
       staffCSVHeaders,
@@ -879,30 +927,16 @@
         name: "Name",
         epic: "EPIC",
         district: "District",
-        taluka: "Taluka",
-        caste: "Caste",
-        gender: "Gender",
-        mobile: "Mobile",
-        address: "Address",
-        type: "Type",
-        list_no: "List No.",
-        edit: "Edit",
-        delete: "Delete",
-        print: "Print",
-        view: "View",
-        export: "Export",
-        booth_voters: "Booth {0} Voters",
-        voter_type_label: "Voter Type",
-        select_type: "Select Type",
-        address_label: "Address",
-        address_placeholder: "House / Street / Landmark",
-        save_voter_btn: "Save Voter",
-        staff_info_title: "Staff Information (Village: Raygaon)",
-        import_staff_data: "Import Staff Data",
-        download_sample_sheet_desc: "Download the sample sheet, fill it, and upload it back.",
-        staff_name_label: "Name of Staff",
-        staff_designation_label: "Designation",
-        staff_workplace_label: "Working College / Office",
+        staff_name_label: "Name of Staff (EN)",
+        staff_name_mr_label: "Name of Staff (MR)",
+        staff_designation_label: "Designation (EN)",
+        staff_designation_mr_label: "Designation (MR)",
+        staff_workplace_label: "Working College / Office (EN)",
+        staff_workplace_mr_label: "Working College / Office (MR)",
+        staff_caste_label: "Caste (EN)",
+        staff_caste_mr_label: "Caste (MR)",
+        caste_label: "Caste",
+        village_label: "Village",
         staff_house_count_label: "Total Voters in House",
         save_staff_record_btn: "Save Staff Record",
         search_voter_title: "Search Voter",
@@ -944,7 +978,8 @@
         booth_no_label: "Booth No.",
         select_booth: "Select booth",
         voter_list_no_label: "Voter List No.",
-        voter_name_label: "Voter Name",
+        voter_name_label: "Voter Name (English)",
+        voter_name_mr_label: "Voter Name (Marathi)",
         epic_no_label: "EPIC No.",
         mobile_no_label: "Mobile No.",
         district_label: "District (Maharashtra)",
@@ -1064,37 +1099,24 @@
         booth_no_label: "बुथ क्रमांक",
         select_booth: "बुथ निवडा",
         voter_list_no_label: "मतदार यादी क्रमांक",
-        voter_name_label: "मतदाराचे नाव",
+        voter_name_label: "मतदाराचे नाव (इंग्रजी)",
+        voter_name_mr_label: "मतदाराचे नाव (मराठी)",
         epic_no_label: "एपिक (EPIC) क्रमांक",
         mobile_no_label: "मोबाईल क्रमांक",
         district_label: "जिल्हा (महाराष्ट्र)",
         taluka_label: "तालुका",
         gender_label: "लिंग",
-        select_gender: "लिंग निवडा",
-        village_label: "गाव",
+        staff_name_label: "कर्मचाऱ्याचे नाव (इंग्रजी)",
+        staff_name_mr_label: "कर्मचाऱ्याचे नाव (मराठी)",
+        staff_designation_label: "पद / हुद्दा (इंग्रजी)",
+        staff_designation_mr_label: "पद / हुद्दा (मराठी)",
+        staff_workplace_label: "कार्यरत कार्यालय / महाविद्यालय (इंग्रजी)",
+        staff_workplace_mr_label: "कार्यरत कार्यालय / महाविद्यालय (मराठी)",
+        staff_caste_label: "जात (इंग्रजी)",
+        staff_caste_mr_label: "जात (मराठी)",
         caste_label: "जात",
-        edit_voter_title: "मतदार माहिती सुधारा",
-        cancel_btn: "रद्द करा",
-        save_changes_btn: "बदल जतन करा",
-        edit_staff_title: "कर्मचारी माहिती सुधारा",
-        voter_list_modal_title: "मतदार यादी",
-        email_col: "ईमेल",
-        last_login_col: "शेवटचे लॉगिन",
-        status_col: "स्थिती",
-        manage_admin_title: "ॲडमिन लॉगिन व्यवस्थापन",
-        manage_admin_desc: "डॅशबोर्डवर प्रवेश करण्यासाठी नवीन ॲडमिन खाती तयार करा.",
-        full_name_label: "पूर्ण नाव",
-        full_name_placeholder: "नाव टाका",
-        email_address_label: "ईमेल पत्ता",
-        email_placeholder: "ईमेल टाका",
-        password_label: "पासवर्ड",
-        password_placeholder: "पासवर्ड निवडा",
-        create_admin_btn: "ॲडमिन खाते तयार करा",
-        created_at_col: "तयार केल्याची वेळ",
-        loading: "लोड होत आहे...",
-        user_logins_title: "वापरकर्ता लॉगिन",
-        user_logins_desc: "गुगलद्वारे लॉगिन केलेल्या वापरकर्त्यांची यादी.",
-        user_name_col: "वापरकर्त्याचे नाव"
+        village_label: "गाव",
+        staff_house_count_label: "घरातील एकूण मतदार",
       }
     };
 
@@ -1186,6 +1208,7 @@
         listNo: document.getElementById("editListNo"),
         boothNo: document.getElementById("editBoothNo"),
         voterName: document.getElementById("editVoterName"),
+        voterNameMr: document.getElementById("editVoterNameMr"),
         epicNo: document.getElementById("editEpicNo"),
         mobileNo: document.getElementById("editMobileNo"),
         district: document.getElementById("editDistrict"),
@@ -1216,10 +1239,14 @@
       staffEditForm: document.getElementById("editStaffForm"),
       staffEditFields: {
         name: document.getElementById("editStaffName"),
+        nameMr: document.getElementById("editStaffNameMr"),
         boothNo: document.getElementById("editStaffBooth"),
         caste: document.getElementById("editStaffCaste"),
+        casteMr: document.getElementById("editStaffCasteMr"),
         designation: document.getElementById("editStaffDesignation"),
+        designationMr: document.getElementById("editStaffDesignationMr"),
         workplace: document.getElementById("editStaffWorkplace"),
+        workplaceMr: document.getElementById("editStaffWorkplaceMr"),
         mobile: document.getElementById("editStaffMobile"),
         houseVoters: document.getElementById("editStaffHouse")
       },
@@ -1365,6 +1392,8 @@
       } else {
         if (refs.exportStaffDirectory) refs.exportStaffDirectory.style.display = "inline-flex";
         if (refs.exportVoterDirectory) refs.exportVoterDirectory.style.display = "inline-flex";
+        if (document.getElementById("bulkTransliterateBtn")) document.getElementById("bulkTransliterateBtn").style.display = "inline-flex";
+        if (document.getElementById("bulkTransliterateStaffBtn")) document.getElementById("bulkTransliterateStaffBtn").style.display = "inline-flex";
       }
 
       const staffForm = document.getElementById("staffForm");
@@ -1497,6 +1526,7 @@
         boothNo: document.getElementById("boothNo").value,
         listNo: document.getElementById("listNo").value.trim(),
         voterName: document.getElementById("voterName").value.trim(),
+        voterNameMr: document.getElementById("voterNameMr").value.trim(),
         epicNo: document.getElementById("epicNo").value.trim().toUpperCase(),
         mobileNo: document.getElementById("mobileNo").value.trim(),
         district: document.getElementById("districtSelect").value,
@@ -1526,10 +1556,14 @@
       const payload = {
         village: "Raygaon",
         name: document.getElementById("staffName").value.trim(),
+        nameMr: document.getElementById("staffNameMr").value.trim(),
         boothNo: document.getElementById("staffBooth").value,
-        caste: document.getElementById("staffCaste").value,
+        caste: document.getElementById("staffCaste").value.trim(),
+        casteMr: document.getElementById("staffCasteMr").value.trim(),
         designation: document.getElementById("staffDesignation").value.trim(),
+        designationMr: document.getElementById("staffDesignationMr").value.trim(),
         workplace: document.getElementById("staffCollege").value.trim(),
+        workplaceMr: document.getElementById("staffCollegeMr").value.trim(),
         mobile: document.getElementById("staffMobile").value.trim(),
         houseVoters: Number(document.getElementById("staffHouseCount").value || 0),
         createdAt: Date.now()
@@ -1592,6 +1626,7 @@
       f.listNo.value = voter.listNo || "";
       f.boothNo.value = voter.boothNo || "";
       f.voterName.value = voter.voterName || "";
+      f.voterNameMr.value = voter.voterNameMr || "";
       f.epicNo.value = voter.epicNo || "";
       f.mobileNo.value = voter.mobileNo || "";
       f.district.value = voter.district || "";
@@ -1629,6 +1664,7 @@
         listNo: refs.editFields.listNo.value.trim(),
         boothNo: refs.editFields.boothNo.value.trim(),
         voterName: refs.editFields.voterName.value.trim(),
+        voterNameMr: refs.editFields.voterNameMr.value.trim(),
         epicNo: refs.editFields.epicNo.value.trim().toUpperCase(),
         mobileNo: refs.editFields.mobileNo.value.trim(),
         district: refs.editFields.district.value.trim(),
@@ -1669,6 +1705,218 @@
     refs.exportStaffDirectory.addEventListener("click", exportStaffDirectory);
     refs.exportVoterDirectory.addEventListener("click", exportVoterDirectory);
 
+    // --- Automatic English to Marathi Transliteration ---
+    async function transliterateToMarathi(text, targetEl) {
+      if (!text || text.length < 2) return;
+      try {
+        const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=mr-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data[0] === "SUCCESS" && data[1][0][1][0]) {
+          targetEl.value = data[1][0][1][0];
+        }
+      } catch (err) {
+        console.error("Transliteration error:", err);
+      }
+    }
+
+    function setupTransliteration(sourceId, targetId) {
+      const source = document.getElementById(sourceId);
+      const target = document.getElementById(targetId);
+      if (!source || !target) return;
+      let translitTimeout;
+      source.addEventListener("input", () => {
+        clearTimeout(translitTimeout);
+        translitTimeout = setTimeout(() => {
+          transliterateToMarathi(source.value, target);
+        }, 1000); // 1 second debounce
+      });
+    }
+
+    setupTransliteration("voterName", "voterNameMr");
+    setupTransliteration("editVoterName", "editVoterNameMr");
+
+    // Staff Transliterations
+    setupTransliteration("staffName", "staffNameMr");
+    setupTransliteration("staffCaste", "staffCasteMr");
+    setupTransliteration("staffDesignation", "staffDesignationMr");
+    setupTransliteration("staffCollege", "staffCollegeMr");
+
+    setupTransliteration("editStaffName", "editStaffNameMr");
+    setupTransliteration("editStaffCaste", "editStaffCasteMr");
+    setupTransliteration("editStaffDesignation", "editStaffDesignationMr");
+    setupTransliteration("editStaffWorkplace", "editStaffWorkplaceMr");
+
+    async function getMarathiText(text) {
+      if (!text || text.length < 2) return text;
+      const cleanText = text.trim();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      try {
+        const url = `https://inputtools.google.com/request?text=${encodeURIComponent(cleanText)}&itc=mr-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage`;
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (!res.ok) throw new Error("Network response was not ok");
+        const data = await res.json();
+        if (data && data[0] === "SUCCESS" && data[1] && data[1][0] && data[1][0][1] && data[1][0][1][0]) {
+          return data[1][0][1][0].trim();
+        }
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          console.warn("Transliteration API timed out for:", cleanText);
+        } else {
+          console.error("Transliteration API failed for:", cleanText, err);
+        }
+      } finally {
+        clearTimeout(timeoutId);
+      }
+      return text;
+    }
+
+    document.getElementById("bulkTransliterateBtn").addEventListener("click", async () => {
+      console.log("Bulk transliterate button clicked. Checking voters...");
+      const voters = state.voters.filter(v => !v.voterNameMr || v.voterNameMr.trim() === "");
+      const total = voters.length;
+      console.log("Found voters to convert:", total);
+
+      if (total === 0) {
+        alert("All voters already have Marathi names!");
+        return;
+      }
+
+      console.log("Starting transliteration process...");
+
+      const btn = document.getElementById("bulkTransliterateBtn");
+      btn.disabled = true;
+
+      let count = 0;
+      let batchUpdates = {};
+      const batchSize = 50;
+
+      for (let i = 0; i < total; i++) {
+        const voter = voters[i];
+        console.log(`Processing voter ${i + 1}/${total}: ${voter.voterName}`);
+        const mrName = await getMarathiText(voter.voterName);
+
+        if (mrName && mrName !== voter.voterName) {
+          batchUpdates[`voters/${voter.id}/voterNameMr`] = mrName;
+          count++;
+          console.log(`  - Found Marathi name for ${voter.voterName}: ${mrName}`);
+        } else {
+          console.log(`  - No new Marathi name for ${voter.voterName} or already exists.`);
+        }
+
+        // Show Progress
+        const currentProgress = i + 1;
+        const percent = Math.round((currentProgress / total) * 100);
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Converting ${currentProgress}/${total} (${percent}%)`;
+
+        // Commit batch every batchSize or at the end
+        if (Object.keys(batchUpdates).length >= batchSize || i === total - 1) {
+          if (Object.keys(batchUpdates).length > 0) {
+            console.log(`Committing batch of ${Object.keys(batchUpdates).length} updates.`);
+            try {
+              await update(ref(db), batchUpdates);
+              console.log("Batch committed successfully.");
+              batchUpdates = {}; // reset
+            } catch (err) {
+              console.error("Batch update failed:", err);
+              showToast("Failed to save a batch of updates", "error");
+            }
+          }
+        }
+
+        // Delay to prevent API rate limit (200ms)
+        await new Promise(r => setTimeout(r, 200));
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sync-alt"></i> Convert All to Marathi';
+      const msg = `Successfully processed all voters. Transliterated ${count} names!`;
+      showToast(msg, "success");
+      alert(msg);
+    });
+
+    document.getElementById("bulkTransliterateStaffBtn").addEventListener("click", async () => {
+      console.log("Starting Staff Conversion...");
+
+      const list = state.staff.filter(s => {
+        if (!s) return false;
+        return (!s.nameMr || s.nameMr.trim() === "") || (!s.designationMr || s.designationMr.trim() === "") || (!s.casteMr || s.casteMr.trim() === "") || (!s.workplaceMr || s.workplaceMr.trim() === "");
+      });
+
+      const total = list.length;
+      if (total === 0) {
+        alert("All staff records already have Marathi details!");
+        return;
+      }
+
+      const btn = document.getElementById("bulkTransliterateStaffBtn");
+      btn.disabled = true;
+
+      let batchUpdates = {};
+      let processedCount = 0;
+
+      for (let i = 0; i < total; i++) {
+        const s = list[i];
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${i + 1}/${total}`;
+
+        try {
+          // Name
+          if (s.name && (!s.nameMr || s.nameMr.trim() === "")) {
+            const mrName = await getMarathiText(s.name);
+            if (mrName && mrName.toLowerCase() !== s.name.toLowerCase()) {
+              batchUpdates[`staff/${s.id}/nameMr`] = mrName;
+            }
+          }
+
+          // Designation
+          if (s.designation && (!s.designationMr || s.designationMr.trim() === "")) {
+            const mrDes = await getMarathiText(s.designation);
+            if (mrDes && mrDes.toLowerCase() !== (s.designation || "").toLowerCase()) {
+              batchUpdates[`staff/${s.id}/designationMr`] = mrDes;
+            }
+          }
+
+          // Caste
+          if (s.caste && (!s.casteMr || s.casteMr.trim() === "")) {
+            const mrCaste = await getMarathiText(s.caste);
+            if (mrCaste && mrCaste.toLowerCase() !== (s.caste || "").toLowerCase()) {
+              batchUpdates[`staff/${s.id}/casteMr`] = mrCaste;
+            }
+          }
+
+          // Workplace
+          if (s.workplace && (!s.workplaceMr || s.workplaceMr.trim() === "")) {
+            const mrWork = await getMarathiText(s.workplace);
+            if (mrWork && mrWork.toLowerCase() !== (s.workplace || "").toLowerCase()) {
+              batchUpdates[`staff/${s.id}/workplaceMr`] = mrWork;
+            }
+          }
+
+          processedCount++;
+
+          // Commit every 10 records or at the end
+          if (Object.keys(batchUpdates).length >= 10 || i === total - 1) {
+            if (Object.keys(batchUpdates).length > 0) {
+              await update(ref(db), batchUpdates);
+              batchUpdates = {}; // reset
+            }
+          }
+        } catch (err) {
+          console.error("Record failed:", s.name, err);
+        }
+
+        // Small delay to be safe
+        await new Promise(r => setTimeout(r, 150));
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sync-alt"></i> Convert Staff to Marathi';
+      alert(`Success! Processed ${processedCount} staff records.`);
+      showToast("Conversion complete!", "success");
+    });
+
     // --- Assign Voters Feature Logic ---
     const assignRefs = {
       modal: document.getElementById("assignVotersModal"),
@@ -1688,11 +1936,11 @@
     function openAssignVotersModal(staff) {
       currentAssignStaffId = staff.id;
       currentlyAssignedVoters = new Set(staff.assignedVoters || []);
-      currentAssignFilter = "all";
+      currentAssignFilter = "unassigned";
 
       // Reset filter UI
       document.querySelectorAll("[data-assign-filter]").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.assignFilter === "all");
+        btn.classList.toggle("active", btn.dataset.assignFilter === "unassigned");
       });
 
       // Show/Hide Save Button for Admin
@@ -1727,6 +1975,7 @@
       if (query) {
         filtered = filtered.filter(v =>
           (v.voterName || "").toLowerCase().includes(query) ||
+          (v.voterNameMr || "").toLowerCase().includes(query) ||
           (v.epicNo || "").toLowerCase().includes(query)
         );
       }
@@ -1762,7 +2011,7 @@
             <td style="text-align: center;">
                <input type="checkbox" class="assign-checkbox" data-id="${v.id}" ${isSelected ? "checked" : ""} style="transform: scale(1.2); cursor: pointer;" />
             </td>
-            <td>${v.voterName || ""}</td>
+            <td>${v.voterName || ""}<br><small style="color:var(--text-muted)">${v.voterNameMr || ""}</small></td>
             <td>${v.epicNo || ""}</td>
             <td>${v.boothNo || ""}</td>
             <td style="font-size: 0.85rem;">${v.address || ""}</td>
@@ -1818,11 +2067,12 @@
       }
 
       const votersToExport = state.voters.filter(v => currentlyAssignedVoters.has(v.id));
-      const headers = ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
+      const headers = ["List No.", "Name (EN)", "Name (MR)", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
 
       const rows = votersToExport.map(v => [
         v.listNo || "",
         v.voterName || "",
+        v.voterNameMr || "",
         v.epicNo || "",
         v.boothNo || "",
         v.district || "",
@@ -2055,7 +2305,7 @@
           return `
           <tr>
             <td>${v.listNo || ""}</td>
-            <td>${v.voterName || ""}</td>
+            <td>${v.voterName || ""}<br><small style="color:var(--text-muted)">${v.voterNameMr || ""}</small></td>
             <td>${v.epicNo || ""}</td>
             <td>${v.boothNo || ""}</td>
             <td>${v.district || ""}</td>
@@ -2238,6 +2488,7 @@
           <div class="field">
             <span class="label">VOTER NAME:</span>
             <span class="value">${voter.voterName || 'N/A'}</span>
+            <span class="value">${voter.voterNameMr || ''}</span>
           </div>
           <div class="field">
             <span class="label">VOTER LIST SR NO:</span>
@@ -2438,6 +2689,7 @@
           boothNo: row.boothNo || "",
           listNo: row.listNo || "",
           voterName: row.voterName || "",
+          voterNameMr: row.voterNameMr || "",
           epicNo: (row.epicNo || "").toUpperCase(),
           mobileNo: row.mobileNo || "",
           district: row.district || "",
@@ -2605,7 +2857,14 @@
       return state.staff.filter(staff => {
         if (boothFilter && staff.boothNo !== boothFilter) return false;
         if (casteFilter && staff.caste !== casteFilter) return false;
-        if (query && !((staff.name || "").toLowerCase().includes(query))) return false;
+        if (query && !(
+          (staff.name || "").toLowerCase().includes(query) ||
+          (staff.nameMr || "").toLowerCase().includes(query) ||
+          (staff.caste || "").toLowerCase().includes(query) ||
+          (staff.casteMr || "").toLowerCase().includes(query) ||
+          (staff.designation || "").toLowerCase().includes(query) ||
+          (staff.designationMr || "").toLowerCase().includes(query)
+        )) return false;
         return true;
       });
     }
@@ -2629,11 +2888,23 @@
             : "<span style='color:var(--muted);'>Read-only</span>";
           return `
           <tr>
-            <td>${staff.name || ""}</td>
+            <td>
+              <div style="font-weight: 600;">${staff.name || ""}</div>
+              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${staff.nameMr || ""}</div>
+            </td>
             <td>${staff.boothNo || ""}</td>
-            <td>${staff.caste || ""}</td>
-            <td>${staff.designation || ""}</td>
-            <td>${staff.workplace || ""}</td>
+            <td>
+              <div>${staff.caste || ""}</div>
+              <div style="color: var(--accent); font-size: 0.8rem;">${staff.casteMr || ""}</div>
+            </td>
+            <td>
+              <div>${staff.designation || ""}</div>
+              <div style="color: var(--accent); font-size: 0.8rem;">${staff.designationMr || ""}</div>
+            </td>
+            <td>
+              <div>${staff.workplace || ""}</div>
+              <div style="color: var(--accent); font-size: 0.8rem;">${staff.workplaceMr || ""}</div>
+            </td>
             <td>${staff.mobile || ""}</td>
             <td>
               <button class="link-btn" title="Click to assign voters" 
@@ -2705,10 +2976,14 @@
       editingStaffId = staff.id;
       const f = refs.staffEditFields;
       f.name.value = staff.name || "";
+      f.nameMr.value = staff.nameMr || "";
       f.boothNo.value = staff.boothNo || "";
       f.caste.value = staff.caste || "";
+      f.casteMr.value = staff.casteMr || "";
       f.designation.value = staff.designation || "";
+      f.designationMr.value = staff.designationMr || "";
       f.workplace.value = staff.workplace || "";
+      f.workplaceMr.value = staff.workplaceMr || "";
       f.mobile.value = staff.mobile || "";
       f.houseVoters.value = staff.houseVoters ?? "";
       refs.staffModal.classList.add("visible");
@@ -2737,10 +3012,14 @@
       }
       const payload = {
         name: refs.staffEditFields.name.value.trim(),
+        nameMr: refs.staffEditFields.nameMr.value.trim(),
         boothNo: refs.staffEditFields.boothNo.value.trim(),
         caste: refs.staffEditFields.caste.value.trim(),
+        casteMr: refs.staffEditFields.casteMr.value.trim(),
         designation: refs.staffEditFields.designation.value.trim(),
+        designationMr: refs.staffEditFields.designationMr.value.trim(),
         workplace: refs.staffEditFields.workplace.value.trim(),
+        workplaceMr: refs.staffEditFields.workplaceMr.value.trim(),
         mobile: refs.staffEditFields.mobile.value.trim(),
         houseVoters: Number(refs.staffEditFields.houseVoters.value || 0)
       };
@@ -2834,12 +3113,13 @@
       }
 
       const title = `Raygaon Voter Directory Exported: ${new Date().toLocaleDateString()}`;
-      const headers = ["List No", "Name", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type"];
+      const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type"];
       const rows = filtered
         .sort((a, b) => Number(a.listNo || 0) - Number(b.listNo || 0))
         .map(v => [
           v.listNo || "",
           v.voterName || "",
+          v.voterNameMr || "",
           v.epicNo || "",
           v.boothNo || "",
           v.district || "",
@@ -2887,7 +3167,7 @@
       if (caste && vCaste !== caste.toLowerCase()) return false;
       if (gender && vGender !== gender.toLowerCase()) return false;
       if (type && voter.voterType !== type) return false;
-      if (query && !(`${voter.voterName}`.toLowerCase().includes(query) || `${voter.epicNo}`.toLowerCase().includes(query))) return false;
+      if (query && !(`${voter.voterName}`.toLowerCase().includes(query) || `${voter.voterNameMr}`.toLowerCase().includes(query) || `${voter.epicNo}`.toLowerCase().includes(query))) return false;
       return true;
     }
 
@@ -2918,7 +3198,10 @@
           return `
           <tr>
             <td>${v.listNo}</td>
-            <td>${v.voterName}</td>
+            <td>
+              <div style="font-weight: 600;">${v.voterName}</div>
+              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${v.voterNameMr || ""}</div>
+            </td>
             <td>${v.epicNo}</td>
             <td>${v.boothNo}</td>
             <td>${v.district}</td>

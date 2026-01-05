@@ -458,63 +458,96 @@ body.login-active #dashboard {
 /* Tables */
 table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
     margin-top: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 th {
-    background: rgba(15, 23, 42, 0.95);
-    /* Opaque for sticky */
+    background: #1e293b;
     padding: 0.75rem;
     text-align: left;
     color: var(--text-muted);
     font-weight: 600;
-    border-bottom: 2px solid var(--bg-card-border);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     white-space: nowrap;
     position: sticky;
     top: 0;
     z-index: 10;
-    backdrop-filter: blur(4px);
 }
 
 td {
     padding: 0.75rem;
     background: rgba(30, 41, 59, 0.3);
-    border-bottom: 1px solid var(--bg-card-border);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text);
     font-size: 0.9rem;
-    white-space: nowrap;
-    /* Prevent text wrapping to force scroll */
+    white-space: normal;
+    vertical-align: top;
 }
 
+/* Rows and hover effects */
 tr:hover td {
-    background: rgba(59, 130, 246, 0.05);
-}
-
-tr:first-child td:first-child {
-    border-top-left-radius: 1rem;
-}
-
-tr:first-child td:last-child {
-    border-top-right-radius: 1rem;
-}
-
-tr:last-child td:first-child {
-    border-bottom-left-radius: 1rem;
-    border-bottom: none;
-}
-
-tr:last-child td:last-child {
-    border-bottom-right-radius: 1rem;
-    border-bottom: none;
+    background: rgba(59, 130, 246, 0.1);
 }
 
 /* Address Column specific adjustment */
-td:nth-child(10) {
+/* Address and Designation Column wrapping */
+td:nth-child(10),
+/* Voter Directory Address */
+#staffDirectoryBody td:nth-child(4),
+/* Staff Designation */
+#staffDirectoryBody td:nth-child(5),
+/* Staff Workplace */
+#assignVotersList td:nth-child(5)
+
+/* Assign Voters Address */
+    {
     white-space: normal;
-    min-width: 180px;
-    max-width: 250px;
+    min-width: 150px;
+    max-width: 200px;
+    /* Reduced max-width to save space */
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Columns that should not wrap */
+td:nth-child(1),
+/* List No */
+td:nth-child(3),
+/* EPIC */
+td:nth-child(9)
+
+/* Mobile (Voter Dir) */
+    {
+    white-space: nowrap;
+}
+
+/* Minimize Booth Column Width */
+td:nth-child(4),
+/* Booth (Voter Dir) */
+#staffDirectoryBody td:nth-child(2),
+/* Booth (Staff Dir) */
+#staffDirectoryBody td:nth-child(6),
+/* Mobile (Staff Dir) */
+#staffDirectoryBody td:nth-child(7)
+
+/* House Voters */
+    {
+    white-space: nowrap;
+    width: 60px;
+    /* Minimal width for Booth */
+    text-align: center;
+}
+
+/* Wrap Name Column in Voter Directory */
+td:nth-child(2) {
+    white-space: normal;
+    min-width: 140px;
+    max-width: 180px;
+    /* Limit width of Name column */
+    line-height: 1.3;
+    word-break: break-word;
 }
 
 .table-wrapper {
@@ -527,8 +560,7 @@ td:nth-child(10) {
 }
 
 .table-wrapper table {
-    width: max-content;
-    /* Force horizontal expansion */
+    width: 100%;
     min-width: 100%;
     margin-top: 0;
 }
@@ -1009,6 +1041,7 @@ td:nth-child(10) {
 .import-stats span strong {
     color: #34d399;
 }
+
 /* Modal Footer */
 .modal-footer {
     padding: 1rem;
@@ -1032,5 +1065,5 @@ td:nth-child(10) {
 
 .link-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
