@@ -101,6 +101,9 @@
             <button class="nav-button" data-target="staffDirectorySection">
               <i class="fas fa-users"></i> <span data-translate="nav_staff_directory">Staff Directory</span>
             </button>
+            <button class="nav-button" data-target="familyManagementSection">
+              <i class="fas fa-home"></i> <span data-translate="nav_family_management">Family Management</span>
+            </button>
             <button class="nav-button" data-target="analyticsSection">
               <i class="fas fa-chart-pie"></i> <span data-translate="nav_analytics">Analytics</span>
             </button>
@@ -109,9 +112,6 @@
             </button>
             <button class="nav-button" data-target="manageAdminSection" data-requires-admin="true">
               <i class="fas fa-user-cog"></i> <span data-translate="nav_manage_admin">Manage Admin</span>
-            </button>
-            <button class="nav-button" data-target="familyManagementSection">
-              <i class="fas fa-home"></i> <span data-translate="nav_family_management">Family Management</span>
             </button>
           </div>
         </aside>
@@ -598,16 +598,22 @@
                 <thead>
                   <tr>
                     <th rowspan="2" style="background: rgba(255,255,255,0.05);">FAMALY HEAD</th>
-                    <th colspan="4"
+                    <th colspan="6"
                       style="text-align: center; background: rgba(16, 185, 129, 0.1); color: var(--success);">Family
                       Members</th>
                     <th rowspan="2" style="background: rgba(255,255,255,0.05); text-align: center;">Actions</th>
                   </tr>
                   <tr>
-                    <th style="font-size: 0.8rem;">LIST NO</th>
+                    <th
+                      style="font-size: 0.75rem; width: 35px; text-align: center; white-space: normal; line-height: 1.1;">
+                      LIST NO</th>
                     <th style="font-size: 0.8rem;">VOTER NAME</th>
-                    <th style="font-size: 0.8rem;">BOOTH NO</th>
+                    <th style="font-size: 0.8rem;">EPIC NO</th>
+                    <th
+                      style="font-size: 0.75rem; width: 50px; text-align: center; white-space: normal; line-height: 1.1;">
+                      BOOTH NO</th>
                     <th style="font-size: 0.8rem;">MOBILE</th>
+                    <th style="font-size: 0.8rem;">ADDRESS</th>
                   </tr>
                 </thead>
                 <tbody id="familyHeadBody">
@@ -1381,7 +1387,7 @@
       const heads = state.voters.filter(v => v.isFamilyHead);
       const lang = state.lang;
       if (!heads.length) {
-        refs.familyHeadBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">${lang === 'mr' ? 'अद्याप कोणतेही कुटुंब प्रमुख नियुक्त केलेले नाहीत.' : 'No family heads designated yet.'}</td></tr>`;
+        refs.familyHeadBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">${lang === 'mr' ? 'अद्याप कोणतेही कुटुंब प्रमुख नियुक्त केलेले नाहीत.' : 'No family heads designated yet.'}</td></tr>`;
         return;
       }
 
@@ -1418,10 +1424,12 @@
           allRows += `
             <tr style="border: 1px solid rgba(255,255,255,0.1);">
               ${headCell}
-              <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1);">${m ? (m.listNo || "---") : "---"}</td>
+              <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1); width: 35px; font-size: 0.85rem; white-space: normal;">${m ? (m.listNo || "---") : "---"}</td>
               <td style="border: 1px solid rgba(255,255,255,0.1); font-weight: 600;">${m ? m.voterName : `<span style="color:var(--text-muted); font-style:italic; font-weight: normal;">No members linked</span>`}</td>
-              <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1);">${m ? (m.boothNo || "---") : "---"}</td>
+              <td style="border: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">${m ? (m.epicNo || "---") : "---"}</td>
+              <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1); width: 50px; font-size: 0.85rem; white-space: normal;">${m ? (m.boothNo || "---") : "---"}</td>
               <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1);">${m ? (m.mobileNo || "---") : "---"}</td>
+              <td style="border: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">${m ? (m.address || "---") : "---"}</td>
               ${actionCell}
             </tr>
           `;
@@ -1438,7 +1446,7 @@
 
     function exportFamilyData() {
       const heads = state.voters.filter(v => v.isFamilyHead);
-      const headers = ["Family Head", "Head EPIC", "Head Booth", "Member Sr.No", "Member Name", "Member Booth", "Member Contact"];
+      const headers = ["Family Head", "Head EPIC", "Head Booth", "Member List No", "Member Name", "Member EPIC", "Member Booth", "Member Mobile", "Member Address"];
       let rows = [];
 
       heads.forEach(h => {
@@ -1446,10 +1454,10 @@
         const members = familyMemberIds.map(mid => state.voters.find(v => v.id === mid)).filter(Boolean);
 
         if (members.length === 0) {
-          rows.push([h.voterName, h.epicNo || "", h.boothNo || "", "", "", "", ""]);
+          rows.push([h.voterName, h.epicNo || "", h.boothNo || "", "", "", "", "", "", ""]);
         } else {
           members.forEach(m => {
-            rows.push([h.voterName, h.epicNo || "", h.boothNo || "", m.listNo || "", m.voterName, m.boothNo || "", m.mobileNo || ""]);
+            rows.push([h.voterName, h.epicNo || "", h.boothNo || "", m.listNo || "", m.voterName, m.epicNo || "", m.boothNo || "", m.mobileNo || "", m.address || ""]);
           });
         }
       });
