@@ -2876,6 +2876,7 @@
     }
 
     function renderStaffDirectory() {
+      const lang = state.lang;
       if (!state.staff.length) {
         refs.staffDirectoryBody.innerHTML = "<tr><td colspan='8'>No staff records found.</td></tr>";
         return;
