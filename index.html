@@ -110,6 +110,9 @@
             <button class="nav-button" data-target="manageAdminSection" data-requires-admin="true">
               <i class="fas fa-user-cog"></i> <span data-translate="nav_manage_admin">Manage Admin</span>
             </button>
+            <button class="nav-button" data-target="familyManagementSection">
+              <i class="fas fa-home"></i> <span data-translate="nav_family_management">Family Management</span>
+            </button>
           </div>
         </aside>
         <div id="sidebarOverlay" class="sidebar-overlay"></div>
@@ -235,6 +238,13 @@
                     <option value="C">C</option>
                   </select>
                 </div>
+                <div class="toggle-group" id="familyHeadToggleGroup">
+                  <label for="isFamilyHead" data-translate="is_family_head">Is Family Head?</label>
+                  <label class="switch">
+                    <input type="checkbox" id="isFamilyHead" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
               </div>
               <div>
                 <label for="address" data-translate="address_label">Address</label>
@@ -349,13 +359,15 @@
             <h2 data-translate="analytics_title">Analytics</h2>
             <div class="role-toggle" style="margin-bottom: 1.5rem;">
               <button class="role-button active" type="button" data-analytics-tab="boothNo"
-                data-translate="booth_wise">Booth Wise</button>
+                data-translate="booth_wise">Booth
+                Wise</button>
               <button class="role-button" type="button" data-analytics-tab="caste" data-translate="caste_wise">Caste
                 Wise</button>
               <button class="role-button" type="button" data-analytics-tab="gender" data-translate="gender_wise">Gender
                 Wise</button>
               <button class="role-button" type="button" data-analytics-tab="district"
-                data-translate="district_wise">District Wise</button>
+                data-translate="district_wise">District
+                Wise</button>
             </div>
             <div class="table-wrapper">
               <table>
@@ -570,6 +582,42 @@
               </table>
             </div>
           </section>
+
+          <section id="familyManagementSection" class="panel">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+              <h2 data-translate="family_management_title" style="margin: 0;">Family Management</h2>
+              <button class="ghost" id="exportFamilyData" style="border-color: var(--success); color: var(--success);">
+                <i class="fas fa-file-excel"></i> Export Family Data
+              </button>
+            </div>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Manage voter families by linking members to
+              identified Family Heads.</p>
+            <div class="table-wrapper">
+              <table style="border-collapse: collapse;">
+                <thead>
+                  <tr>
+                    <th rowspan="2" style="background: rgba(255,255,255,0.05);">FAMALY HEAD</th>
+                    <th colspan="4"
+                      style="text-align: center; background: rgba(16, 185, 129, 0.1); color: var(--success);">Family
+                      Members</th>
+                    <th rowspan="2" style="background: rgba(255,255,255,0.05); text-align: center;">Actions</th>
+                  </tr>
+                  <tr>
+                    <th style="font-size: 0.8rem;">LIST NO</th>
+                    <th style="font-size: 0.8rem;">VOTER NAME</th>
+                    <th style="font-size: 0.8rem;">BOOTH NO</th>
+                    <th style="font-size: 0.8rem;">MOBILE</th>
+                  </tr>
+                </thead>
+                <tbody id="familyHeadBody">
+                  <tr>
+                    <td colspan="6" style="text-align: center; padding: 2rem;">Loading family heads...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
         </div>
       </section>
     </main>
@@ -637,6 +685,13 @@
               <option value="B">B</option>
               <option value="C">C</option>
             </select>
+          </div>
+          <div class="toggle-group" id="editFamilyHeadToggleGroup">
+            <label for="editIsFamilyHead" data-translate="is_family_head">Is Family Head?</label>
+            <label class="switch">
+              <input type="checkbox" id="editIsFamilyHead" />
+              <span class="slider"></span>
+            </label>
           </div>
         </div>
         <div style="margin-top:1rem;">
@@ -808,6 +863,42 @@
     </div>
   </div>
 
+  <div class="modal" id="linkMembersModal">
+    <div class="modal-card fullscreen">
+      <header class="modal-header">
+        <h3 style="margin:0;" data-translate="select_family_members">Select Family Members</h3>
+        <button class="modal-close" type="button" id="linkMembersClose">&times;</button>
+      </header>
+      <div style="padding: 1rem; background: var(--bg-card);">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="linkMembersSearch" placeholder="Search members to link..." style="width: 100%;" />
+        </div>
+      </div>
+      <div class="analytics-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 60px; text-align: center;">Select</th>
+              <th>Name</th>
+              <th>EPIC</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody id="linkMembersList">
+            <tr>
+              <td colspan="4">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="ghost" id="linkMembersCancel">Cancel</button>
+        <button class="primary" id="linkMembersSave">Save Family</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -879,7 +970,7 @@
     };
 
     const casteOptions = ["Maratha", "General", "SC", "ST", "OBC", "VJNT", "NT", "SBC", "EWS", "Other"];
-    const voterCSVHeaders = ["boothNo", "listNo", "voterName", "voterNameMr", "epicNo", "mobileNo", "district", "taluka", "gender", "voterType", "caste", "village", "address"];
+    const voterCSVHeaders = ["boothNo", "listNo", "voterName", "voterNameMr", "epicNo", "mobileNo", "district", "taluka", "gender", "voterType", "caste", "village", "address", "isFamilyHead"];
     const staffCSVHeaders = ["name", "boothNo", "caste", "designation", "workplace", "mobile", "houseVoters"];
     const voterSampleData = [
       voterCSVHeaders,
@@ -902,6 +993,114 @@
       admins: []
     };
 
+    const refs = {
+      authSection: document.getElementById("authSection"),
+      dashboard: document.getElementById("dashboard"),
+      statusBadge: document.getElementById("statusBadge"),
+      welcomeText: document.getElementById("welcomeText"),
+      signOutBtn: document.getElementById("signOutBtn"),
+      adminStatus: document.getElementById("adminStatus"),
+      navButtons: document.querySelectorAll(".nav-button"),
+      panels: document.querySelectorAll("section.panel"),
+      voterTableBody: document.getElementById("voterTableBody"),
+      filterDistrict: document.getElementById("filterDistrict"),
+      filterTaluka: document.getElementById("filterTaluka"),
+      filterBooth: document.getElementById("filterBooth"),
+      filterCaste: document.getElementById("filterCaste"),
+      filterGender: document.getElementById("filterGender"),
+      filterVoterType: document.getElementById("filterVoterType"),
+      searchText: document.getElementById("searchText"),
+      exportVoterDirectory: document.getElementById("exportVoterDirectory"),
+      toast: document.getElementById("toast"),
+      voterImportInput: document.getElementById("importVoterCSV"),
+      staffImportInput: document.getElementById("importStaffCSV"),
+      voterSampleBtn: document.getElementById("downloadVoterSample"),
+      staffSampleBtn: document.getElementById("downloadStaffSample"),
+      voterProgress: {
+        container: document.getElementById("voterProgressContainer"),
+        bar: document.getElementById("voterProgressBar"),
+        stats: document.getElementById("voterImportStats"),
+        percent: document.getElementById("voterProgressPercent"),
+        count: document.getElementById("voterProgressCount")
+      },
+      staffProgress: {
+        container: document.getElementById("staffProgressContainer"),
+        bar: document.getElementById("staffProgressBar"),
+        stats: document.getElementById("staffImportStats"),
+        percent: document.getElementById("staffProgressPercent"),
+        count: document.getElementById("staffProgressCount")
+      },
+      editModal: document.getElementById("editVoterModal"),
+      editModalClose: document.getElementById("editModalClose"),
+      editModalCancel: document.getElementById("editModalCancel"),
+      editForm: document.getElementById("editVoterForm"),
+      editFields: {
+        listNo: document.getElementById("editListNo"),
+        boothNo: document.getElementById("editBoothNo"),
+        voterName: document.getElementById("editVoterName"),
+        voterNameMr: document.getElementById("editVoterNameMr"),
+        epicNo: document.getElementById("editEpicNo"),
+        mobileNo: document.getElementById("editMobileNo"),
+        district: document.getElementById("editDistrict"),
+        taluka: document.getElementById("editTaluka"),
+        gender: document.getElementById("editGender"),
+        voterType: document.getElementById("editVoterType"),
+        caste: document.getElementById("editCaste"),
+        village: document.getElementById("editVillage"),
+        address: document.getElementById("editAddress"),
+        isFamilyHead: document.getElementById("editIsFamilyHead")
+      },
+      analyticsModal: document.getElementById("analyticsModal"),
+      analyticsModalClose: document.getElementById("analyticsModalClose"),
+      analyticsModalExport: document.getElementById("analyticsModalExport"),
+      analyticsList: document.getElementById("analyticsList"),
+      analyticsModal: document.getElementById("analyticsModal"),
+      analyticsModalChip: document.getElementById("analyticsModalChip"),
+      analyticsModalTitle: document.getElementById("analyticsModalTitle"),
+      analyticsSection: document.getElementById("analyticsSection"),
+      boothAnalyticsBody: document.getElementById("boothAnalyticsBody"),
+      staffFilterBooth: document.getElementById("staffFilterBooth"),
+      staffFilterCaste: document.getElementById("staffFilterCaste"),
+      staffSearchText: document.getElementById("staffSearchText"),
+      staffDirectoryBody: document.getElementById("staffDirectoryBody"),
+      exportStaffDirectory: document.getElementById("exportStaffDirectory"),
+      staffModal: document.getElementById("editStaffModal"),
+      staffModalClose: document.getElementById("editStaffModalClose"),
+      staffModalCancel: document.getElementById("editStaffModalCancel"),
+      staffEditForm: document.getElementById("editStaffForm"),
+      staffEditFields: {
+        name: document.getElementById("editStaffName"),
+        nameMr: document.getElementById("editStaffNameMr"),
+        boothNo: document.getElementById("editStaffBooth"),
+        caste: document.getElementById("editStaffCaste"),
+        casteMr: document.getElementById("editStaffCasteMr"),
+        designation: document.getElementById("editStaffDesignation"),
+        designationMr: document.getElementById("editStaffDesignationMr"),
+        workplace: document.getElementById("editStaffWorkplace"),
+        workplaceMr: document.getElementById("editStaffWorkplaceMr"),
+        mobile: document.getElementById("editStaffMobile"),
+        houseVoters: document.getElementById("editStaffHouse")
+      },
+      userLoginsBody: document.getElementById("userLoginsBody"),
+      createAdminForm: document.getElementById("createAdminForm"),
+      adminListBody: document.getElementById("adminListBody"),
+      familyHeadBody: document.getElementById("familyHeadBody"),
+      familySidebarList: document.getElementById("familySidebarList"),
+      linkMembersModal: document.getElementById("linkMembersModal"),
+      linkMembersClose: document.getElementById("linkMembersClose"),
+      linkMembersCancel: document.getElementById("linkMembersCancel"),
+      linkMembersSave: document.getElementById("linkMembersSave"),
+      linkMembersSearch: document.getElementById("linkMembersSearch"),
+      linkMembersList: document.getElementById("linkMembersList"),
+      exportFamilyData: document.getElementById("exportFamilyData")
+    };
+
+    let editingVoterId = null;
+    let editingStaffId = null;
+    let linkingFamilyHeadId = null;
+    let selectedFamilyMemberIds = new Set();
+    let analyticsFilterMeta = null;
+
     const dictionary = {
       en: {
         sign_out: "Sign Out",
@@ -914,6 +1113,11 @@
         nav_staff_directory: "Staff Directory",
         nav_user_logins: "User Logins",
         nav_manage_admin: "Manage Admin",
+        nav_family_management: "Family Management",
+        family_management_title: "Family Management",
+        link_members: "Link Members",
+        family_members_count: "Family Members",
+        select_family_members: "Select Family Members",
         dash_overview: "Dashboard Overview",
         total_voters: "Total Registered Voters",
         female_voters: "Female Voters",
@@ -1011,7 +1215,9 @@
         user_name_col: "User Name",
         edit: "Edit",
         delete: "Delete",
-        print: "Print"
+        print: "Print",
+        family_head_label: "Family Head",
+        is_family_head: "Is Family Head?"
       },
       mr: {
         sign_out: "साइन आउट",
@@ -1024,6 +1230,11 @@
         nav_staff_directory: "कर्मचारी यादी",
         nav_user_logins: "वापरकर्ता लॉगिन",
         nav_manage_admin: "ॲडमिन व्यवस्थापन",
+        nav_family_management: "कुटुंब व्यवस्थापन",
+        family_management_title: "कुटुंब व्यवस्थापन",
+        link_members: "सदस्य जोडा",
+        family_members_count: "कुटुंब सदस्य",
+        select_family_members: "कुटुंब सदस्य निवडा",
         dash_overview: "डॅशबोर्ड सारांश",
         total_voters: "एकूण नोंदणीकृत मतदार",
         female_voters: "महिला मतदार",
@@ -1120,9 +1331,8 @@
         caste_label: "जात",
         village_label: "गाव",
         staff_house_count_label: "घरातील एकूण मतदार",
-        edit: "संपादन",
-        delete: "हटवा",
-        print: "प्रिंट"
+        family_head_label: "कुटुंब प्रमुख",
+        is_family_head: "कुटुंब प्रमुख आहे का?"
       }
     };
 
@@ -1159,110 +1369,161 @@
     document.getElementById("langSelect").addEventListener("change", (e) => {
       state.lang = e.target.value;
       localStorage.setItem("raygaon-lang", state.lang);
-      applyTranslations();
+      updateOverview();
       renderVoterTable();
       renderStaffDirectory();
-      renderAnalytics();
-      updateOverview();
+      renderUserLogins();
+      renderAdmins();
+      renderFamilyHeadTable();
     });
 
-    // Set initial value
-    document.getElementById("langSelect").value = state.lang;
+    function renderFamilyHeadTable() {
+      const heads = state.voters.filter(v => v.isFamilyHead);
+      const lang = state.lang;
+      if (!heads.length) {
+        refs.familyHeadBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">${lang === 'mr' ? 'अद्याप कोणतेही कुटुंब प्रमुख नियुक्त केलेले नाहीत.' : 'No family heads designated yet.'}</td></tr>`;
+        return;
+      }
 
-    const refs = {
-      authSection: document.getElementById("authSection"),
-      dashboard: document.getElementById("dashboard"),
-      statusBadge: document.getElementById("statusBadge"),
-      welcomeText: document.getElementById("welcomeText"),
-      signOutBtn: document.getElementById("signOutBtn"),
-      adminStatus: document.getElementById("adminStatus"),
-      navButtons: document.querySelectorAll(".nav-button"),
-      panels: document.querySelectorAll("section.panel"),
-      voterTableBody: document.getElementById("voterTableBody"),
-      filterDistrict: document.getElementById("filterDistrict"),
-      filterTaluka: document.getElementById("filterTaluka"),
-      filterBooth: document.getElementById("filterBooth"),
-      filterCaste: document.getElementById("filterCaste"),
-      filterGender: document.getElementById("filterGender"),
-      filterVoterType: document.getElementById("filterVoterType"),
-      searchText: document.getElementById("searchText"),
-      exportVoterDirectory: document.getElementById("exportVoterDirectory"),
-      toast: document.getElementById("toast"),
-      voterImportInput: document.getElementById("importVoterCSV"),
-      staffImportInput: document.getElementById("importStaffCSV"),
-      voterSampleBtn: document.getElementById("downloadVoterSample"),
-      staffSampleBtn: document.getElementById("downloadStaffSample"),
-      voterProgress: {
-        container: document.getElementById("voterProgressContainer"),
-        bar: document.getElementById("voterProgressBar"),
-        stats: document.getElementById("voterImportStats"),
-        percent: document.getElementById("voterProgressPercent"),
-        count: document.getElementById("voterProgressCount")
-      },
-      staffProgress: {
-        container: document.getElementById("staffProgressContainer"),
-        bar: document.getElementById("staffProgressBar"),
-        stats: document.getElementById("staffImportStats"),
-        percent: document.getElementById("staffProgressPercent"),
-        count: document.getElementById("staffProgressCount")
-      },
-      editModal: document.getElementById("editVoterModal"),
-      editModalClose: document.getElementById("editModalClose"),
-      editModalCancel: document.getElementById("editModalCancel"),
-      editForm: document.getElementById("editVoterForm"),
-      editFields: {
-        listNo: document.getElementById("editListNo"),
-        boothNo: document.getElementById("editBoothNo"),
-        voterName: document.getElementById("editVoterName"),
-        voterNameMr: document.getElementById("editVoterNameMr"),
-        epicNo: document.getElementById("editEpicNo"),
-        mobileNo: document.getElementById("editMobileNo"),
-        district: document.getElementById("editDistrict"),
-        taluka: document.getElementById("editTaluka"),
-        gender: document.getElementById("editGender"),
-        voterType: document.getElementById("editVoterType"),
-        caste: document.getElementById("editCaste"),
-        village: document.getElementById("editVillage"),
-        address: document.getElementById("editAddress")
-      },
-      analyticsModal: document.getElementById("analyticsModal"),
-      analyticsModalClose: document.getElementById("analyticsModalClose"),
-      analyticsModalExport: document.getElementById("analyticsModalExport"),
-      analyticsList: document.getElementById("analyticsList"),
-      analyticsModal: document.getElementById("analyticsModal"),
-      analyticsModalChip: document.getElementById("analyticsModalChip"),
-      analyticsModalTitle: document.getElementById("analyticsModalTitle"),
-      analyticsSection: document.getElementById("analyticsSection"),
-      boothAnalyticsBody: document.getElementById("boothAnalyticsBody"),
-      staffFilterBooth: document.getElementById("staffFilterBooth"),
-      staffFilterCaste: document.getElementById("staffFilterCaste"),
-      staffSearchText: document.getElementById("staffSearchText"),
-      staffDirectoryBody: document.getElementById("staffDirectoryBody"),
-      exportStaffDirectory: document.getElementById("exportStaffDirectory"),
-      staffModal: document.getElementById("editStaffModal"),
-      staffModalClose: document.getElementById("editStaffModalClose"),
-      staffModalCancel: document.getElementById("editStaffModalCancel"),
-      staffEditForm: document.getElementById("editStaffForm"),
-      staffEditFields: {
-        name: document.getElementById("editStaffName"),
-        nameMr: document.getElementById("editStaffNameMr"),
-        boothNo: document.getElementById("editStaffBooth"),
-        caste: document.getElementById("editStaffCaste"),
-        casteMr: document.getElementById("editStaffCasteMr"),
-        designation: document.getElementById("editStaffDesignation"),
-        designationMr: document.getElementById("editStaffDesignationMr"),
-        workplace: document.getElementById("editStaffWorkplace"),
-        workplaceMr: document.getElementById("editStaffWorkplaceMr"),
-        mobile: document.getElementById("editStaffMobile"),
-        houseVoters: document.getElementById("editStaffHouse")
-      },
-      userLoginsBody: document.getElementById("userLoginsBody"),
-      createAdminForm: document.getElementById("createAdminForm"),
-      adminListBody: document.getElementById("adminListBody")
+      let allRows = "";
+      heads.forEach(h => {
+        const familyMemberIds = h.familyMembers ? Object.keys(h.familyMembers) : [];
+        const members = familyMemberIds.map(mid => state.voters.find(v => v.id === mid)).filter(Boolean);
+
+        const rowCount = Math.max(members.length, 1);
+
+        for (let i = 0; i < rowCount; i++) {
+          const m = members[i];
+          let headCell = "";
+          let actionCell = "";
+
+          if (i === 0) {
+            headCell = `
+              <td rowspan="${rowCount}" style="vertical-align: middle; background: rgba(255,255,255,0.02); min-width: 250px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="font-weight: 700; color: var(--primary); font-size: 1rem; text-transform: uppercase;">${h.voterName}</div>
+                <div style="font-weight: 600; margin: 0.2rem 0; color: var(--text-white); font-size: 0.9rem;">${h.epicNo || "---"}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">BOOTH NO ${h.boothNo || "---"}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">MOBILE ${h.mobileNo || ""}</div>
+              </td>
+            `;
+            actionCell = `
+              <td rowspan="${rowCount}" style="vertical-align: middle; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                <button class="action-btn link" data-head-id="${h.id}">
+                  <i class="fas fa-link"></i> ${dictionary[lang].link_members}
+                </button>
+              </td>
+            `;
+          }
+
+          allRows += `
+            <tr style="border: 1px solid rgba(255,255,255,0.1);">
+              ${headCell}
+              <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1);">${m ? (m.listNo || "---") : "---"}</td>
+              <td style="border: 1px solid rgba(255,255,255,0.1); font-weight: 600;">${m ? m.voterName : `<span style="color:var(--text-muted); font-style:italic; font-weight: normal;">No members linked</span>`}</td>
+              <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1);">${m ? (m.boothNo || "---") : "---"}</td>
+              <td style="text-align: center; border: 1px solid rgba(255,255,255,0.1);">${m ? (m.mobileNo || "---") : "---"}</td>
+              ${actionCell}
+            </tr>
+          `;
+        }
+      });
+
+      refs.familyHeadBody.innerHTML = allRows;
+
+      // Add click events for link buttons
+      refs.familyHeadBody.querySelectorAll(".action-btn.link").forEach(btn => {
+        btn.onclick = () => openLinkMembersModal(btn.getAttribute("data-head-id"));
+      });
+    }
+
+    function exportFamilyData() {
+      const heads = state.voters.filter(v => v.isFamilyHead);
+      const headers = ["Family Head", "Head EPIC", "Head Booth", "Member Sr.No", "Member Name", "Member Booth", "Member Contact"];
+      let rows = [];
+
+      heads.forEach(h => {
+        const familyMemberIds = h.familyMembers ? Object.keys(h.familyMembers) : [];
+        const members = familyMemberIds.map(mid => state.voters.find(v => v.id === mid)).filter(Boolean);
+
+        if (members.length === 0) {
+          rows.push([h.voterName, h.epicNo || "", h.boothNo || "", "", "", "", ""]);
+        } else {
+          members.forEach(m => {
+            rows.push([h.voterName, h.epicNo || "", h.boothNo || "", m.listNo || "", m.voterName, m.boothNo || "", m.mobileNo || ""]);
+          });
+        }
+      });
+
+      const csv = [headers, ...rows].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\r\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "family_management_report.csv";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function openLinkMembersModal(headId) {
+      linkingFamilyHeadId = headId;
+      selectedFamilyMemberIds.clear();
+      const head = state.voters.find(v => v.id === headId);
+      if (head && head.familyMembers) {
+        Object.keys(head.familyMembers).forEach(mid => selectedFamilyMemberIds.add(mid));
+      }
+      renderLinkMembersList();
+      refs.linkMembersModal.classList.add("visible");
+    }
+
+    function renderLinkMembersList() {
+      const query = refs.linkMembersSearch.value.trim().toLowerCase();
+      // Filter out only voters from the SAME booth as the head (logical family grouping)
+      const head = state.voters.find(v => v.id === linkingFamilyHeadId);
+      const candidates = state.voters.filter(v => {
+        if (v.id === linkingFamilyHeadId) return false;
+        if (head && v.boothNo !== head.boothNo) return false;
+        if (query && !(v.voterName.toLowerCase().includes(query) || v.epicNo.toLowerCase().includes(query))) return false;
+        return true;
+      });
+
+      const rows = candidates.map(v => {
+        const isSelected = selectedFamilyMemberIds.has(v.id);
+        return `
+          <tr style="cursor:pointer;" onclick="toggleFamilyMemberSelection('${v.id}')">
+            <td style="text-align:center;">
+              <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleFamilyMemberSelection('${v.id}')" />
+            </td>
+            <td>
+              <div style="font-weight:600;">${v.voterName}</div>
+              <div style="color:var(--accent); font-size:0.8rem;">${v.voterNameMr || ""}</div>
+            </td>
+            <td>${v.epicNo}</td>
+            <td style="font-size:0.8rem;">${v.address || ""}</td>
+          </tr>
+        `;
+      }).join("");
+      refs.linkMembersList.innerHTML = rows || `<tr><td colspan="4" style="text-align:center;">No results found in this booth</td></tr>`;
+    }
+
+    window.toggleFamilyMemberSelection = (vId) => {
+      if (selectedFamilyMemberIds.has(vId)) {
+        selectedFamilyMemberIds.delete(vId);
+      } else {
+        selectedFamilyMemberIds.add(vId);
+      }
+      renderLinkMembersList();
     };
-    let editingVoterId = null;
-    let editingStaffId = null;
-    let analyticsFilterMeta = null;
+
+    window.navigateToFamilyHead = (id) => {
+      const navBtn = document.querySelector('button[data-target="familyManagementSection"]');
+      if (navBtn) navBtn.click();
+    };
+
+
+
+    // Set initial value
+    if (document.getElementById("langSelect")) {
+      document.getElementById("langSelect").value = state.lang;
+    }
 
     function populateDistricts(selectEl) {
       Object.keys(districtTalukaMap).sort().forEach(district => {
@@ -1542,6 +1803,7 @@
         caste: document.getElementById("casteSelect").value,
         village: document.getElementById("villageName").value.trim(),
         address: document.getElementById("address").value.trim(),
+        isFamilyHead: document.getElementById("isFamilyHead").checked,
         createdAt: Date.now()
       };
       try {
@@ -1642,6 +1904,7 @@
       f.caste.value = voter.caste || "";
       f.village.value = voter.village || "";
       f.address.value = voter.address || "";
+      f.isFamilyHead.checked = !!voter.isFamilyHead;
       refs.editModal.classList.add("visible");
     }
 
@@ -1679,7 +1942,8 @@
         voterType: refs.editFields.voterType.value,
         caste: refs.editFields.caste.value.trim(),
         village: refs.editFields.village.value.trim(),
-        address: refs.editFields.address.value.trim()
+        address: refs.editFields.address.value.trim(),
+        isFamilyHead: refs.editFields.isFamilyHead.checked
       };
       try {
         await update(ref(db, `voters/${editingVoterId}`), payload);
@@ -1752,6 +2016,20 @@
     setupTransliteration("editStaffCaste", "editStaffCasteMr");
     setupTransliteration("editStaffDesignation", "editStaffDesignationMr");
     setupTransliteration("editStaffWorkplace", "editStaffWorkplaceMr");
+
+    // Toggle Group Click Handlers
+    document.getElementById("familyHeadToggleGroup")?.addEventListener("click", (e) => {
+      if (e.target.tagName !== 'INPUT') {
+        const checkbox = document.getElementById("isFamilyHead");
+        if (checkbox) checkbox.checked = !checkbox.checked;
+      }
+    });
+    document.getElementById("editFamilyHeadToggleGroup")?.addEventListener("click", (e) => {
+      if (e.target.tagName !== 'INPUT') {
+        const checkbox = document.getElementById("editIsFamilyHead");
+        if (checkbox) checkbox.checked = !checkbox.checked;
+      }
+    });
 
     async function getMarathiText(text) {
       if (!text || text.length < 2) return text;
@@ -2311,7 +2589,13 @@
           return `
           <tr>
             <td>${v.listNo || ""}</td>
-            <td>${v.voterName || ""}<br><small style="color:var(--text-muted)">${v.voterNameMr || ""}</small></td>
+            <td>
+              <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                ${v.voterName || ""}
+                ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${state.lang === 'mr' ? 'प्रमुख' : 'Head'}</span>` : ''}
+              </div>
+              <small style="color:var(--text-muted)">${v.voterNameMr || ""}</small>
+            </td>
             <td>${v.epicNo || ""}</td>
             <td>${v.boothNo || ""}</td>
             <td>${v.district || ""}</td>
@@ -2559,7 +2843,10 @@
           ${matches.map(v => `
             <div class="result-card">
               <div class="result-info">
-                <h4>${v.voterName || 'N/A'}</h4>
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                  <h4 style="margin: 0;">${v.voterName || 'N/A'}</h4>
+                  ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold;">${state.lang === 'mr' ? 'प्रमुख' : 'Head'}</span>` : ''}
+                </div>
                 <div class="result-meta">
                   <div class="meta-item">
                     <i class="fas fa-id-card"></i> <strong>EPIC:</strong> ${v.epicNo || 'N/A'}
@@ -2705,6 +2992,7 @@
           caste: row.caste || "",
           village: row.village || "",
           address: row.address || "",
+          isFamilyHead: row.isFamilyHead === "true" || row.isFamilyHead === "TRUE" || row.isFamilyHead === "1",
           createdAt: Date.now()
         };
         try {
@@ -2779,6 +3067,7 @@
         updateOverview();
         renderVoterTable();
         renderAnalytics();
+        renderFamilyHeadTable();
       });
       onValue(ref(db, "staff"), (snapshot) => {
         const data = snapshot.val() || {};
@@ -3120,7 +3409,7 @@
       }
 
       const title = `Raygaon Voter Directory Exported: ${new Date().toLocaleDateString()}`;
-      const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type"];
+      const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type", "Family Head"];
       const rows = filtered
         .sort((a, b) => Number(a.listNo || 0) - Number(b.listNo || 0))
         .map(v => [
@@ -3135,7 +3424,8 @@
           v.gender || "",
           v.mobileNo || "",
           v.address || "",
-          v.voterType || ""
+          v.voterType || "",
+          v.isFamilyHead ? "Yes" : "No"
         ]);
 
       const csvContent = [
@@ -3206,7 +3496,10 @@
           <tr>
             <td>${v.listNo}</td>
             <td>
-              <div style="font-weight: 600;">${v.voterName}</div>
+              <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                ${v.voterName}
+                ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${lang === 'mr' ? 'प्रमुख' : 'Head'}</span>` : ''}
+              </div>
               <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${v.voterNameMr || ""}</div>
             </td>
             <td>${v.epicNo}</td>
@@ -3291,6 +3584,33 @@
 
     if (localStorage.getItem(ADMIN_SESSION_KEY) === "true") {
       setRole("admin", { displayName: ADMIN_CREDENTIALS.displayName, email: ADMIN_CREDENTIALS.email });
+    }
+
+    // Family Management Events
+    if (refs.linkMembersSearch) {
+      refs.linkMembersSearch.oninput = renderLinkMembersList;
+      refs.linkMembersClose.onclick = () => refs.linkMembersModal.classList.remove("visible");
+      refs.linkMembersCancel.onclick = () => refs.linkMembersModal.classList.remove("visible");
+      refs.linkMembersSave.onclick = async () => {
+        if (!linkingFamilyHeadId) return;
+        const membersObj = {};
+        selectedFamilyMemberIds.forEach(id => membersObj[id] = true);
+
+        try {
+          await update(ref(db, `voters/${linkingFamilyHeadId}`), {
+            familyMembers: membersObj
+          });
+          showToast("Family members linked successfully", "success");
+          refs.linkMembersModal.classList.remove("visible");
+        } catch (err) {
+          console.error(err);
+          showToast("Error updating family", "error");
+        }
+      };
+    }
+
+    if (refs.exportFamilyData) {
+      refs.exportFamilyData.onclick = exportFamilyData;
     }
 
     subscribeToData();
