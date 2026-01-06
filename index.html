@@ -17,11 +17,13 @@
 <body class="login-active">
   <div class="app-shell">
     <header class="app-header">
-      <div style="display:flex;align-items:center;gap:1.5rem;">
-        <button class="mobile-menu-btn" id="mobileMenuBtn">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="title">Raygaon Voter System</div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="title"
+        style="position: absolute; left: 50%; transform: translateX(-50%); text-align: center; line-height: 1.2; display: flex; flex-direction: column; align-items: center; width: max-content;">
+        <div style="font-size: 1.4rem;">RAYGAON VOTER MANAGEMENT</div>
+        <div style="font-size: 1rem; font-weight: 500;">रायगाव मतदार व्यवस्थापन</div>
       </div>
       <div class="meta">
         <select id="langSelect" class="lang-selector">
@@ -2693,17 +2695,17 @@
         showToast("Nothing to export", "error");
         return;
       }
-      const headers = ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
+      const headers = ["List No.", "Name (EN)", "Name (MR)", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
       const rows = analyticsFilterMeta.voters.map(v => [
         v.listNo || "",
         v.voterName || "",
+        v.voterNameMr || "",
         v.epicNo || "",
         v.boothNo || "",
         v.district || "",
         v.taluka || "",
         v.caste || "",
         v.gender || "",
-        v.voterType || "",
         v.mobileNo || "",
         v.address || ""
       ]);
@@ -3383,13 +3385,17 @@
 
       // Added a descriptive title row at the top as requested
       const titleRow = [`Raygaon Staff Directory (Filter: Booth-${boothFilter}, Caste-${casteFilter})`];
-      const headers = ["Name", "Booth", "Caste", "Designation", "Workplace", "Mobile", "House Voters"];
+      const headers = ["Name (EN)", "Name (MR)", "Booth", "Caste (EN)", "Caste (MR)", "Designation (EN)", "Designation (MR)", "Workplace (EN)", "Workplace (MR)", "Mobile", "House Voters"];
       const rows = filtered.map(staff => [
         staff.name || "",
+        staff.nameMr || "",
         staff.boothNo || "",
         staff.caste || "",
+        staff.casteMr || "",
         staff.designation || "",
+        staff.designationMr || "",
         staff.workplace || "",
+        staff.workplaceMr || "",
         staff.mobile || "",
         staff.houseVoters ?? "0"
       ]);
