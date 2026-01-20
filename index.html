@@ -97,6 +97,9 @@
             <button class="nav-button" data-target="directorySection">
               <i class="fas fa-address-book"></i> <span data-translate="nav_directory">Voter Directory</span>
             </button>
+            <button class="nav-button" data-target="deceasedListSection" data-requires-admin="true">
+              <i class="fas fa-user-times"></i> <span data-translate="nav_deceased_list">Deceased List</span>
+            </button>
             <button class="nav-button" data-target="staffSection" data-requires-admin="true">
               <i class="fas fa-chalkboard-teacher"></i> <span data-translate="nav_staff_info">Staff Info</span>
             </button>
@@ -108,6 +111,9 @@
             </button>
             <button class="nav-button" data-target="analyticsSection">
               <i class="fas fa-chart-pie"></i> <span data-translate="nav_analytics">Analytics</span>
+            </button>
+            <button class="nav-button" data-target="smartToolsSection">
+              <i class="fas fa-copy"></i> <span data-translate="nav_smart_tools">Duplicate Voter</span>
             </button>
             <button class="nav-button" data-target="userLoginsSection" data-requires-admin="true">
               <i class="fas fa-user-shield"></i> <span data-translate="nav_user_logins">User Logins</span>
@@ -144,6 +150,78 @@
 
             <div id="boothStatsGrid" class="stat-grid" style="margin-top: 1.5rem;">
               <!-- Booth cards will be injected here -->
+            </div>
+          </section>
+
+          <section id="directorySection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <h2 data-translate="voter_directory_title">Voter Directory</h2>
+            <div class="import-toolbar"
+              style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <div style="flex: 1; text-align: center;">
+                <p style="margin:0;color:var(--muted);font-size:0.9rem;" data-translate="filter_voters_desc">Filter
+                  voters by district, taluka, caste,
+                  gender, or voter type and export to Excel.</p>
+              </div>
+              <button type="button" class="download-btn" id="bulkTransliterateBtn"
+                style="margin-right:0.5rem; display:none;" data-requires-admin="true">
+                <i class="fas fa-sync-alt"></i> Convert All to Marathi
+              </button>
+              <button type="button" class="export-btn" id="exportVoterDirectory">
+                <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
+              </button>
+            </div>
+            <div class="filters">
+              <input type="text" id="searchText" data-translate-placeholder="search_placeholder"
+                placeholder="Search name / EPIC" />
+              <select id="filterDistrict">
+                <option value="" data-translate="all_districts">All Districts</option>
+              </select>
+              <select id="filterTaluka">
+                <option value="" data-translate="all_talukas">All Talukas</option>
+              </select>
+              <select id="filterBooth">
+                <option value="" data-translate="all_booths">All Booths</option>
+              </select>
+              <select id="filterCaste">
+                <option value="" data-translate="all_castes">All Castes</option>
+              </select>
+              <select id="filterGender">
+                <option value="" data-translate="all_genders">All Genders</option>
+                <option value="Female" data-translate="female_header">Female</option>
+                <option value="Male" data-translate="male_header">Male</option>
+                <option value="Other" data-translate="other_header">Other</option>
+              </select>
+              <select id="filterVoterType">
+                <option value="" data-translate="all_types">All Types</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+              </select>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>List No.</th>
+                    <th>Name</th>
+                    <th>EPIC</th>
+                    <th>Booth</th>
+                    <th>District</th>
+                    <th>Taluka</th>
+                    <th>Caste</th>
+                    <th>Gender</th>
+                    <th>Mobile</th>
+                    <th>Address</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="voterTableBody">
+                  <tr>
+                    <td colspan="11">No voter records found.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 
@@ -339,6 +417,189 @@
             </form>
           </section>
 
+          <section id="staffDirectorySection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <h2 data-translate="staff_directory_title">Raygaon Staff Directory</h2>
+            <div class="import-toolbar"
+              style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <div style="flex: 1; text-align: center;">
+                <p style="margin:0;color:var(--muted);font-size:0.9rem;" data-translate="filter_staff_desc">Filter
+                  Raygaon staff by booth and caste, then
+                  export to Excel.</p>
+              </div>
+              <button type="button" class="download-btn" id="bulkTransliterateStaffBtn"
+                style="margin-right:0.5rem; display:none;" data-requires-admin="true">
+                <i class="fas fa-sync-alt"></i> Convert Staff to Marathi
+              </button>
+              <button type="button" class="export-btn" id="exportStaffDirectory">
+                <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
+              </button>
+            </div>
+            <div class="filters">
+              <input type="text" id="staffSearchText" data-translate-placeholder="staff_search_placeholder"
+                placeholder="Search staff by name" />
+              <select id="staffFilterBooth">
+                <option value="" data-translate="all_booths">All Booths</option>
+              </select>
+              <select id="staffFilterCaste">
+                <option value="" data-translate="all_castes">All Castes</option>
+              </select>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-translate="name_col">Name</th>
+                    <th data-translate="booth">Booth</th>
+                    <th data-translate="caste">Caste</th>
+                    <th data-translate="staff_designation_label">Designation</th>
+                    <th data-translate="staff_workplace_label">Workplace</th>
+                    <th data-translate="mobile">Mobile</th>
+                    <th data-translate="house_voters_col">House Voters</th>
+                    <th data-translate="actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="staffDirectoryBody">
+                  <tr>
+                    <td colspan="8" data-translate="no_staff_found">No staff records found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+
+          <section id="deceasedListSection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <div class="panel-header"
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <div>
+                <h2 data-translate="deceased_list_title">Deceased Voter List</h2>
+                <p style="color:var(--text-muted);" data-translate="deceased_list_desc">List of voters marked as
+                  deceased. You can restore them if needed.</p>
+              </div>
+              <div>
+                <button type="button" class="export-btn" id="exportDeceasedList" style="margin-right: 1rem;">
+                  <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
+                </button>
+                <span style="background:var(--danger); color:white; padding: 0.2rem 0.6rem; border-radius:4px;">Total:
+                  <span id="deceasedCount">0</span></span>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-translate="booth">Booth</th>
+                    <th data-translate="voter_list_no_label">List No</th>
+                    <th data-translate="name_col">Name</th>
+                    <th data-translate="gender_label">Gender</th>
+                    <th data-translate="epic">EPIC</th>
+                    <th data-translate="actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="deceasedTableBody">
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="familyManagementSection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+              <h2 data-translate="family_management_title" style="margin: 0;">Family Management</h2>
+              <button class="ghost" id="exportFamilyData" style="border-color: var(--success); color: var(--success);">
+                <i class="fas fa-file-excel"></i> Export Family Data
+              </button>
+            </div>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Manage voter families by linking members to
+              identified Family Heads.</p>
+            <div class="table-wrapper">
+              <table style="border-collapse: collapse;">
+                <thead>
+                  <tr>
+                    <th rowspan="2" style="background: rgba(255,255,255,0.05);">FAMALY HEAD</th>
+                    <th colspan="6"
+                      style="text-align: center; background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                      Family
+                      Members</th>
+                    <th rowspan="2" style="background: rgba(255,255,255,0.05); text-align: center;">Actions</th>
+                  </tr>
+                  <tr>
+                    <th
+                      style="font-size: 0.75rem; width: 35px; text-align: center; white-space: normal; line-height: 1.1;">
+                      LIST NO</th>
+                    <th style="font-size: 0.8rem;">VOTER NAME</th>
+                    <th style="font-size: 0.8rem;">EPIC NO</th>
+                    <th
+                      style="font-size: 0.75rem; width: 50px; text-align: center; white-space: normal; line-height: 1.1;">
+                      BOOTH NO</th>
+                    <th style="font-size: 0.8rem;">MOBILE</th>
+                    <th style="font-size: 0.8rem;">ADDRESS</th>
+                  </tr>
+                </thead>
+                <tbody id="familyHeadBody">
+                  <tr>
+                    <td colspan="6" style="text-align: center; padding: 2rem;">Loading family heads...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+
+          <section id="smartToolsSection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <h2 data-translate="smart_tools_title">Smart Tools</h2>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem; max-width: 800px;"
+              data-translate="smart_tools_desc">Powerful tools for election management: Duplicate Finder Tool.</p>
+
+            <div class="role-toggle" style="margin-bottom: 1.5rem; display: none;">
+              <button class="role-button active" type="button" data-tool-tab="duplicateFinder"
+                data-translate="duplicate_finder_tab">Duplicate Finder</button>
+            </div>
+
+            <!-- Duplicate Finder Tab -->
+            <div id="duplicateFinderTab">
+              <div class="tool-hero"
+                style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%); border: 1px solid var(--bg-card-border); padding: 3rem 2rem; border-radius: 1.5rem; text-align: center; margin-bottom: 2rem;">
+                <div
+                  style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--danger); font-size: 2.5rem; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);">
+                  <i class="fas fa-users-slash"></i>
+                </div>
+                <h3 data-translate="find_duplicates_heading"
+                  style="margin-bottom:0.75rem; color:white; font-size: 1.75rem; font-family: 'Syne', sans-serif;">
+                  Duplicate Voter Detector</h3>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem; line-height: 1.6;"
+                  data-translate="find_duplicates_desc">
+                  Detects voters with identical names and genders to help clean the list and ensure data integrity.
+                </p>
+                <button class="primary" id="runDuplicateScanBtn"
+                  style="padding: 1rem 2.5rem; font-size: 1.1rem; gap: 0.75rem; display: inline-flex; align-items: center;">
+                  <i class="fas fa-search"></i> <span data-translate="scan_duplicates_btn">Scan Database Now</span>
+                </button>
+                <div id="scanStatus"
+                  style="margin-top: 1.5rem; color: var(--success); font-weight: 500; display: none;">
+                  <i class="fas fa-check-circle"></i> Scan Complete!
+                </div>
+              </div>
+
+              <div id="duplicateResultsArea" style="display: none; animation: fadeIn 0.5s ease-out;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                  <h4 data-translate="scan_results"
+                    style="color:white; font-size: 1.25rem; font-family: 'Syne', sans-serif; margin: 0;">Scan Results
+                  </h4>
+                  <div id="duplicateSummary"
+                    style="background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 0.5rem 1rem; border-radius: 99px; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.2);">
+                    0 Duplicates Found
+                  </div>
+                </div>
+                <div id="duplicateTableBody"
+                  style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
+                  <!-- Card-based results will be injected here -->
+                </div>
+              </div>
+            </div>
+
+          </section>
+
           <section id="searchVoterSection" class="panel" style="text-align: center;">
             <h2 data-translate="search_voter_title">Search Voter</h2>
             <p style="color: var(--text-muted); margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;"
@@ -392,127 +653,20 @@
             </div>
           </section>
 
-          <section id="directorySection" class="panel">
-            <h2 data-translate="voter_directory_title">Voter Directory</h2>
-            <div class="import-toolbar"
-              style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
-              <div style="flex: 1; text-align: center;">
-                <p style="margin:0;color:var(--muted);font-size:0.9rem;" data-translate="filter_voters_desc">Filter
-                  voters by district, taluka, caste,
-                  gender, or voter type and export to Excel.</p>
-              </div>
-              <button type="button" class="download-btn" id="bulkTransliterateBtn"
-                style="margin-right:0.5rem; display:none;" data-requires-admin="true">
-                <i class="fas fa-sync-alt"></i> Convert All to Marathi
-              </button>
-              <button type="button" class="export-btn" id="exportVoterDirectory">
-                <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
-              </button>
-            </div>
-            <div class="filters">
-              <input type="text" id="searchText" data-translate-placeholder="search_placeholder"
-                placeholder="Search name / EPIC" />
-              <select id="filterDistrict">
-                <option value="" data-translate="all_districts">All Districts</option>
-              </select>
-              <select id="filterTaluka">
-                <option value="" data-translate="all_talukas">All Talukas</option>
-              </select>
-              <select id="filterBooth">
-                <option value="" data-translate="all_booths">All Booths</option>
-              </select>
-              <select id="filterCaste">
-                <option value="" data-translate="all_castes">All Castes</option>
-              </select>
-              <select id="filterGender">
-                <option value="" data-translate="all_genders">All Genders</option>
-                <option value="Female" data-translate="female_header">Female</option>
-                <option value="Male" data-translate="male_header">Male</option>
-                <option value="Other" data-translate="other_header">Other</option>
-              </select>
-              <select id="filterVoterType">
-                <option value="" data-translate="all_types">All Types</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-              </select>
-            </div>
-            <div class="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>List No.</th>
-                    <th>Name</th>
-                    <th>EPIC</th>
-                    <th>Booth</th>
-                    <th>District</th>
-                    <th>Taluka</th>
-                    <th>Caste</th>
-                    <th>Gender</th>
-                    <th>Mobile</th>
-                    <th>Address</th>
-                    <th>Type</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="voterTableBody">
-                  <tr>
-                    <td colspan="11">No voter records found.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
 
-          <section id="staffDirectorySection" class="panel">
-            <h2 data-translate="staff_directory_title">Raygaon Staff Directory</h2>
-            <div class="import-toolbar"
-              style="margin-bottom:0.5rem; display: flex; align-items: center; justify-content: space-between;">
-              <div style="flex: 1; text-align: center;">
-                <p style="margin:0;color:var(--muted);font-size:0.9rem;" data-translate="filter_staff_desc">Filter
-                  Raygaon staff by booth and caste, then
-                  export to Excel.</p>
-              </div>
-              <button type="button" class="download-btn" id="bulkTransliterateStaffBtn"
-                style="margin-right:0.5rem; display:none;" data-requires-admin="true">
-                <i class="fas fa-sync-alt"></i> Convert Staff to Marathi
-              </button>
-              <button type="button" class="export-btn" id="exportStaffDirectory">
-                <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
-              </button>
-            </div>
-            <div class="filters">
-              <input type="text" id="staffSearchText" data-translate-placeholder="staff_search_placeholder"
-                placeholder="Search staff by name" />
-              <select id="staffFilterBooth">
-                <option value="" data-translate="all_booths">All Booths</option>
-              </select>
-              <select id="staffFilterCaste">
-                <option value="" data-translate="all_castes">All Castes</option>
-              </select>
-            </div>
-            <div class="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th data-translate="name_col">Name</th>
-                    <th data-translate="booth">Booth</th>
-                    <th data-translate="caste">Caste</th>
-                    <th data-translate="staff_designation_label">Designation</th>
-                    <th data-translate="staff_workplace_label">Workplace</th>
-                    <th data-translate="mobile">Mobile</th>
-                    <th data-translate="house_voters_col">House Voters</th>
-                    <th data-translate="actions">Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="staffDirectoryBody">
-                  <tr>
-                    <td colspan="8" data-translate="no_staff_found">No staff records found.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
           <section id="userLoginsSection" class="panel">
             <h2 data-translate="user_logins_title">User Logins</h2>
@@ -585,47 +739,7 @@
             </div>
           </section>
 
-          <section id="familyManagementSection" class="panel">
-            <div
-              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-              <h2 data-translate="family_management_title" style="margin: 0;">Family Management</h2>
-              <button class="ghost" id="exportFamilyData" style="border-color: var(--success); color: var(--success);">
-                <i class="fas fa-file-excel"></i> Export Family Data
-              </button>
-            </div>
-            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Manage voter families by linking members to
-              identified Family Heads.</p>
-            <div class="table-wrapper">
-              <table style="border-collapse: collapse;">
-                <thead>
-                  <tr>
-                    <th rowspan="2" style="background: rgba(255,255,255,0.05);">FAMALY HEAD</th>
-                    <th colspan="6"
-                      style="text-align: center; background: rgba(16, 185, 129, 0.1); color: var(--success);">Family
-                      Members</th>
-                    <th rowspan="2" style="background: rgba(255,255,255,0.05); text-align: center;">Actions</th>
-                  </tr>
-                  <tr>
-                    <th
-                      style="font-size: 0.75rem; width: 35px; text-align: center; white-space: normal; line-height: 1.1;">
-                      LIST NO</th>
-                    <th style="font-size: 0.8rem;">VOTER NAME</th>
-                    <th style="font-size: 0.8rem;">EPIC NO</th>
-                    <th
-                      style="font-size: 0.75rem; width: 50px; text-align: center; white-space: normal; line-height: 1.1;">
-                      BOOTH NO</th>
-                    <th style="font-size: 0.8rem;">MOBILE</th>
-                    <th style="font-size: 0.8rem;">ADDRESS</th>
-                  </tr>
-                </thead>
-                <tbody id="familyHeadBody">
-                  <tr>
-                    <td colspan="6" style="text-align: center; padding: 2rem;">Loading family heads...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
+
         </div>
       </section>
     </main>
@@ -1117,6 +1231,14 @@
         nav_staff_info: "Staff Info",
         nav_search: "Search Voter",
         nav_analytics: "Analytics",
+        nav_smart_tools: "Duplicate Voter",
+        smart_tools_title: "Duplicate Voter Detector",
+        smart_tools_desc: "Advanced tool for voter list cleaning.",
+        duplicate_finder_tab: "Duplicate Finder",
+        find_duplicates_heading: "Duplicate Voter Detector",
+        find_duplicates_desc: "Detects voters with identical names and genders to help clean the list.",
+        scan_duplicates_btn: "Scan For Duplicates",
+        scan_results: "Scan Results",
         nav_directory: "Voter Directory",
         nav_staff_directory: "Staff Directory",
         nav_user_logins: "User Logins",
@@ -1221,11 +1343,17 @@
         user_logins_title: "User Logins",
         user_logins_desc: "List of users who have logged in via Google.",
         user_name_col: "User Name",
+        nav_deceased_list: "Deceased List",
+        deceased_list_title: "Deceased Voter List",
+        deceased_list_desc: "List of voters marked as deceased. You can restore them if needed.",
+        restore_btn: "Restore to List",
+        mark_deceased_btn: "Mark Deceased",
         edit: "Edit",
         delete: "Delete",
         print: "Print",
         family_head_label: "Family Head",
-        is_family_head: "Is Family Head?"
+        is_family_head: "Is Family Head?",
+        status_deceased: "DEATH"
       },
       mr: {
         sign_out: "साइन आउट",
@@ -1234,6 +1362,14 @@
         nav_staff_info: "कर्मचारी माहिती",
         nav_search: "मतदार शोधा",
         nav_analytics: "माहिती विश्लेषण",
+        nav_smart_tools: "दुप्पट नावे शोधक",
+        smart_tools_title: "दुप्पट नावे शोधक टूल्स",
+        smart_tools_desc: "मतदार यादी शुद्धीकरणासाठी प्रगत साधने.",
+        duplicate_finder_tab: "दुप्पट नावे शोधक",
+        find_duplicates_heading: "संभाव्य दुप्पट मतदार शोधा",
+        find_duplicates_desc: "समान नाव आणि लिंग असलेल्या मतदारांना शोधून यादी शुद्ध करा.",
+        scan_duplicates_btn: "स्कॅन करा",
+        scan_results: "स्कॅन निकाल",
         nav_directory: "मतदार यादी",
         nav_staff_directory: "कर्मचारी यादी",
         nav_user_logins: "वापरकर्ता लॉगिन",
@@ -1263,11 +1399,17 @@
         address: "पत्ता",
         type: "प्रकार",
         list_no: "यादी क्र.",
+        nav_deceased_list: "मयत मतदार यादी",
+        deceased_list_title: "मयत मतदार यादी",
+        deceased_list_desc: "मयत घोषित केलेले मतदार. गरज असल्यास तुम्ही त्यांना पुन्हा यादीत घेऊ शकता.",
+        restore_btn: "पुन्हा यादीत घ्या",
+        mark_deceased_btn: "मयत घोषित करा",
         edit: "सुधारा",
         delete: "काढून टाका",
         print: "प्रिंट करा",
         view: "पहा",
         export: "एक्सपोर्ट",
+        status_deceased: "मयत",
         booth_voters: "बुथ {0} मतदार",
         voter_type_label: "मतदार प्रकार",
         select_type: "प्रकार निवडा",
@@ -1410,8 +1552,11 @@
               <td rowspan="${rowCount}" style="vertical-align: middle; background: rgba(255,255,255,0.02); min-width: 250px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-weight: 700; color: var(--primary); font-size: 1rem; text-transform: uppercase;">${h.voterName}</div>
                 <div style="font-weight: 600; margin: 0.2rem 0; color: var(--text-white); font-size: 0.9rem;">${h.epicNo || "---"}</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">BOOTH NO ${h.boothNo || "---"}</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">MOBILE ${h.mobileNo || ""}</div>
+                <div style="display: flex; gap: 1rem;">
+                  <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 800;">LIST NO <span style="color:var(--accent);">${h.listNo || "---"}</span></div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 800;">BOOTH <span style="color:var(--accent);">${h.boothNo || "---"}</span></div>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-top: 0.2rem;">MOBILE ${h.mobileNo || ""}</div>
               </td>
             `;
             actionCell = `
@@ -1697,17 +1842,50 @@
     const sidebar = document.querySelector(".sidebar");
     const sidebarOverlay = document.getElementById("sidebarOverlay");
 
-    refs.navButtons.forEach(btn => {
+    // Navigation Logic - Re-query to ensure all elements are captured
+    const navButtons = document.querySelectorAll(".nav-button");
+    const panels = document.querySelectorAll(".panel");
+
+    navButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         if (btn.dataset.requiresAdmin === "true" && state.role !== "admin") {
-          showToast("Admin access required", "error");
-          return;
+          // Allow Staff Directory for non-admins (view only)
+          if (btn.dataset.target !== "staffDirectorySection") {
+            showToast(state.lang === 'mr' ? "ॲडमिन प्रवेश आवश्यक आहे" : "Admin access required", "error");
+            return;
+          }
         }
-        refs.navButtons.forEach(b => b.classList.remove("active"));
+
+        navButtons.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        refs.panels.forEach(panel => panel.classList.remove("active"));
-        const target = document.getElementById(btn.dataset.target);
-        if (target) target.classList.add("active");
+
+        panels.forEach(panel => {
+          panel.classList.remove("active");
+          panel.style.display = "none";
+        });
+
+        const targetId = btn.dataset.target;
+        const target = document.getElementById(targetId);
+
+        if (target) {
+          target.classList.add("active");
+          target.style.display = "block";
+
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0; // For modern browsers
+
+          // Explicitly call render functions to ensure data is fresh
+          if (targetId === "directorySection") {
+            console.log("Switching to Directory, rendering...");
+            renderVoterTable();
+          }
+          if (targetId === "staffDirectorySection") renderStaffDirectory();
+          if (targetId === "userLoginsSection") renderUserLogins();
+          if (targetId === "manageAdminSection") renderAdmins();
+          if (targetId === "overviewSection") updateOverview();
+          if (targetId === "analyticsSection") renderAnalytics();
+          if (targetId === "deceasedListSection") renderDeceasedTable();
+        }
 
         // Auto-hide sidebar on selection (especially for mobile)
         if (sidebar && sidebarOverlay) {
@@ -1886,6 +2064,8 @@
 
       if (action === "edit") {
         openEditModal(voter);
+      } else if (action === "mark-deceased") {
+        markAsDeceased(id);
       } else if (action === "delete") {
         const confirmed = confirm(`Delete voter ${voter.voterName}?`);
         if (!confirmed) return;
@@ -3109,8 +3289,11 @@
       const boothMap = {};
       state.voters.forEach(v => {
         const b = v.boothNo || "Unspecified";
-        if (!boothMap[b]) boothMap[b] = 0;
-        boothMap[b]++;
+        if (!boothMap[b]) boothMap[b] = { total: 0, male: 0, female: 0 };
+        boothMap[b].total++;
+        const g = (v.gender || "").toLowerCase();
+        if (g === "male") boothMap[b].male++;
+        else if (g === "female") boothMap[b].female++;
       });
 
       const boothGrid = document.getElementById("boothStatsGrid");
@@ -3118,16 +3301,44 @@
         if (Object.keys(boothMap).length === 0) {
           boothGrid.innerHTML = "";
         } else {
+          const lang = state.lang;
           boothGrid.innerHTML = Object.entries(boothMap)
             .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
-            .map(([booth, count]) => {
-              const label = state.lang === "mr" ? `बुथ ${booth} मतदार` : `Booth ${booth} Voters`;
+            .map(([booth, stats]) => {
+              const label = lang === "mr" ? `बुथ ${booth} मतदार` : `Booth ${booth} Voters`;
+              const maleLabel = lang === "mr" ? "पुरुष" : "Male";
+              const femaleLabel = lang === "mr" ? "महिला" : "Female";
+
               return `
-              <div class="stat-card">
-                <h3>${label}</h3>
-                <p>${count}</p>
-              </div>
-            `}).join("");
+              <div class="stat-card" style="position: relative; overflow: hidden; padding: 1.5rem; background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1.5rem; transition: transform 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
+                  <h3 style="margin: 0; font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">${label}</h3>
+                  <span style="background: rgba(245, 158, 11, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 800;">Total</span>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                  <div style="font-size: 2.75rem; font-weight: 900; color: white; font-family: 'Syne', sans-serif; line-height: 1;">${stats.total}</div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                  <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 0.75rem; border-radius: 1rem; text-align: center;">
+                    <div style="color: var(--primary); font-size: 1.25rem; margin-bottom: 0.25rem;">
+                      <i class="fas fa-mars"></i>
+                    </div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: white;">${stats.male}</div>
+                    <div style="font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 700;">${maleLabel}</div>
+                  </div>
+                  
+                  <div style="background: rgba(244, 114, 182, 0.1); border: 1px solid rgba(244, 114, 182, 0.2); padding: 0.75rem; border-radius: 1rem; text-align: center;">
+                    <div style="color: #f472b6; font-size: 1.25rem; margin-bottom: 0.25rem;">
+                      <i class="fas fa-venus"></i>
+                    </div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: white;">${stats.female}</div>
+                    <div style="font-size: 0.7rem; color: #f472b6; text-transform: uppercase; font-weight: 700;">${femaleLabel}</div>
+                  </div>
+                </div>
+              </div>`;
+            }).join("");
         }
       }
 
@@ -3489,7 +3700,10 @@
         refs.voterTableBody.innerHTML = `<tr><td colspan='12'>${lang === 'mr' ? 'अद्याप मतदारांची नोंद नाही.' : 'No voter records yet.'}</td></tr>`;
         return;
       }
+
+      // Show all voters that pass filters (including deceased)
       const filtered = state.voters.filter(passesFilters);
+
       if (!filtered.length) {
         refs.voterTableBody.innerHTML = `<tr><td colspan='12'>${lang === 'mr' ? 'फिल्टरनुसार माहिती सापडली नाही.' : 'No data matches the current filters.'}</td></tr>`;
         return;
@@ -3497,24 +3711,31 @@
       const rows = filtered
         .sort((a, b) => Number(a.listNo || 0) - Number(b.listNo || 0))
         .map(v => {
+          const isDeceased = !!v.isDeceased;
           const actions = state.role === "admin"
             ? `<div class="table-actions">
                 <button class="action-btn edit" data-action="edit" data-id="${v.id}">${dictionary[lang].edit}</button>
+                ${!isDeceased ? `<button class="action-btn danger" data-action="mark-deceased" data-id="${v.id}" title="${dictionary[lang].mark_deceased_btn}"><i class="fas fa-user-times"></i></button>` : ''}
                 <button class="action-btn delete" data-action="delete" data-id="${v.id}">${dictionary[lang].delete}</button>
                 <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> ${dictionary[lang].print}</button>
               </div>`
             : `<div class="table-actions">
                 <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> ${dictionary[lang].print}</button>
               </div>`;
+
+          const rowStyle = isDeceased ? 'style="background: rgba(239, 68, 68, 0.05);"' : '';
+          const nameStyle = isDeceased ? 'color: var(--danger);' : '';
+
           return `
-          <tr>
+          <tr ${rowStyle}>
             <td>${v.listNo}</td>
             <td>
-              <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; ${nameStyle}">
                 ${v.voterName}
                 ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${lang === 'mr' ? 'प्रमुख' : 'Head'}</span>` : ''}
+                ${isDeceased ? `<span style="background: var(--danger); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 800;">${dictionary[lang].status_deceased}</span>` : ''}
               </div>
-              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${v.voterNameMr || ""}</div>
+              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px; ${isDeceased ? 'opacity: 0.7;' : ''}">${v.voterNameMr || ""}</div>
             </td>
             <td>${v.epicNo}</td>
             <td>${v.boothNo}</td>
@@ -3567,6 +3788,73 @@
         map.set(value, (map.get(value) || 0) + 1);
       });
       return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
+    }
+
+    function renderDeceasedTable() {
+      const tableBody = document.getElementById("deceasedTableBody");
+      const countSpan = document.getElementById("deceasedCount");
+      if (!tableBody) return;
+      tableBody.innerHTML = "";
+
+      const deceasedVoters = state.voters.filter(v => v.isDeceased);
+      if (countSpan) countSpan.textContent = deceasedVoters.length;
+
+      if (deceasedVoters.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No deceased voters found.</td></tr>`;
+        return;
+      }
+
+      const lang = state.lang;
+      const label = dictionary[lang].restore_btn || "Restore";
+
+      const rows = deceasedVoters.map(v => `
+           <tr>
+               <td>${v.boothNo}</td>
+               <td>${v.listNo}</td>
+               <td>
+                   <div>${v.voterName}</div>
+                   <div style="color:var(--text-muted);font-size:0.85em;">${v.voterNameMr || ""}</div>
+               </td>
+               <td>${v.gender}</td>
+               <td>${v.epicNo}</td>
+               <td>
+                   <button class="action-btn restore-btn" data-id="${v.id}" style="background-color:var(--success); color:white;">
+                       <i class="fas fa-trash-restore"></i> ${label}
+                   </button>
+               </td>
+           </tr>
+       `).join("");
+
+      tableBody.innerHTML = rows;
+
+      // Add Event Listeners
+      document.querySelectorAll(".restore-btn").forEach(btn => {
+        btn.addEventListener("click", () => restoreDeceased(btn.dataset.id));
+      });
+    }
+
+    async function markAsDeceased(id) {
+      if (!confirm("Are you sure you want to mark this voter as Deceased? They will be moved to the Deceased List.")) return;
+      try {
+        await update(ref(db, `voters/${id}`), { isDeceased: true });
+        showToast("Voter marked as deceased", "success");
+        renderVoterTable(); // Force update if not reactive
+      } catch (error) {
+        console.error(error);
+        showToast("Error updating status", "error");
+      }
+    }
+
+    async function restoreDeceased(id) {
+      if (!confirm("Restore this voter to the main list?")) return;
+      try {
+        await update(ref(db, `voters/${id}`), { isDeceased: null });
+        showToast("Voter restored to list", "success");
+        renderDeceasedTable();
+      } catch (error) {
+        console.error(error);
+        showToast("Error restoring voter", "error");
+      }
     }
 
     document.getElementById("showLoginBtn").addEventListener("click", () => {
@@ -3655,6 +3943,147 @@
           sidebar.classList.remove("open");
           sidebarOverlay.classList.remove("visible");
         }
+      });
+    }
+
+    // --- Smart Tools Logic ---
+    const smartRefs = {
+      section: document.getElementById("smartToolsSection"),
+      tabs: document.querySelectorAll("[data-tool-tab]"),
+      dupTab: document.getElementById("duplicateFinderTab"),
+      scanBtn: document.getElementById("runDuplicateScanBtn"),
+      dupResults: document.getElementById("duplicateResultsArea"),
+      dupTable: document.getElementById("duplicateTableBody")
+    };
+
+    // Duplicate Finder
+    if (smartRefs.scanBtn) {
+      smartRefs.scanBtn.addEventListener("click", () => {
+        // Show scan status
+        const scanStatus = document.getElementById("scanStatus");
+        if (scanStatus) {
+          scanStatus.style.display = "block";
+          setTimeout(() => { scanStatus.style.display = "none"; }, 3000);
+        }
+
+        const map = {};
+        state.voters.forEach(v => {
+          const key = (v.voterName || "").trim().toLowerCase() + "||" + (v.gender || "");
+          if (!map[key]) map[key] = [];
+          map[key].push(v);
+        });
+
+        let duplicates = [];
+        Object.keys(map).forEach(k => {
+          if (map[k].length > 1) {
+            duplicates.push(map[k]);
+          }
+        });
+
+        smartRefs.dupTable.innerHTML = "";
+        const summary = document.getElementById("duplicateSummary");
+        if (summary) summary.textContent = `${duplicates.length} Duplicates Found`;
+
+        if (duplicates.length === 0) {
+          smartRefs.dupTable.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 4rem 2rem; background: rgba(16, 185, 129, 0.05); border-radius: 1.5rem; border: 2px dashed rgba(16, 185, 129, 0.2);">
+              <div style="width: 64px; height: 64px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--success); font-size: 2rem;">
+                <i class="fas fa-check"></i>
+              </div>
+              <h3 style="color: white; margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">All Clean!</h3>
+              <p style="color: var(--text-muted); font-size: 1.1rem;">No duplicate records found in your database.</p>
+            </div>`;
+        } else {
+          duplicates.forEach(group => {
+            const v1 = group[0];
+            const lang = state.lang;
+
+            let detailsHtml = "";
+            group.forEach(v => {
+              detailsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 0.75rem 1rem; border-radius: 0.75rem; margin-bottom: 0.75rem; border: 1px solid rgba(255,255,255,0.05);">
+                  <div>
+                    <span style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 2px;">Booth ${v.boothNo}</span>
+                    <span style="font-weight: 600; font-size: 1rem; color: white;">List No: <span style="color: var(--primary);">${v.listNo}</span></span>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="display: block; font-size: 0.85rem; color: var(--accent); font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 2px 8px; border-radius: 4px;">${v.epicNo}</span>
+                  </div>
+                </div>`;
+            });
+
+            const card = `
+              <div class="duplicate-card" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); border: 1px solid var(--bg-card-border); padding: 1.75rem; border-radius: 1.5rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle at top right, rgba(239, 68, 68, 0.1), transparent 70%); pointer-events: none;"></div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; position: relative; z-index: 1;">
+                  <div>
+                    <h5 style="margin: 0; font-size: 1.3rem; color: white; font-family: 'Syne', sans-serif;">${v1.voterName}</h5>
+                    <p style="margin: 0.35rem 0 0 0; color: var(--accent); font-size: 1rem; font-weight: 500;">${v1.voterNameMr || ""}</p>
+                  </div>
+                  <div style="background: rgba(239, 68, 68, 0.15); color: var(--danger); padding: 0.4rem 0.75rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 800; border: 1px solid rgba(239, 68, 68, 0.2); white-space: nowrap;">
+                    <i class="fas fa-copy" style="margin-right: 4px;"></i> ${group.length} RECORDSFound
+                  </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; font-size: 0.95rem; color: var(--text-muted); padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <i class="fas ${v1.gender === 'Female' ? 'fa-venus' : 'fa-mars'}" style="color: ${v1.gender === 'Female' ? '#f472b6' : '#60a5fa'};"></i>
+                    <span>${v1.gender}</span>
+                  </div>
+                  <span style="color: rgba(255,255,255,0.1);">|</span>
+                  <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <i class="fas fa-map-marker-alt" style="color: var(--danger);"></i>
+                    <span>Raygaon</span>
+                  </div>
+                </div>
+
+                <div style="position: relative; z-index: 1;">
+                  <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-search-location"></i> Found At Locations
+                  </p>
+                  ${detailsHtml}
+                </div>
+              </div>`;
+            smartRefs.dupTable.innerHTML += card;
+          });
+        }
+        smartRefs.dupResults.style.display = "block";
+        smartRefs.dupResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+
+    const exportDeceasedBtn = document.getElementById("exportDeceasedList");
+    if (exportDeceasedBtn) {
+      exportDeceasedBtn.addEventListener("click", () => {
+        const deceased = state.voters.filter(v => v.isDeceased);
+        if (!deceased.length) {
+          showToast(state.lang === 'mr' ? " माहिती उपलब्ध नाही" : "No data to export", "error");
+          return;
+        }
+
+        const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "Gender", "Mobile"];
+        const csvContent = [
+          headers.join(","),
+          ...deceased.map(v => [
+            `"${v.listNo || ""}"`,
+            `"${v.voterName || ""}"`,
+            `"${v.voterNameMr || ""}"`,
+            `"${v.epicNo || ""}"`,
+            `"${v.boothNo || ""}"`,
+            `"${v.gender || ""}"`,
+            `"${v.mobileNo || ""}"`
+          ].join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Deceased_Voters_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       });
     }
   </script>
