@@ -112,8 +112,8 @@
             <button class="nav-button" data-target="analyticsSection">
               <i class="fas fa-chart-pie"></i> <span data-translate="nav_analytics">Analytics</span>
             </button>
-            <button class="nav-button" data-target="smartToolsSection">
-              <i class="fas fa-copy"></i> <span data-translate="nav_smart_tools">Duplicate Voter</span>
+            <button class="nav-button" data-target="duplicateListSection">
+              <i class="fas fa-users-slash"></i> <span data-translate="nav_duplicate_list">Duplicate Voter List</span>
             </button>
             <button class="nav-button" data-target="userLoginsSection" data-requires-admin="true">
               <i class="fas fa-user-shield"></i> <span data-translate="nav_user_logins">User Logins</span>
@@ -545,60 +545,39 @@
             </div>
           </section>
 
-
-          <section id="smartToolsSection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
-            <h2 data-translate="smart_tools_title">Smart Tools</h2>
-            <p style="color:var(--text-muted); margin-bottom:1.5rem; max-width: 800px;"
-              data-translate="smart_tools_desc">Powerful tools for election management: Duplicate Finder Tool.</p>
-
-            <div class="role-toggle" style="margin-bottom: 1.5rem; display: none;">
-              <button class="role-button active" type="button" data-tool-tab="duplicateFinder"
-                data-translate="duplicate_finder_tab">Duplicate Finder</button>
-            </div>
-
-            <!-- Duplicate Finder Tab -->
-            <div id="duplicateFinderTab">
-              <div class="tool-hero"
-                style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%); border: 1px solid var(--bg-card-border); padding: 3rem 2rem; border-radius: 1.5rem; text-align: center; margin-bottom: 2rem;">
-                <div
-                  style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--danger); font-size: 2.5rem; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);">
-                  <i class="fas fa-users-slash"></i>
-                </div>
-                <h3 data-translate="find_duplicates_heading"
-                  style="margin-bottom:0.75rem; color:white; font-size: 1.75rem; font-family: 'Syne', sans-serif;">
-                  Duplicate Voter Detector</h3>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem; line-height: 1.6;"
-                  data-translate="find_duplicates_desc">
-                  Detects voters with identical names and genders to help clean the list and ensure data integrity.
-                </p>
-                <button class="primary" id="runDuplicateScanBtn"
-                  style="padding: 1rem 2.5rem; font-size: 1.1rem; gap: 0.75rem; display: inline-flex; align-items: center;">
-                  <i class="fas fa-search"></i> <span data-translate="scan_duplicates_btn">Scan Database Now</span>
+          <section id="duplicateListSection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <div class="panel-header"
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <div>
+                <h2 data-translate="duplicate_list_title">Duplicate Voter List</h2>
+                <p style="color:var(--text-muted);" data-translate="duplicate_list_desc">List of potential duplicate
+                  voters detected in the system.</p>
+              </div>
+              <div>
+                <button type="button" class="export-btn" id="exportDuplicateList" style="margin-right: 1rem;">
+                  <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
                 </button>
-                <div id="scanStatus"
-                  style="margin-top: 1.5rem; color: var(--success); font-weight: 500; display: none;">
-                  <i class="fas fa-check-circle"></i> Scan Complete!
-                </div>
-              </div>
-
-              <div id="duplicateResultsArea" style="display: none; animation: fadeIn 0.5s ease-out;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                  <h4 data-translate="scan_results"
-                    style="color:white; font-size: 1.25rem; font-family: 'Syne', sans-serif; margin: 0;">Scan Results
-                  </h4>
-                  <div id="duplicateSummary"
-                    style="background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 0.5rem 1rem; border-radius: 99px; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.2);">
-                    0 Duplicates Found
-                  </div>
-                </div>
-                <div id="duplicateTableBody"
-                  style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
-                  <!-- Card-based results will be injected here -->
-                </div>
+                <span style="background:var(--danger); color:white; padding: 0.2rem 0.6rem; border-radius:4px;">Total:
+                  <span id="duplicateCount">0</span></span>
               </div>
             </div>
-
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-translate="name_col">Name</th>
+                    <th data-translate="gender_label">Gender</th>
+                    <th data-translate="duplicate_records">Duplicate Records</th>
+                    <th data-translate="actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="duplicateListTableBody">
+                </tbody>
+              </table>
+            </div>
           </section>
+
+
 
           <section id="searchVoterSection" class="panel" style="text-align: center;">
             <h2 data-translate="search_voter_title">Search Voter</h2>
@@ -1353,7 +1332,12 @@
         print: "Print",
         family_head_label: "Family Head",
         is_family_head: "Is Family Head?",
-        status_deceased: "DEATH"
+        status_deceased: "DEATH",
+        nav_duplicate_list: "Duplicate Voter List",
+        duplicate_list_title: "Duplicate Voter List",
+        duplicate_list_desc: "List of potential duplicate voters detected in the system.",
+        duplicate_records: "Duplicate Records",
+        view_details: "View Details"
       },
       mr: {
         sign_out: "साइन आउट",
@@ -1482,7 +1466,12 @@
         village_label: "गाव",
         staff_house_count_label: "घरातील एकूण मतदार",
         family_head_label: "कुटुंब प्रमुख",
-        is_family_head: "कुटुंब प्रमुख आहे का?"
+        is_family_head: "कुटुंब प्रमुख आहे का?",
+        nav_duplicate_list: "दुप्पट मतदार यादी",
+        duplicate_list_title: "दुप्पट मतदार यादी",
+        duplicate_list_desc: "प्रणालीमध्ये आढळलेल्या संभाव्य दुप्पट मतदारांची यादी.",
+        duplicate_records: "दुप्पट नोंदी",
+        view_details: "तपशील पहा"
       }
     };
 
@@ -2249,14 +2238,23 @@
 
     document.getElementById("bulkTransliterateBtn").addEventListener("click", async () => {
       console.log("Bulk transliterate button clicked. Checking voters...");
-      const voters = state.voters.filter(v => !v.voterNameMr || v.voterNameMr.trim() === "");
+      const voters = state.voters.filter(v => {
+        if (!v.voterNameMr || v.voterNameMr.trim() === "") return true;
+        if (v.district && (!v.districtMr || v.districtMr.trim() === "")) return true;
+        if (v.taluka && (!v.talukaMr || v.talukaMr.trim() === "")) return true;
+        if (v.caste && (!v.casteMr || v.casteMr.trim() === "")) return true;
+        if (v.address && (!v.addressMr || v.addressMr.trim() === "")) return true;
+        if (v.gender && (!v.genderMr || v.genderMr.trim() === "")) return true;
+        return false;
+      });
       const total = voters.length;
       console.log("Found voters to convert:", total);
 
       if (total === 0) {
-        alert("All voters already have Marathi names!");
+        alert("All voters already have Marathi details!");
         return;
       }
+
 
       console.log("Starting transliteration process...");
 
@@ -2302,6 +2300,35 @@
 
         // Delay to prevent API rate limit (200ms)
         await new Promise(r => setTimeout(r, 200));
+
+        // --- NEW: Transliterate other fields (District, Taluka, Caste, Address, Gender) ---
+        // District
+        if (voter.district && (!voter.districtMr || voter.districtMr.trim() === "")) {
+          const mr = await getMarathiText(voter.district);
+          if (mr && mr !== voter.district) batchUpdates[`voters/${voter.id}/districtMr`] = mr;
+        }
+        // Taluka
+        if (voter.taluka && (!voter.talukaMr || voter.talukaMr.trim() === "")) {
+          const mr = await getMarathiText(voter.taluka);
+          if (mr && mr !== voter.taluka) batchUpdates[`voters/${voter.id}/talukaMr`] = mr;
+        }
+        // Caste
+        if (voter.caste && (!voter.casteMr || voter.casteMr.trim() === "")) {
+          const mr = await getMarathiText(voter.caste);
+          if (mr && mr !== voter.caste) batchUpdates[`voters/${voter.id}/casteMr`] = mr;
+        }
+        // Address
+        if (voter.address && (!voter.addressMr || voter.addressMr.trim() === "")) {
+          const mr = await getMarathiText(voter.address);
+          if (mr && mr !== voter.address) batchUpdates[`voters/${voter.id}/addressMr`] = mr;
+        }
+        // Gender (Map, no API needed usually, but consistent storage helps)
+        if (voter.gender && (!voter.genderMr || voter.genderMr.trim() === "")) {
+          const gMap = { "Male": "पुरुष", "Female": "महिला", "Other": "इतर" };
+          const mr = gMap[voter.gender] || voter.gender;
+          batchUpdates[`voters/${voter.id}/genderMr`] = mr;
+        }
+
       }
 
       btn.disabled = false;
@@ -3250,6 +3277,119 @@
       }, 500);
     }
 
+    // Duplicate List Functions
+    function getDuplicateGroups() {
+      const groups = [];
+
+      const normalize = (str) => (str || "").toLowerCase()
+        .replace(/[.,]/g, '')
+        .replace(/[^a-z0-9\u0900-\u097F\s]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const enMap = {};
+      const mrMap = {};
+
+      state.voters.forEach(v => {
+        const gender = (v.gender || "unknown").toLowerCase();
+
+        const enName = normalize(v.voterName);
+        if (enName.length > 2) {
+          const k = enName + "|" + gender;
+          if (!enMap[k]) enMap[k] = [];
+          enMap[k].push(v);
+        }
+
+        const mrName = normalize(v.voterNameMr);
+        if (mrName.length > 2) {
+          const k = mrName + "|" + gender;
+          if (!mrMap[k]) mrMap[k] = [];
+          mrMap[k].push(v);
+        }
+      });
+
+      Object.values(enMap).forEach(list => {
+        if (list.length > 1) groups.push(list);
+      });
+
+      Object.values(mrMap).forEach(list => {
+        if (list.length > 1) groups.push(list);
+      });
+
+      const uniqueGroupsMap = new Map();
+
+      groups.forEach(group => {
+        const sortedIds = group.map(v => v.id).sort().join(",");
+
+        if (!uniqueGroupsMap.has(sortedIds)) {
+          const uniqueVoters = Array.from(new Map(group.map(item => [item.id, item])).values());
+          uniqueGroupsMap.set(sortedIds, uniqueVoters);
+        }
+      });
+
+      return Array.from(uniqueGroupsMap.values());
+    }
+
+    function renderDuplicateListTable() {
+      const tableBody = document.getElementById("duplicateListTableBody");
+      const countSpan = document.getElementById("duplicateCount");
+      if (!tableBody) return;
+
+      const duplicates = getDuplicateGroups();
+      if (countSpan) countSpan.textContent = duplicates.length;
+
+      if (duplicates.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">${state.lang === 'mr' ? 'दुप्पट मतदार आढळले नाहीत.' : 'No duplicate voters found.'}</td></tr>`;
+        return;
+      }
+
+      const lang = state.lang;
+      const rows = duplicates.map((group, idx) => {
+        const v1 = group[0];
+        const detailsId = `dup-details-${idx}`;
+
+        let detailsHtml = group.map(v => `
+          <div style="background: rgba(0,0,0,0.2); padding: 0.75rem; margin: 0.5rem 0; border-radius: 0.5rem; border-left: 3px solid var(--danger);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem;">
+              <div><strong>${lang === 'mr' ? 'बुथ' : 'Booth'}:</strong> ${v.boothNo || '-'}</div>
+              <div><strong>${lang === 'mr' ? 'यादी क्र.' : 'List No'}:</strong> ${v.listNo || '-'}</div>
+              <div><strong>EPIC:</strong> ${v.epicNo || '-'}</div>
+              <div><strong>${lang === 'mr' ? 'मोबाईल' : 'Mobile'}:</strong> ${v.mobileNo || '-'}</div>
+            </div>
+            <div style="margin-top: 0.5rem;"><strong>${lang === 'mr' ? 'पत्ता' : 'Address'}:</strong> ${lang === 'mr' ? (v.addressMr || v.address || '-') : (v.address || '-')}</div>
+          </div>
+        `).join('');
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 600;">${v1.voterName || ""}</div>
+              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${v1.voterNameMr || ""}</div>
+            </td>
+            <td>${lang === 'mr' ? (v1.genderMr || v1.gender || '') : (v1.gender || '')}</td>
+            <td>
+              <span style="background: var(--danger); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-weight: 700;">
+                ${group.length} ${lang === 'mr' ? 'नोंदी' : 'Records'}
+              </span>
+            </td>
+            <td>
+              <button class="action-btn view" onclick="document.getElementById('${detailsId}').style.display = document.getElementById('${detailsId}').style.display === 'none' ? 'table-row' : 'none';">
+                <i class="fas fa-eye"></i> ${dictionary[lang].view_details || 'View Details'}
+              </button>
+            </td>
+          </tr>
+          <tr id="${detailsId}" style="display: none;">
+            <td colspan="4" style="background: rgba(239, 68, 68, 0.05); padding: 1rem;">
+              <h4 style="margin-top: 0; color: var(--danger);">${lang === 'mr' ? 'दुप्पट नोंदींचा तपशील' : 'Duplicate Records Details'}</h4>
+              ${detailsHtml}
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      tableBody.innerHTML = rows;
+    }
+
     function subscribeToData() {
       onValue(ref(db, "voters"), (snapshot) => {
         const data = snapshot.val() || {};
@@ -3258,6 +3398,7 @@
         renderVoterTable();
         renderAnalytics();
         renderFamilyHeadTable();
+        renderDuplicateListTable();
       });
       onValue(ref(db, "staff"), (snapshot) => {
         const data = snapshot.val() || {};
@@ -3634,24 +3775,34 @@
       }
 
       const title = `Raygaon Voter Directory Exported: ${new Date().toLocaleDateString()}`;
-      const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type", "Family Head"];
+      const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "District (EN)", "District (MR)", "Taluka (EN)", "Taluka (MR)", "Caste (EN)", "Caste (MR)", "Gender (EN)", "Gender (MR)", "Mobile", "Address (EN)", "Address (MR)", "Type", "Family Head", "Status"];
       const rows = filtered
         .sort((a, b) => Number(a.listNo || 0) - Number(b.listNo || 0))
-        .map(v => [
-          v.listNo || "",
-          v.voterName || "",
-          v.voterNameMr || "",
-          v.epicNo || "",
-          v.boothNo || "",
-          v.district || "",
-          v.taluka || "",
-          v.caste || "",
-          v.gender || "",
-          v.mobileNo || "",
-          v.address || "",
-          v.voterType || "",
-          v.isFamilyHead ? "Yes" : "No"
-        ]);
+        .map(v => {
+          // removed name modification
+
+          return [
+            v.listNo || "",
+            v.voterName || "",
+            v.voterNameMr || "",
+            v.epicNo || "",
+            v.boothNo || "",
+            v.district || "",
+            v.districtMr || (v.district || ""), // Fallback if not converted
+            v.taluka || "",
+            v.talukaMr || (v.taluka || ""),
+            v.caste || "",
+            v.casteMr || (v.caste || ""),
+            v.gender || "",
+            v.genderMr || (state.lang === 'mr' && v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender)),
+            v.mobileNo || "",
+            v.address || "",
+            v.addressMr || (v.address || ""),
+            v.voterType || "",
+            v.isFamilyHead ? "Yes" : "No",
+            v.isDeceased ? "DEATH" : ""
+          ];
+        });
 
       const csvContent = [
         title,
@@ -3739,12 +3890,12 @@
             </td>
             <td>${v.epicNo}</td>
             <td>${v.boothNo}</td>
-            <td>${v.district}</td>
-            <td>${v.taluka}</td>
-            <td>${v.caste}</td>
-            <td>${v.gender}</td>
+            <td>${lang === 'mr' ? (v.districtMr || v.district) : v.district}</td>
+            <td>${lang === 'mr' ? (v.talukaMr || v.taluka) : v.taluka}</td>
+            <td>${lang === 'mr' ? (v.casteMr || v.caste) : v.caste}</td>
+            <td>${lang === 'mr' ? (v.genderMr || (v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender))) : v.gender}</td>
             <td>${v.mobileNo}</td>
-            <td>${v.address || ""}</td>
+            <td>${lang === 'mr' ? (v.addressMr || v.address || "") : (v.address || "")}</td>
             <td>${v.voterType || "-"}</td>
             <td>${actions}</td>
           </tr>`;
@@ -3946,113 +4097,6 @@
       });
     }
 
-    // --- Smart Tools Logic ---
-    const smartRefs = {
-      section: document.getElementById("smartToolsSection"),
-      tabs: document.querySelectorAll("[data-tool-tab]"),
-      dupTab: document.getElementById("duplicateFinderTab"),
-      scanBtn: document.getElementById("runDuplicateScanBtn"),
-      dupResults: document.getElementById("duplicateResultsArea"),
-      dupTable: document.getElementById("duplicateTableBody")
-    };
-
-    // Duplicate Finder
-    if (smartRefs.scanBtn) {
-      smartRefs.scanBtn.addEventListener("click", () => {
-        // Show scan status
-        const scanStatus = document.getElementById("scanStatus");
-        if (scanStatus) {
-          scanStatus.style.display = "block";
-          setTimeout(() => { scanStatus.style.display = "none"; }, 3000);
-        }
-
-        const map = {};
-        state.voters.forEach(v => {
-          const key = (v.voterName || "").trim().toLowerCase() + "||" + (v.gender || "");
-          if (!map[key]) map[key] = [];
-          map[key].push(v);
-        });
-
-        let duplicates = [];
-        Object.keys(map).forEach(k => {
-          if (map[k].length > 1) {
-            duplicates.push(map[k]);
-          }
-        });
-
-        smartRefs.dupTable.innerHTML = "";
-        const summary = document.getElementById("duplicateSummary");
-        if (summary) summary.textContent = `${duplicates.length} Duplicates Found`;
-
-        if (duplicates.length === 0) {
-          smartRefs.dupTable.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 4rem 2rem; background: rgba(16, 185, 129, 0.05); border-radius: 1.5rem; border: 2px dashed rgba(16, 185, 129, 0.2);">
-              <div style="width: 64px; height: 64px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--success); font-size: 2rem;">
-                <i class="fas fa-check"></i>
-              </div>
-              <h3 style="color: white; margin-bottom: 0.5rem; font-family: 'Syne', sans-serif;">All Clean!</h3>
-              <p style="color: var(--text-muted); font-size: 1.1rem;">No duplicate records found in your database.</p>
-            </div>`;
-        } else {
-          duplicates.forEach(group => {
-            const v1 = group[0];
-            const lang = state.lang;
-
-            let detailsHtml = "";
-            group.forEach(v => {
-              detailsHtml += `
-                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 0.75rem 1rem; border-radius: 0.75rem; margin-bottom: 0.75rem; border: 1px solid rgba(255,255,255,0.05);">
-                  <div>
-                    <span style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 2px;">Booth ${v.boothNo}</span>
-                    <span style="font-weight: 600; font-size: 1rem; color: white;">List No: <span style="color: var(--primary);">${v.listNo}</span></span>
-                  </div>
-                  <div style="text-align: right;">
-                    <span style="display: block; font-size: 0.85rem; color: var(--accent); font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 2px 8px; border-radius: 4px;">${v.epicNo}</span>
-                  </div>
-                </div>`;
-            });
-
-            const card = `
-              <div class="duplicate-card" style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); border: 1px solid var(--bg-card-border); padding: 1.75rem; border-radius: 1.5rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle at top right, rgba(239, 68, 68, 0.1), transparent 70%); pointer-events: none;"></div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; position: relative; z-index: 1;">
-                  <div>
-                    <h5 style="margin: 0; font-size: 1.3rem; color: white; font-family: 'Syne', sans-serif;">${v1.voterName}</h5>
-                    <p style="margin: 0.35rem 0 0 0; color: var(--accent); font-size: 1rem; font-weight: 500;">${v1.voterNameMr || ""}</p>
-                  </div>
-                  <div style="background: rgba(239, 68, 68, 0.15); color: var(--danger); padding: 0.4rem 0.75rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 800; border: 1px solid rgba(239, 68, 68, 0.2); white-space: nowrap;">
-                    <i class="fas fa-copy" style="margin-right: 4px;"></i> ${group.length} RECORDSFound
-                  </div>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; font-size: 0.95rem; color: var(--text-muted); padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                  <div style="display: flex; align-items: center; gap: 0.4rem;">
-                    <i class="fas ${v1.gender === 'Female' ? 'fa-venus' : 'fa-mars'}" style="color: ${v1.gender === 'Female' ? '#f472b6' : '#60a5fa'};"></i>
-                    <span>${v1.gender}</span>
-                  </div>
-                  <span style="color: rgba(255,255,255,0.1);">|</span>
-                  <div style="display: flex; align-items: center; gap: 0.4rem;">
-                    <i class="fas fa-map-marker-alt" style="color: var(--danger);"></i>
-                    <span>Raygaon</span>
-                  </div>
-                </div>
-
-                <div style="position: relative; z-index: 1;">
-                  <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-search-location"></i> Found At Locations
-                  </p>
-                  ${detailsHtml}
-                </div>
-              </div>`;
-            smartRefs.dupTable.innerHTML += card;
-          });
-        }
-        smartRefs.dupResults.style.display = "block";
-        smartRefs.dupResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    }
-
 
     const exportDeceasedBtn = document.getElementById("exportDeceasedList");
     if (exportDeceasedBtn) {
@@ -4084,6 +4128,83 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+      });
+    }
+
+    // Export Duplicate List
+    const exportDuplicateBtn = document.getElementById("exportDuplicateList");
+    if (exportDuplicateBtn) {
+      exportDuplicateBtn.addEventListener("click", () => {
+        const duplicates = getDuplicateGroups();
+        if (!duplicates.length) {
+          showToast(state.lang === 'mr' ? "दुप्पट मतदार आढळले नाहीत" : "No duplicate voters to export", "error");
+          return;
+        }
+
+        const lang = state.lang;
+        const headers = [
+          "Duplicate Group",
+          "Name (EN)",
+          "Name (MR)",
+          "List No",
+          "EPIC No",
+          "Booth",
+          "District (EN)",
+          "District (MR)",
+          "Taluka (EN)",
+          "Taluka (MR)",
+          "Caste (EN)",
+          "Caste (MR)",
+          "Gender (EN)",
+          "Gender (MR)",
+          "Mobile",
+          "Address (EN)",
+          "Address (MR)"
+        ];
+
+        let rows = [];
+        duplicates.forEach((group, groupIdx) => {
+          group.forEach((v, idx) => {
+            rows.push([
+              `Group ${groupIdx + 1} (${group.length} ${lang === 'mr' ? 'नोंदी' : 'Records'})`,
+              v.voterName || "",
+              v.voterNameMr || "",
+              v.listNo || "",
+              v.epicNo || "",
+              v.boothNo || "",
+              v.district || "",
+              v.districtMr || (v.district || ""),
+              v.taluka || "",
+              v.talukaMr || (v.taluka || ""),
+              v.caste || "",
+              v.casteMr || (v.caste || ""),
+              v.gender || "",
+              v.genderMr || (v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender)),
+              v.mobileNo || "",
+              v.address || "",
+              v.addressMr || (v.address || "")
+            ]);
+          });
+          // Add empty row between groups
+          if (groupIdx < duplicates.length - 1) {
+            rows.push(Array(headers.length).fill(""));
+          }
+        });
+
+        const csvContent = [
+          `Duplicate Voter List - ${new Date().toLocaleDateString()}`,
+          headers.join(","),
+          ...rows.map(row => row.map(value => `"${`${value}`.replace(/"/g, '""')}"`).join(","))
+        ].join("\r\n");
+
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Duplicate_Voters_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast(lang === 'mr' ? "दुप्पट यादी एक्सपोर्ट झाली" : "Duplicate list exported successfully", "success");
       });
     }
   </script>
