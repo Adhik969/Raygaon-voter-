@@ -307,7 +307,9 @@
                 </div>
                 <div>
                   <label for="casteSelect" data-translate="caste_label">Caste</label>
-                  <select id="casteSelect" required></select>
+                  <select id="casteSelect" required>
+                    <option value="">Select Caste</option>
+                  </select>
                 </div>
                 <div>
                   <label for="voterType" data-translate="voter_type_label">Voter Type</label>
@@ -381,7 +383,9 @@
                 </div>
                 <div>
                   <label for="staffCaste" data-translate="staff_caste_label">Caste (EN)</label>
-                  <input type="text" id="staffCaste" required />
+                  <select id="staffCaste" required>
+                    <option value="">Select Caste</option>
+                  </select>
                 </div>
                 <div>
                   <label for="staffCasteMr" data-translate="staff_caste_mr_label">Caste (MR)</label>
@@ -599,17 +603,21 @@
 
           <section id="analyticsSection" class="panel">
             <h2 data-translate="analytics_title">Analytics</h2>
-            <div class="role-toggle" style="margin-bottom: 1.5rem;">
-              <button class="role-button active" type="button" data-analytics-tab="boothNo"
-                data-translate="booth_wise">Booth
-                Wise</button>
-              <button class="role-button" type="button" data-analytics-tab="caste" data-translate="caste_wise">Caste
-                Wise</button>
-              <button class="role-button" type="button" data-analytics-tab="gender" data-translate="gender_wise">Gender
-                Wise</button>
-              <button class="role-button" type="button" data-analytics-tab="district"
-                data-translate="district_wise">District
-                Wise</button>
+            <div
+              style="margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
+              <div class="analytics-tabs">
+                <button class="role-button active" type="button" data-analytics-tab="boothNo"
+                  data-translate="booth_wise">Booth Wise</button>
+                <button class="role-button" type="button" data-analytics-tab="caste" data-translate="caste_wise">Caste
+                  Wise</button>
+                <button class="role-button" type="button" data-analytics-tab="gender"
+                  data-translate="gender_wise">Gender Wise</button>
+                <button class="role-button" type="button" data-analytics-tab="district"
+                  data-translate="district_wise">District Wise</button>
+              </div>
+              <button type="button" class="export-btn" id="printAnalyticsSummary">
+                <i class="fas fa-print"></i> <span data-translate="print_report">Print Report</span>
+              </button>
             </div>
             <div class="table-wrapper">
               <table>
@@ -776,7 +784,9 @@
           </div>
           <div>
             <label for="editCaste" data-translate="caste">Caste</label>
-            <input type="text" id="editCaste" />
+            <select id="editCaste" required>
+              <option value="">Select Caste</option>
+            </select>
           </div>
           <div>
             <label for="editVoterType" data-translate="voter_type_label">Voter Type</label>
@@ -821,9 +831,13 @@
           data-translate="voter_list_modal_title">Voter List</h3>
         <!-- Right: Actions -->
         <div style="display:flex; gap:1rem; align-items:center; justify-content: flex-end;">
+          <button class="ghost" type="button" id="analyticsModalPrint"
+            style="padding: 0.5rem 1rem; font-size: 0.85rem; border-color: var(--primary); color: var(--primary);">
+            <i class="fas fa-print"></i> <span data-translate="print">PRINT</span>
+          </button>
           <button class="ghost" type="button" id="analyticsModalExport"
             style="padding: 0.5rem 1rem; font-size: 0.85rem;">
-            <i class="fas fa-file-excel"></i> <span data-translate="export">Export</span>
+            <i class="fas fa-file-excel"></i> <span data-translate="export">EXPORT</span>
           </button>
           <button class="modal-close" type="button" id="analyticsModalClose" style="line-height:1;">&times;</button>
         </div>
@@ -873,7 +887,9 @@
           </div>
           <div>
             <label for="editStaffCaste" data-translate="staff_caste_label">Caste (EN)</label>
-            <input type="text" id="editStaffCaste" />
+            <select id="editStaffCaste" required>
+              <option value="">Select Caste</option>
+            </select>
           </div>
           <div>
             <label for="editStaffCasteMr" data-translate="staff_caste_mr_label">Caste (MR)</label>
@@ -1060,7 +1076,7 @@
       "Pune": ["Ambegaon", "Baramati", "Bhor", "Daund", "Haveli", "Indapur", "Junnar", "Khed", "Maval", "Mulshi", "Pune City", "Purandar", "Shirur", "Velhe"],
       "Raigad": ["Alibag", "Karjat", "Khalapur", "Mahad", "Mangaon", "Mhasla", "Murud", "Panvel", "Pen", "Poladpur", "Roha", "Shrivardhan", "Sudhagad", "Uran"],
       "Ratnagiri": ["Chiplun", "Dapoli", "Guhagar", "Khed", "Lanja", "Mandangad", "Rajapur", "Ratnagiri", "Sangameshwar"],
-      "Sangli": ["Atpadi", "Jat", "Kadegaon", "Kavathe Mahankal", "Khanapur", "Miraj", "Palus", "Shirala", "Tasgaon", "Walwa"],
+      "SANGLI": ["Atpadi", "Jat", "Kadegaon", "Kavathe Mahankal", "Khanapur", "Miraj", "Palus", "Shirala", "Tasgaon", "Walwa"],
       "Satara": ["Jaoli", "Karad", "Khatav", "Khandala", "Koregaon", "Mahabaleshwar", "Man", "Patan", "Phaltan", "Satara", "Wai"],
       "Sindhudurg": ["Devgad", "Dodamarg", "Kankavli", "Kudal", "Malwan", "Sawantwadi", "Vaibhavwadi", "Vengurla"],
       "Solapur": ["Akkalkot", "Barshi", "Karmala", "Mangalwedha", "Madha", "Mohol", "Pandharpur", "Sangole", "Solapur North", "Solapur South"],
@@ -1070,7 +1086,7 @@
       "Yavatmal": ["Arni", "Babulgaon", "Darwha", "Digras", "Ghatanji", "Kalamb", "Kelapur", "Mahagaon", "Maregaon", "Ner", "Pandharkaoda", "Pusad", "Ralegaon", "Umarkhed", "Wani", "Yavatmal"]
     };
 
-    const casteOptions = ["Maratha", "General", "SC", "ST", "OBC", "VJNT", "NT", "SBC", "EWS", "Other"];
+    const casteOptions = ["MARATHA", "MATANG", "NABIK", "GURAV", "BOUDH", "KOLI", "CHAMBAR", "MUSLIM", "RAMOSHI", "BELDAR", "VANI", "NAMAN", "DHANGAR"];
     const voterCSVHeaders = ["boothNo", "listNo", "voterName", "voterNameMr", "epicNo", "mobileNo", "district", "taluka", "gender", "voterType", "caste", "village", "address", "isFamilyHead"];
     const staffCSVHeaders = ["name", "boothNo", "caste", "designation", "workplace", "mobile", "houseVoters"];
     const voterSampleData = [
@@ -1153,12 +1169,13 @@
       },
       analyticsModal: document.getElementById("analyticsModal"),
       analyticsModalClose: document.getElementById("analyticsModalClose"),
+      analyticsModalPrint: document.getElementById("analyticsModalPrint"),
       analyticsModalExport: document.getElementById("analyticsModalExport"),
       analyticsList: document.getElementById("analyticsList"),
-      analyticsModal: document.getElementById("analyticsModal"),
       analyticsModalChip: document.getElementById("analyticsModalChip"),
       analyticsModalTitle: document.getElementById("analyticsModalTitle"),
       analyticsSection: document.getElementById("analyticsSection"),
+      printAnalyticsSummary: document.getElementById("printAnalyticsSummary"),
       boothAnalyticsBody: document.getElementById("boothAnalyticsBody"),
       staffFilterBooth: document.getElementById("staffFilterBooth"),
       staffFilterCaste: document.getElementById("staffFilterCaste"),
@@ -1218,20 +1235,20 @@
         find_duplicates_desc: "Detects voters with identical names and genders to help clean the list.",
         scan_duplicates_btn: "Scan For Duplicates",
         scan_results: "Scan Results",
-        nav_directory: "Voter Directory",
-        nav_staff_directory: "Staff Directory",
-        nav_user_logins: "User Logins",
-        nav_manage_admin: "Manage Admin",
-        nav_family_management: "Family Management",
+        nav_directory: "VOTER DIRECTORY",
+        nav_staff_directory: "STAFF DIRECTORY",
+        nav_user_logins: "USER LOGINS",
+        nav_manage_admin: "MANAGE ADMIN",
+        nav_family_management: "FAMILY MANAGEMENT",
         family_management_title: "Family Management",
         link_members: "Link Members",
         family_members_count: "Family Members",
         select_family_members: "Select Family Members",
         dash_overview: "Dashboard Overview",
-        total_voters: "Total Registered Voters",
-        female_voters: "Female Voters",
-        male_voters: "Male Voters",
-        staff_count: "Staff Records",
+        total_voters: "TOTAL REGISTERED VOTERS",
+        female_voters: "FEMALE VOTERS",
+        male_voters: "MALE VOTERS",
+        staff_count: "STAFF RECORDS",
         add_voter_desc: "Enter voter information for any Maharashtra district. Taluka options refresh based on the selected district.",
         welcome: "Welcome",
         booth: "Booth",
@@ -1263,19 +1280,19 @@
         district_wise: "District Wise",
         category_header: "Category",
         total_voters_header: "Total Voters",
-        male_header: "Male",
-        female_header: "Female",
-        other_header: "Other",
+        male_header: "MALE",
+        female_header: "FEMALE",
+        other_header: "OTHER",
         loading_analytics: "Loading analytics...",
-        voter_directory_title: "Voter Directory",
-        export_excel_btn: "Export Excel",
-        filter_voters_desc: "Filter voters by district, taluka, caste, gender, or voter type and export to Excel.",
-        search_placeholder: "Search name / EPIC",
-        all_districts: "All Districts",
-        all_talukas: "All Talukas",
-        all_castes: "All Castes",
-        all_genders: "All Genders",
-        all_types: "All Types",
+        voter_directory_title: "VOTER DIRECTORY",
+        export_excel_btn: "EXPORT EXCEL",
+        filter_voters_desc: "FILTER VOTERS BY DISTRICT, TALUKA, CASTE, GENDER, OR VOTER TYPE AND EXPORT TO EXCEL.",
+        search_placeholder: "SEARCH NAME / EPIC",
+        all_districts: "ALL DISTRICTS",
+        all_talukas: "ALL TALUKAS",
+        all_castes: "ALL CASTES",
+        all_genders: "ALL GENDERS",
+        all_types: "ALL TYPES",
         staff_directory_title: "Raygaon Staff Directory",
         filter_staff_desc: "Filter Raygaon staff by booth and caste, then export to Excel.",
         staff_search_placeholder: "Search staff by name",
@@ -1327,9 +1344,9 @@
         deceased_list_desc: "List of voters marked as deceased. You can restore them if needed.",
         restore_btn: "Restore to List",
         mark_deceased_btn: "Mark Deceased",
-        edit: "Edit",
-        delete: "Delete",
-        print: "Print",
+        edit: "EDIT",
+        delete: "DELETE",
+        print: "PRINT",
         family_head_label: "Family Head",
         is_family_head: "Is Family Head?",
         status_deceased: "DEATH",
@@ -1337,7 +1354,8 @@
         duplicate_list_title: "Duplicate Voter List",
         duplicate_list_desc: "List of potential duplicate voters detected in the system.",
         duplicate_records: "Duplicate Records",
-        view_details: "View Details"
+        view_details: "View Details",
+        print_report: "Print Report"
       },
       mr: {
         sign_out: "साइन आउट",
@@ -1471,7 +1489,8 @@
         duplicate_list_title: "दुप्पट मतदार यादी",
         duplicate_list_desc: "प्रणालीमध्ये आढळलेल्या संभाव्य दुप्पट मतदारांची यादी.",
         duplicate_records: "दुप्पट नोंदी",
-        view_details: "तपशील पहा"
+        view_details: "तपशील पहा",
+        print_report: "रिपोर्ट प्रिंट करा"
       }
     };
 
@@ -1679,6 +1698,11 @@
     }
 
     function populateCastes(selectEl) {
+      if (!selectEl) return;
+      const firstOption = selectEl.options[0];
+      const placeholder = (firstOption && firstOption.value === "") ? firstOption : null;
+      selectEl.innerHTML = "";
+      if (placeholder) selectEl.appendChild(placeholder);
       casteOptions.forEach(c => {
         const option = document.createElement("option");
         option.value = c;
@@ -1692,6 +1716,10 @@
     populateCastes(document.getElementById("casteSelect"));
     populateCastes(document.getElementById("staffCaste"));
     populateCastes(refs.filterCaste);
+    populateCastes(refs.editFields.caste);
+    populateCastes(refs.staffEditFields.caste);
+    populateCastes(refs.staffFilterCaste);
+
 
     function setTalukas(selectEl, district) {
       selectEl.innerHTML = "<option value=''>Select taluka</option>";
@@ -2080,7 +2108,12 @@
       f.taluka.value = voter.taluka || "";
       f.gender.value = voter.gender || "";
       f.voterType.value = voter.voterType || "";
-      f.caste.value = voter.caste || "";
+      if (voter.caste) {
+        const casteMatch = casteOptions.find(c => c.toUpperCase() === voter.caste.toUpperCase());
+        f.caste.value = casteMatch || "";
+      } else {
+        f.caste.value = "";
+      }
       f.village.value = voter.village || "";
       f.address.value = voter.address || "";
       f.isFamilyHead.checked = !!voter.isFamilyHead;
@@ -2235,6 +2268,24 @@
       }
       return text;
     }
+
+    const fixSangli = async () => {
+      if (!state.voters || state.voters.length === 0) return;
+      const votersToFix = state.voters.filter(v => v.district && v.district.trim().toUpperCase() === "SANGALI");
+      if (votersToFix.length === 0) return;
+
+      console.log(`Fixing ${votersToFix.length} records with district SANGALI...`);
+      let fixes = {};
+      votersToFix.forEach(v => {
+        fixes[`voters/${v.id}/district`] = "SANGLI";
+      });
+      try {
+        await update(ref(db), fixes);
+        showToast(`Fixed ${votersToFix.length} Sangli records`, "info");
+      } catch (err) {
+        console.error("Failed to fix Sangli records:", err);
+      }
+    };
 
     document.getElementById("bulkTransliterateBtn").addEventListener("click", async () => {
       console.log("Bulk transliterate button clicked. Checking voters...");
@@ -2729,61 +2780,110 @@
       }
 
       const map = new Map();
+      let grandTotal = { total: 0, male: 0, female: 0, other: 0 };
+
       state.voters.forEach(voter => {
-        let key = voter[currentAnalyticsTab] || "Unassigned";
-        // Normalizing
+        let val = voter[currentAnalyticsTab] || "Unassigned";
+        let key = val.toString().trim();
+
+        // Normalizing Case
+        if (currentAnalyticsTab !== "boothNo" && key !== "Unassigned") {
+          key = key.toUpperCase();
+        }
         if (currentAnalyticsTab === "boothNo" && !voter.boothNo) key = "Unassigned";
 
         if (!map.has(key)) {
-          map.set(key, { total: 0, male: 0, female: 0, other: 0, voters: [] });
+          map.set(key, { total: 0, male: 0, female: 0, other: 0 });
         }
         const bucket = map.get(key);
         bucket.total += 1;
-        const g = (voter.gender || "").toLowerCase();
-        if (g === "male") bucket.male += 1;
-        else if (g === "female") bucket.female += 1;
-        else bucket.other += 1;
-        bucket.voters.push(voter);
+        grandTotal.total += 1;
+
+        const g = (voter.gender || "").toString().trim().toLowerCase();
+        if (g === "male") {
+          bucket.male += 1;
+          grandTotal.male += 1;
+        } else if (g === "female") {
+          bucket.female += 1;
+          grandTotal.female += 1;
+        } else {
+          bucket.other += 1;
+          grandTotal.other += 1;
+        }
       });
 
-      const rows = Array.from(map.entries())
-        .sort((a, b) => a[0].localeCompare(b[0]))
-        .map(([label, data]) => {
-          return `
+      const sortedEntries = Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
+
+      let rowsHtml = sortedEntries.map(([label, data]) => {
+        let displayLabel = label;
+        if (currentAnalyticsTab === "gender") {
+          if (label === "MALE") displayLabel = dictionary[lang].male_header || "MALE";
+          if (label === "FEMALE") displayLabel = dictionary[lang].female_header || "FEMALE";
+        }
+
+        let actionButtons = `
+          <button class="action-btn edit" data-group-key="${label}" data-action="view-group" title="View Group">
+             <i class="fas fa-eye"></i> ${lang === 'mr' ? 'पाहणे' : 'VIEW'}
+          </button>
+          <button class="action-btn" data-group-key="${label}" data-action="export-group" title="Export All">
+             <i class="fas fa-file-export"></i> ${lang === 'mr' ? 'एक्सपोर्ट' : 'EXPORT'}
+          </button>
+        `;
+
+        return `
         <tr>
-          <td>${label}</td>
-          <td>${data.total}</td>
-          <td>${data.male}</td>
-          <td>${data.female}</td>
-          <td>${data.other}</td>
+          <td>${displayLabel}</td>
+          <td style="color: white;" data-action="view-group" data-group-key="${label}">${data.total}</td>
+          <td style="color: var(--primary);" data-action="view-group" data-group-key="${label}" data-gender="male">${data.male}</td>
+          <td style="color: #f472b6;" data-action="view-group" data-group-key="${label}" data-gender="female">${data.female}</td>
+          <td style="color: var(--text-muted); opacity: 0.6;">${data.other}</td>
           <td>
             <div class="table-actions">
-              <button class="action-btn edit" data-group-key="${label}" data-action="view-group">
-                 <i class="fas fa-eye"></i> View
-              </button>
-              <button class="action-btn" data-group-key="${label}" data-action="export-group">
-                 <i class="fas fa-file-export"></i> Export
-              </button>
+              ${actionButtons}
             </div>
           </td>
         </tr>`;
-        }).join("");
-      tbody.innerHTML = rows;
+      }).join("");
+
+      // Add Grand Total Row
+      const totalLabel = lang === 'mr' ? 'एकूण (GRAND TOTAL)' : 'GRAND TOTAL';
+      const totalRow = `
+        <tr class="grand-total-row">
+          <td>${totalLabel}</td>
+          <td>${grandTotal.total}</td>
+          <td>${grandTotal.male}</td>
+          <td>${grandTotal.female}</td>
+          <td>${grandTotal.other}</td>
+          <td></td>
+        </tr>
+      `;
+
+      tbody.innerHTML = rowsHtml + totalRow;
     }
 
     refs.analyticsSection?.addEventListener("click", (event) => {
-      const actionBtn = event.target.closest?.("button[data-action]");
+      const actionBtn = event.target.closest?.("[data-action]");
       if (!actionBtn) return;
 
       const groupKey = actionBtn.dataset.groupKey;
       if (!groupKey) return;
 
+      const genderFilter = actionBtn.dataset.gender; // male or female
+
       // Filter based on current tab logic
-      const voters = state.voters.filter(v => {
+      let voters = state.voters.filter(v => {
         let val = v[currentAnalyticsTab] || "Unassigned";
         if (currentAnalyticsTab === "boothNo" && !v.boothNo) val = "Unassigned";
-        return val === groupKey;
+
+        if (currentAnalyticsTab !== "boothNo" && val !== "Unassigned") {
+          return val.toString().toUpperCase() === groupKey.toUpperCase();
+        }
+        return val.toString() === groupKey.toString();
       });
+
+      if (genderFilter) {
+        voters = voters.filter(v => (v.gender || "").toLowerCase() === genderFilter.toLowerCase());
+      }
 
       if (!voters.length) {
         showToast("No voters in this category", "error");
@@ -2791,8 +2891,18 @@
       }
 
       if (actionBtn.dataset.action === "view-group") {
-        analyticsFilterMeta = { label: `${currentAnalyticsTab}: ${groupKey}`, voters };
-        refs.analyticsModalChip.textContent = `${currentAnalyticsTab.toUpperCase()} > ${groupKey}`;
+        let displayGroupLabel = groupKey;
+        if (currentAnalyticsTab === "gender") {
+          displayGroupLabel = (groupKey === "MALE" ? (dictionary[state.lang].male_header || "MALE") : (groupKey === "FEMALE" ? (dictionary[state.lang].female_header || "FEMALE") : groupKey));
+        }
+
+        let labelText = (currentAnalyticsTab === "boothNo" ? `BOOTH: ${groupKey}` : `${currentAnalyticsTab.toUpperCase()}: ${displayGroupLabel}`);
+        if (genderFilter) {
+          const gLabel = genderFilter.toUpperCase() === "MALE" ? (dictionary[state.lang].male_header || "MALE") : (dictionary[state.lang].female_header || "FEMALE");
+          labelText += ` (${gLabel})`;
+        }
+        analyticsFilterMeta = { label: labelText, voters };
+        refs.analyticsModalChip.textContent = labelText;
         refs.analyticsModalTitle.textContent = `Voters List`;
 
         refs.analyticsList.innerHTML = voters.map(v => {
@@ -2805,48 +2915,66 @@
 
           return `
           <tr>
-            <td>${v.listNo || ""}</td>
+            <td>${(v.listNo || "").toString().toUpperCase()}</td>
             <td>
               <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                ${v.voterName || ""}
-                ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${state.lang === 'mr' ? 'प्रमुख' : 'Head'}</span>` : ''}
+                ${(v.voterName || "").toUpperCase()}
+                ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${state.lang === 'mr' ? 'प्रमुख' : 'HEAD'}</span>` : ''}
               </div>
               <small style="color:var(--text-muted)">${v.voterNameMr || ""}</small>
             </td>
-            <td>${v.epicNo || ""}</td>
-            <td>${v.boothNo || ""}</td>
-            <td>${v.district || ""}</td>
-            <td>${v.taluka || ""}</td>
-            <td>${v.caste || ""}</td>
-            <td>${v.gender || ""}</td>
-            <td>${v.mobileNo || ""}</td>
-            <td>${v.address || ""}</td>
+            <td>${(v.epicNo || "").toUpperCase()}</td>
+            <td>${(v.boothNo || "").toString().toUpperCase()}</td>
+            <td>${(v.district || "").toUpperCase()}</td>
+            <td>${(v.taluka || "").toUpperCase()}</td>
+            <td>${(v.caste || "").toUpperCase()}</td>
+            <td>${(v.gender || "").toUpperCase()}</td>
+            <td>${(v.mobileNo || "").toUpperCase()}</td>
+            <td>${(v.address || "").toUpperCase()}</td>
             <td>${actions}</td>
           </tr>`;
         }).join("");
         refs.analyticsModal.classList.add("visible");
-      } else if (actionBtn.dataset.action === "export-group") {
-        const headers = ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
-        const rows = voters.map(v => [
-          v.listNo || "",
-          v.voterName || "",
-          v.epicNo || "",
-          v.boothNo || "",
-          v.district || "",
-          v.taluka || "",
-          v.caste || "",
-          v.gender || "",
-          v.mobileNo || "",
-          v.address || ""
+      } else if (actionBtn.dataset.action.startsWith("export-group")) {
+        const actionType = actionBtn.dataset.action;
+        let exportVoters = voters;
+        let suffix = "";
+
+        if (actionType === "export-group-male") {
+          exportVoters = voters.filter(v => (v.gender || "").toLowerCase() === "male");
+          suffix = "-MALE";
+        } else if (actionType === "export-group-female") {
+          exportVoters = voters.filter(v => (v.gender || "").toLowerCase() === "female");
+          suffix = "-FEMALE";
+        }
+
+        if (!exportVoters.length) {
+          showToast("No data for this specific gender in this group", "error");
+          return;
+        }
+
+        const headers = ["List No.", "Name (EN)", "Name (MR)", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
+        const rows = exportVoters.map(v => [
+          (v.listNo || "").toString().toUpperCase(),
+          (v.voterName || "").toUpperCase(),
+          (v.voterNameMr || ""),
+          (v.epicNo || "").toUpperCase(),
+          (v.boothNo || "").toString().toUpperCase(),
+          (v.district || "").toUpperCase(),
+          (v.taluka || "").toUpperCase(),
+          (v.caste || "").toUpperCase(),
+          (v.gender || "").toUpperCase(),
+          (v.mobileNo || "").toUpperCase(),
+          (v.address || "").toUpperCase()
         ]);
         const csv = [headers, ...rows].map(row => row.map(value => `"${`${value}`.replace(/"/g, '""')}"`).join(",")).join("\r\n");
         const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `analytics-${currentAnalyticsTab}-${groupKey}.csv`;
+        link.download = `analytics-${currentAnalyticsTab}-${groupKey}${suffix}.csv`;
         link.click();
         URL.revokeObjectURL(link.href);
-        showToast(`Exported ${groupKey} list`, "success");
+        showToast(`Exported ${groupKey} ${suffix.replace("-", "")} list`, "success");
       }
     });
 
@@ -2904,17 +3032,17 @@
       }
       const headers = ["List No.", "Name (EN)", "Name (MR)", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address"];
       const rows = analyticsFilterMeta.voters.map(v => [
-        v.listNo || "",
-        v.voterName || "",
-        v.voterNameMr || "",
-        v.epicNo || "",
-        v.boothNo || "",
-        v.district || "",
-        v.taluka || "",
-        v.caste || "",
-        v.gender || "",
-        v.mobileNo || "",
-        v.address || ""
+        (v.listNo || "").toString().toUpperCase(),
+        (v.voterName || "").toUpperCase(),
+        (v.voterNameMr || ""),
+        (v.epicNo || "").toUpperCase(),
+        (v.boothNo || "").toString().toUpperCase(),
+        (v.district || "").toUpperCase(),
+        (v.taluka || "").toUpperCase(),
+        (v.caste || "").toUpperCase(),
+        (v.gender || "").toUpperCase(),
+        (v.mobileNo || "").toUpperCase(),
+        (v.address || "").toUpperCase()
       ]);
       const csv = [headers, ...rows].map(row => row.map(value => {
         const safe = `${value}`.replace(/"/g, '""');
@@ -2928,6 +3056,131 @@
       URL.revokeObjectURL(link.href);
       showToast("Exported analytics CSV", "success");
     });
+
+    if (refs.analyticsModalPrint) {
+      refs.analyticsModalPrint.addEventListener("click", () => {
+        if (!analyticsFilterMeta?.voters?.length) {
+          showToast("Nothing to print", "error");
+          return;
+        }
+        printVotersList(analyticsFilterMeta.label || "Voter List", analyticsFilterMeta.voters);
+      });
+    }
+
+    if (refs.printAnalyticsSummary) {
+      refs.printAnalyticsSummary.addEventListener("click", () => {
+        printAnalyticsReport();
+      });
+    }
+
+    function printVotersList(title, voters) {
+      const printWindow = window.open('', '_blank');
+      const lang = state.lang;
+      const headers = lang === 'mr'
+        ? ["यादी क्र.", "नाव", "EPIC", "बुथ", "लिंग", "मोबाईल", "पत्ता"]
+        : ["LIST NO", "NAME", "EPIC", "BOOTH", "GENDER", "MOBILE", "ADDRESS"];
+
+      let rowsHtml = voters.map(v => `
+        <tr>
+          <td>${(v.listNo || "").toString().toUpperCase()}</td>
+          <td>${(v.voterName || "").toUpperCase()}<br/><small style="color:#666">${v.voterNameMr || ""}</small></td>
+          <td>${(v.epicNo || "").toUpperCase()}</td>
+          <td>${(v.boothNo || "").toString().toUpperCase()}</td>
+          <td>${lang === 'mr' ? (v.genderMr || v.gender || "") : (v.gender || "").toUpperCase()}</td>
+          <td>${(v.mobileNo || "").toUpperCase()}</td>
+          <td>${(v.address || "").toString().toUpperCase()}</td>
+        </tr>
+      `).join('');
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${title}</title>
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+            th, td { border: 1px solid #999; padding: 8px; text-align: left; font-size: 11px; word-wrap: break-word; }
+            th { background-color: #f2f2f2; font-weight: bold; text-transform: uppercase; }
+            h1 { text-align: center; margin-bottom: 5px; font-size: 18px; }
+            .header-info { text-align: center; margin-bottom: 20px; font-size: 12px; color: #555; }
+            @media print {
+              @page { margin: 1cm; }
+              body { padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>RAYGAON VOTER MANAGEMENT</h1>
+          <div class="header-info">REPORT: ${title.toUpperCase()} | TOTAL RECORDS: ${voters.length} | DATE: ${new Date().toLocaleDateString()}</div>
+          <table>
+            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+          <script>
+            window.onload = function() { 
+              setTimeout(() => {
+                window.print(); 
+                window.close();
+              }, 500);
+            }
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    function printAnalyticsReport() {
+      const tbody = document.getElementById("analyticsBody");
+      const categoryLabel = document.getElementById("analyticsCategoryHeader").textContent;
+      const title = dictionary[state.lang].analytics_title + " - " + categoryLabel;
+      const printWindow = window.open('', '_blank');
+
+      const headHtml = document.querySelector("#analyticsSection table thead").innerHTML;
+      const bodyHtml = tbody.innerHTML;
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${title}</title>
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #333; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #999; padding: 12px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; text-transform: uppercase; }
+            h1 { text-align: center; margin-bottom: 5px; font-size: 22px; }
+            .header-info { text-align: center; margin-bottom: 30px; font-size: 14px; color: #555; }
+            .table-actions { display: none; }
+            tr.grand-total-row { background-color: #f1f5f9 !important; font-weight: bold; }
+            tr.grand-total-row td { color: #1e293b !important; border-top: 2px solid #333; }
+            @media print {
+              body { padding: 0; }
+              .table-actions { display: none !important; }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>RAYGAON VOTER MANAGEMENT</h1>
+          <div class="header-info">SUMMARY REPORT: ${categoryLabel.toUpperCase()} | DATE: ${new Date().toLocaleDateString()}</div>
+          <table>
+            <thead>${headHtml}</thead>
+            <tbody>${bodyHtml}</tbody>
+          </table>
+          <script>
+            window.onload = function() { 
+              setTimeout(() => {
+                window.print(); 
+                window.close();
+              }, 500);
+            }
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
 
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && refs.analyticsModal.classList.contains("visible")) {
@@ -3351,25 +3604,25 @@
         let detailsHtml = group.map(v => `
           <div style="background: rgba(0,0,0,0.2); padding: 0.75rem; margin: 0.5rem 0; border-radius: 0.5rem; border-left: 3px solid var(--danger);">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem;">
-              <div><strong>${lang === 'mr' ? 'बुथ' : 'Booth'}:</strong> ${v.boothNo || '-'}</div>
-              <div><strong>${lang === 'mr' ? 'यादी क्र.' : 'List No'}:</strong> ${v.listNo || '-'}</div>
-              <div><strong>EPIC:</strong> ${v.epicNo || '-'}</div>
-              <div><strong>${lang === 'mr' ? 'मोबाईल' : 'Mobile'}:</strong> ${v.mobileNo || '-'}</div>
+              <div><strong>${lang === 'mr' ? 'बुथ' : 'BOOTH'}:</strong> ${(v.boothNo || '-').toString().toUpperCase()}</div>
+              <div><strong>${lang === 'mr' ? 'यादी क्र.' : 'LIST NO'}:</strong> ${(v.listNo || '-').toString().toUpperCase()}</div>
+              <div><strong>EPIC:</strong> ${(v.epicNo || '-').toUpperCase()}</div>
+              <div><strong>${lang === 'mr' ? 'मोबाईल' : 'MOBILE'}:</strong> ${(v.mobileNo || '-').toUpperCase()}</div>
             </div>
-            <div style="margin-top: 0.5rem;"><strong>${lang === 'mr' ? 'पत्ता' : 'Address'}:</strong> ${lang === 'mr' ? (v.addressMr || v.address || '-') : (v.address || '-')}</div>
+            <div style="margin-top: 0.5rem;"><strong>${lang === 'mr' ? 'पत्ता' : 'ADDRESS'}:</strong> ${lang === 'mr' ? (v.addressMr || v.address || '-') : (v.address || '').toUpperCase()}</div>
           </div>
         `).join('');
 
         return `
           <tr>
             <td>
-              <div style="font-weight: 600;">${v1.voterName || ""}</div>
+              <div style="font-weight: 600;">${(v1.voterName || "").toUpperCase()}</div>
               <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${v1.voterNameMr || ""}</div>
             </td>
-            <td>${lang === 'mr' ? (v1.genderMr || v1.gender || '') : (v1.gender || '')}</td>
+            <td>${lang === 'mr' ? (v1.genderMr || v1.gender || '') : (v1.gender || '').toUpperCase()}</td>
             <td>
               <span style="background: var(--danger); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-weight: 700;">
-                ${group.length} ${lang === 'mr' ? 'नोंदी' : 'Records'}
+                ${group.length} ${lang === 'mr' ? 'नोंदी' : 'RECORDS'}
               </span>
             </td>
             <td>
@@ -3394,6 +3647,15 @@
       onValue(ref(db, "voters"), (snapshot) => {
         const data = snapshot.val() || {};
         state.voters = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+
+        // Auto-fix Sangli spelling if any exist
+        if (state.voters.length > 0) {
+          const hasSangali = state.voters.some(v => v.district && v.district.trim().toUpperCase() === "SANGALI");
+          if (hasSangali) {
+            fixSangli();
+          }
+        }
+
         updateOverview();
         renderVoterTable();
         renderAnalytics();
@@ -3419,8 +3681,8 @@
 
     function updateOverview() {
       const total = state.voters.length;
-      const female = state.voters.filter(v => (v.gender || "").toLowerCase() === "female").length;
-      const male = state.voters.filter(v => (v.gender || "").toLowerCase() === "male").length;
+      const female = state.voters.filter(v => (v.gender || "").toString().trim().toLowerCase() === "female").length;
+      const male = state.voters.filter(v => (v.gender || "").toString().trim().toLowerCase() === "male").length;
       document.getElementById("totalVoters").textContent = total;
       document.getElementById("femaleVoters").textContent = female;
       document.getElementById("maleVoters").textContent = male;
@@ -3429,10 +3691,10 @@
       // Booth-wise Summary
       const boothMap = {};
       state.voters.forEach(v => {
-        const b = v.boothNo || "Unspecified";
+        const b = (v.boothNo || "Unspecified").toString().trim();
         if (!boothMap[b]) boothMap[b] = { total: 0, male: 0, female: 0 };
         boothMap[b].total++;
-        const g = (v.gender || "").toLowerCase();
+        const g = (v.gender || "").toString().trim().toLowerCase();
         if (g === "male") boothMap[b].male++;
         else if (g === "female") boothMap[b].female++;
       });
@@ -3490,9 +3752,8 @@
 
     function populateStaffFilters() {
       const booths = Array.from(new Set(state.staff.map(s => s.boothNo).filter(Boolean))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-      const castes = Array.from(new Set(state.staff.map(s => s.caste).filter(Boolean))).sort();
       refs.staffFilterBooth.innerHTML = `<option value="">${state.lang === 'mr' ? 'सर्व बुथ' : 'All Booths'}</option>` + booths.map(booth => `<option value="${booth}">${booth}</option>`).join("");
-      refs.staffFilterCaste.innerHTML = `<option value="">${state.lang === 'mr' ? 'सर्व जाती' : 'All Castes'}</option>` + castes.map(caste => `<option value="${caste}">${caste}</option>`).join("");
+      // Caste filter is populated once during initialization with fixed options
     }
 
     function populateVoterFilters() {
@@ -3636,7 +3897,12 @@
       f.name.value = staff.name || "";
       f.nameMr.value = staff.nameMr || "";
       f.boothNo.value = staff.boothNo || "";
-      f.caste.value = staff.caste || "";
+      if (staff.caste) {
+        const casteMatch = casteOptions.find(c => c.toUpperCase() === staff.caste.toUpperCase());
+        f.caste.value = casteMatch || "";
+      } else {
+        f.caste.value = "";
+      }
       f.casteMr.value = staff.casteMr || "";
       f.designation.value = staff.designation || "";
       f.designationMr.value = staff.designationMr || "";
@@ -3782,24 +4048,24 @@
           // removed name modification
 
           return [
-            v.listNo || "",
-            v.voterName || "",
+            (v.listNo || "").toString().toUpperCase(),
+            (v.voterName || "").toUpperCase(),
             v.voterNameMr || "",
-            v.epicNo || "",
-            v.boothNo || "",
-            v.district || "",
-            v.districtMr || (v.district || ""), // Fallback if not converted
-            v.taluka || "",
-            v.talukaMr || (v.taluka || ""),
-            v.caste || "",
-            v.casteMr || (v.caste || ""),
-            v.gender || "",
+            (v.epicNo || "").toUpperCase(),
+            (v.boothNo || "").toString().toUpperCase(),
+            (v.district || "").toUpperCase(),
+            v.districtMr || (v.district || "").toUpperCase(), // Fallback if not converted
+            (v.taluka || "").toUpperCase(),
+            v.talukaMr || (v.taluka || "").toUpperCase(),
+            (v.caste || "").toUpperCase(),
+            v.casteMr || (v.caste || "").toUpperCase(),
+            (v.gender || "").toUpperCase(),
             v.genderMr || (state.lang === 'mr' && v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender)),
-            v.mobileNo || "",
-            v.address || "",
-            v.addressMr || (v.address || ""),
-            v.voterType || "",
-            v.isFamilyHead ? "Yes" : "No",
+            (v.mobileNo || "").toUpperCase(),
+            (v.address || "").toUpperCase(),
+            v.addressMr || (v.address || "").toUpperCase(),
+            (v.voterType || "").toUpperCase(),
+            v.isFamilyHead ? "YES" : "NO",
             v.isDeceased ? "DEATH" : ""
           ];
         });
@@ -3879,24 +4145,24 @@
 
           return `
           <tr ${rowStyle}>
-            <td>${v.listNo}</td>
+            <td>${(v.listNo || "").toString().toUpperCase()}</td>
             <td>
               <div style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; ${nameStyle}">
-                ${v.voterName}
-                ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${lang === 'mr' ? 'प्रमुख' : 'Head'}</span>` : ''}
-                ${isDeceased ? `<span style="background: var(--danger); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 800;">${dictionary[lang].status_deceased}</span>` : ''}
+                ${(v.voterName || "").toUpperCase()}
+                ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${lang === 'mr' ? 'प्रमुख' : 'HEAD'}</span>` : ''}
+                ${isDeceased ? `<span style="background: var(--danger); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 800;">${(dictionary[lang].status_deceased || "").toUpperCase()}</span>` : ''}
               </div>
               <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px; ${isDeceased ? 'opacity: 0.7;' : ''}">${v.voterNameMr || ""}</div>
             </td>
-            <td>${v.epicNo}</td>
-            <td>${v.boothNo}</td>
-            <td>${lang === 'mr' ? (v.districtMr || v.district) : v.district}</td>
-            <td>${lang === 'mr' ? (v.talukaMr || v.taluka) : v.taluka}</td>
-            <td>${lang === 'mr' ? (v.casteMr || v.caste) : v.caste}</td>
-            <td>${lang === 'mr' ? (v.genderMr || (v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender))) : v.gender}</td>
-            <td>${v.mobileNo}</td>
-            <td>${lang === 'mr' ? (v.addressMr || v.address || "") : (v.address || "")}</td>
-            <td>${v.voterType || "-"}</td>
+            <td>${(v.epicNo || "").toUpperCase()}</td>
+            <td>${(v.boothNo || "").toString().toUpperCase()}</td>
+            <td>${lang === 'mr' ? (v.districtMr || v.district) : (v.district || "").toUpperCase()}</td>
+            <td>${lang === 'mr' ? (v.talukaMr || v.taluka) : (v.taluka || "").toUpperCase()}</td>
+            <td>${lang === 'mr' ? (v.casteMr || v.caste) : (v.caste || "").toUpperCase()}</td>
+            <td>${lang === 'mr' ? (v.genderMr || (v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender))) : (v.gender || "").toUpperCase()}</td>
+            <td>${(v.mobileNo || "").toUpperCase()}</td>
+            <td>${lang === 'mr' ? (v.addressMr || v.address || "") : (v.address || "").toUpperCase()}</td>
+            <td>${(v.voterType || "-").toUpperCase()}</td>
             <td>${actions}</td>
           </tr>`;
         }).join("");
@@ -3906,7 +4172,7 @@
       const headers = refs.voterTableBody.closest("table").querySelectorAll("thead th");
       const labels = lang === "mr"
         ? ["यादी क्र.", "नाव", "EPIC", "बुथ", "जिल्हा", "तालुका", "जात", "लिंग", "मोबाईल", "पत्ता", "प्रकार", "क्रिया"]
-        : ["List No.", "Name", "EPIC", "Booth", "District", "Taluka", "Caste", "Gender", "Mobile", "Address", "Type", "Actions"];
+        : ["LIST NO.", "NAME", "EPIC", "BOOTH", "DISTRICT", "TALUKA", "CASTE", "GENDER", "MOBILE", "ADDRESS", "TYPE", "ACTIONS"];
       headers.forEach((th, i) => { if (labels[i]) th.textContent = labels[i]; });
       console.log("Voter table rendered with", filtered.length, "rows");
     }
@@ -3935,7 +4201,9 @@
     function groupCount(items, key) {
       const map = new Map();
       items.forEach(item => {
-        const value = item[key] || "Other";
+        let val = item[key] || "Other";
+        let value = val.toString().trim();
+        if (value !== "Other") value = value.toUpperCase();
         map.set(value, (map.get(value) || 0) + 1);
       });
       return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
