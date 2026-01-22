@@ -191,7 +191,7 @@
                 <option value="Male" data-translate="male_header">Male</option>
                 <option value="Other" data-translate="other_header">Other</option>
               </select>
-              <select id="filterVoterType">
+              <select id="filterVoterType" data-requires-admin="true">
                 <option value="" data-translate="all_types">All Types</option>
                 <option value="A">A</option>
                 <option value="B">B</option>
@@ -212,7 +212,7 @@
                     <th>Gender</th>
                     <th>Mobile</th>
                     <th>Address</th>
-                    <th>Type</th>
+                    <th data-requires-admin="true">Type</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -1091,8 +1091,8 @@
     const staffCSVHeaders = ["name", "boothNo", "caste", "designation", "workplace", "mobile", "houseVoters"];
     const voterSampleData = [
       voterCSVHeaders,
-      ["2", "101", "Aarav Patil", "आरव पाटील", "ABC1234567", "9876543210", "Pune", "Haveli", "Male", "A", "OBC", "Raygaon", "House No. 10, Ward 3"],
-      ["3", "102", "Sneha Deshmukh", "स्नेहा देशमुख", "XYZ7654321", "8765432109", "Nashik", "Sinnar", "Female", "B", "General", "Raygaon", "Opp. Gram Panchayat"]
+      ["2", "101", "Aarav Patil", "आरव पाटील", "ABC1234567", "9876543210", "Pune", "Haveli", "Male", "A", "NAMAN", "Raygaon", "House No. 10, Ward 3"],
+      ["3", "102", "Sneha Deshmukh", "स्नेहा देशमुख", "XYZ7654321", "8765432109", "Nashik", "Sinnar", "Female", "B", "MARATHA", "Raygaon", "Opp. Gram Panchayat"]
     ];
     const staffSampleData = [
       staffCSVHeaders,
@@ -1490,7 +1490,20 @@
         duplicate_list_desc: "प्रणालीमध्ये आढळलेल्या संभाव्य दुप्पट मतदारांची यादी.",
         duplicate_records: "दुप्पट नोंदी",
         view_details: "तपशील पहा",
-        print_report: "रिपोर्ट प्रिंट करा"
+        print_report: "रिपोर्ट प्रिंट करा",
+        "MARATHA": "मराठा",
+        "MATANG": "मातंग",
+        "NABIK": "नाभिक",
+        "GURAV": "गुरव",
+        "BOUDH": "बौद्ध",
+        "KOLI": "कोळी",
+        "CHAMBAR": "चांभार",
+        "MUSLIM": "मुस्लिम",
+        "RAMOSHI": "रामोशी",
+        "BELDAR": "बेलदार",
+        "VANI": "वाणी",
+        "NAMAN": "नमन",
+        "DHANGAR": "धनगर"
       }
     };
 
@@ -1702,11 +1715,17 @@
       const firstOption = selectEl.options[0];
       const placeholder = (firstOption && firstOption.value === "") ? firstOption : null;
       selectEl.innerHTML = "";
-      if (placeholder) selectEl.appendChild(placeholder);
+      if (placeholder) {
+        if (state.lang === 'mr' && placeholder.getAttribute('data-translate') === 'all_castes') {
+          placeholder.textContent = dictionary.mr.all_castes;
+        }
+        selectEl.appendChild(placeholder);
+      }
       casteOptions.forEach(c => {
         const option = document.createElement("option");
         option.value = c;
-        option.textContent = c;
+        const translated = dictionary[state.lang][c];
+        option.textContent = translated || c;
         selectEl.appendChild(option);
       });
     }
@@ -1818,9 +1837,9 @@
       document.querySelectorAll('[data-requires-admin="true"]').forEach(btn => {
         // Special case: Allow users to see Staff Directory nav button, but readonly
         if (btn.dataset.target === "staffDirectorySection") {
-          btn.style.display = "block";
+          btn.style.display = "";
         } else {
-          btn.style.display = isAdmin ? "block" : "none";
+          btn.style.display = isAdmin ? "" : "none";
         }
       });
 
@@ -2819,6 +2838,8 @@
         if (currentAnalyticsTab === "gender") {
           if (label === "MALE") displayLabel = dictionary[lang].male_header || "MALE";
           if (label === "FEMALE") displayLabel = dictionary[lang].female_header || "FEMALE";
+        } else if (currentAnalyticsTab === "caste") {
+          displayLabel = dictionary[lang][label] || label;
         }
 
         let actionButtons = `
@@ -4114,7 +4135,8 @@
       console.log("Rendering voter table. User role:", state.role);
       const lang = state.lang;
       if (!state.voters.length) {
-        refs.voterTableBody.innerHTML = `<tr><td colspan='12'>${lang === 'mr' ? 'अद्याप मतदारांची नोंद नाही.' : 'No voter records yet.'}</td></tr>`;
+        const colspan = state.role === 'admin' ? 12 : 11;
+        refs.voterTableBody.innerHTML = `<tr><td colspan='${colspan}'>${lang === 'mr' ? 'अद्याप मतदारांची नोंद नाही.' : 'No voter records yet.'}</td></tr>`;
         return;
       }
 
@@ -4122,7 +4144,8 @@
       const filtered = state.voters.filter(passesFilters);
 
       if (!filtered.length) {
-        refs.voterTableBody.innerHTML = `<tr><td colspan='12'>${lang === 'mr' ? 'फिल्टरनुसार माहिती सापडली नाही.' : 'No data matches the current filters.'}</td></tr>`;
+        const colspan = state.role === 'admin' ? 12 : 11;
+        refs.voterTableBody.innerHTML = `<tr><td colspan='${colspan}'>${lang === 'mr' ? 'फिल्टरनुसार माहिती सापडली नाही.' : 'No data matches the current filters.'}</td></tr>`;
         return;
       }
       const rows = filtered
@@ -4158,11 +4181,11 @@
             <td>${(v.boothNo || "").toString().toUpperCase()}</td>
             <td>${lang === 'mr' ? (v.districtMr || v.district) : (v.district || "").toUpperCase()}</td>
             <td>${lang === 'mr' ? (v.talukaMr || v.taluka) : (v.taluka || "").toUpperCase()}</td>
-            <td>${lang === 'mr' ? (v.casteMr || v.caste) : (v.caste || "").toUpperCase()}</td>
+            <td>${lang === 'mr' ? (v.casteMr || dictionary[lang][v.caste] || v.caste) : (v.caste || "").toUpperCase()}</td>
             <td>${lang === 'mr' ? (v.genderMr || (v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender))) : (v.gender || "").toUpperCase()}</td>
             <td>${(v.mobileNo || "").toUpperCase()}</td>
             <td>${lang === 'mr' ? (v.addressMr || v.address || "") : (v.address || "").toUpperCase()}</td>
-            <td>${(v.voterType || "-").toUpperCase()}</td>
+            <td ${state.role === 'admin' ? '' : 'style="display:none;"'}>${(v.voterType || "-").toUpperCase()}</td>
             <td>${actions}</td>
           </tr>`;
         }).join("");
