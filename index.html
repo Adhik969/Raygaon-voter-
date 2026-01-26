@@ -100,6 +100,9 @@
             <button class="nav-button" data-target="deceasedListSection" data-requires-admin="true">
               <i class="fas fa-user-times"></i> <span data-translate="nav_deceased_list">Deceased List</span>
             </button>
+            <button class="nav-button" data-target="votedListSection" data-requires-admin="true">
+              <i class="fas fa-check-circle"></i> <span data-translate="nav_voted_list">Voted List</span>
+            </button>
             <button class="nav-button" data-target="staffSection" data-requires-admin="true">
               <i class="fas fa-chalkboard-teacher"></i> <span data-translate="nav_staff_info">Staff Info</span>
             </button>
@@ -130,21 +133,41 @@
             <h2 data-translate="dash_overview">Dashboard Overview</h2>
             <p id="welcomeText">Welcome.</p>
             <div class="stat-grid" id="mainStatsGrid">
-              <div class="stat-card">
-                <h3 data-translate="total_voters">Total Registered Voters</h3>
-                <p id="totalVoters">0</p>
+              <div class="stat-card" data-type="total">
+                <i class="fas fa-users stat-icon"></i>
+                <h3 data-translate="total_voters">Total Registered</h3>
+                <div class="value-container">
+                  <p id="totalVoters">0</p>
+                </div>
               </div>
-              <div class="stat-card">
+              <div class="stat-card" data-type="female">
+                <i class="fas fa-venus stat-icon"></i>
                 <h3 data-translate="female_voters">Female Voters</h3>
-                <p id="femaleVoters">0</p>
+                <div class="value-container">
+                  <p id="femaleVoters">0</p>
+                </div>
               </div>
-              <div class="stat-card">
+              <div class="stat-card" data-type="male">
+                <i class="fas fa-mars stat-icon"></i>
                 <h3 data-translate="male_voters">Male Voters</h3>
-                <p id="maleVoters">0</p>
+                <div class="value-container">
+                  <p id="maleVoters">0</p>
+                </div>
               </div>
-              <div class="stat-card">
+              <div class="stat-card" data-type="total">
+                <i class="fas fa-user-tie stat-icon"></i>
                 <h3 data-translate="staff_count">Staff Records</h3>
-                <p id="staffCount">0</p>
+                <div class="value-container">
+                  <p id="staffCount">0</p>
+                </div>
+              </div>
+              <div class="stat-card" data-type="voted">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <h3 data-translate="voted_status">Total Voted</h3>
+                <div class="value-container">
+                  <p id="votedSummaryCount">0</p>
+                </div>
+                <div class="percent-badge" id="totalVotingPercent">0%</div>
               </div>
             </div>
 
@@ -582,6 +605,44 @@
           </section>
 
 
+
+          <section id="votedListSection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <div class="panel-header"
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <div>
+                <h2 data-translate="voted_list_title">Voted Voter List</h2>
+                <p style="color:var(--text-muted);" data-translate="voted_list_desc">List of voters who have completed
+                  their voting.</p>
+              </div>
+              <div>
+                <button type="button" class="export-btn" id="exportVotedList" style="margin-right: 0.5rem;">
+                  <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
+                </button>
+                <button type="button" class="download-btn" id="printVotedList" style="margin-right: 1rem;">
+                  <i class="fas fa-print"></i> <span data-translate="print_report">Print Report</span>
+                </button>
+                <span style="background:var(--success); color:white; padding: 0.2rem 0.6rem; border-radius:4px;">Total
+                  Voted:
+                  <span id="votedCount">0</span></span>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-translate="booth">Booth</th>
+                    <th data-translate="voter_list_no_label">List No</th>
+                    <th data-translate="name_col">Name</th>
+                    <th data-translate="gender_label">Gender</th>
+                    <th data-translate="epic">EPIC</th>
+                    <th data-translate="actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="votedTableBody">
+                </tbody>
+              </table>
+            </div>
+          </section>
 
           <section id="searchVoterSection" class="panel" style="text-align: center;">
             <h2 data-translate="search_voter_title">Search Voter</h2>
@@ -1175,6 +1236,12 @@
       analyticsModalChip: document.getElementById("analyticsModalChip"),
       analyticsModalTitle: document.getElementById("analyticsModalTitle"),
       analyticsSection: document.getElementById("analyticsSection"),
+      votedTableBody: document.getElementById("votedTableBody"),
+      votedCount: document.getElementById("votedCount"),
+      votedSummaryCount: document.getElementById("votedSummaryCount"),
+      totalVotingPercent: document.getElementById("totalVotingPercent"),
+      exportVotedList: document.getElementById("exportVotedList"),
+      printVotedList: document.getElementById("printVotedList"),
       printAnalyticsSummary: document.getElementById("printAnalyticsSummary"),
       boothAnalyticsBody: document.getElementById("boothAnalyticsBody"),
       staffFilterBooth: document.getElementById("staffFilterBooth"),
@@ -1355,7 +1422,14 @@
         duplicate_list_desc: "List of potential duplicate voters detected in the system.",
         duplicate_records: "Duplicate Records",
         view_details: "View Details",
-        print_report: "Print Report"
+        print_report: "Print Report",
+        nav_voted_list: "Voted List",
+        voted_list_title: "Voted Voter List",
+        voted_list_desc: "List of voters who have completed their voting.",
+        mark_voted_btn: "Mark Voted",
+        unmark_voted_btn: "Unmark Voted",
+        voted_status: "VOTED",
+        pending_votes: "PENDING VOTES"
       },
       mr: {
         sign_out: "साइन आउट",
@@ -1491,6 +1565,13 @@
         duplicate_records: "दुप्पट नोंदी",
         view_details: "तपशील पहा",
         print_report: "रिपोर्ट प्रिंट करा",
+        nav_voted_list: "मतदान झालेली यादी",
+        voted_list_title: "मतदान केलेल्या मतदारांची यादी",
+        voted_list_desc: "ज्या मतदारांनी मतदान पूर्ण केले आहे त्यांची यादी.",
+        mark_voted_btn: "मतदान झाले",
+        unmark_voted_btn: "मतदान रद्द करा",
+        voted_status: "मतदान झाले",
+        pending_votes: "बाकी मतदान",
         "MARATHA": "मराठा",
         "MATANG": "मातंग",
         "NABIK": "नाभिक",
@@ -1922,6 +2003,7 @@
           if (targetId === "overviewSection") updateOverview();
           if (targetId === "analyticsSection") renderAnalytics();
           if (targetId === "deceasedListSection") renderDeceasedTable();
+          if (targetId === "votedListSection") renderVotedTable();
         }
 
         // Auto-hide sidebar on selection (especially for mobile)
@@ -2094,6 +2176,16 @@
         return;
       }
 
+      if (action === "mark-voted") {
+        markAsVoted(id);
+        return;
+      }
+
+      if (action === "unmark-voted") {
+        unmarkAsVoted(id);
+        return;
+      }
+
       if (state.role !== "admin") {
         showToast("Admin access required", "error");
         return;
@@ -2186,6 +2278,21 @@
         showToast("Failed to update voter", "error");
       }
     });
+
+    if (refs.exportVotedList) {
+      refs.exportVotedList.addEventListener("click", exportVotedList);
+    }
+
+    if (refs.printVotedList) {
+      refs.printVotedList.addEventListener("click", () => {
+        const voted = state.voters.filter(v => v.isVoted);
+        if (!voted.length) {
+          showToast(state.lang === 'mr' ? "माहिती उपलब्ध नाही" : "No data to print", "error");
+          return;
+        }
+        printVotersList(dictionary[state.lang].voted_list_title || "Voted List", voted);
+      });
+    }
 
     refs.voterImportInput.addEventListener("change", (event) => {
       handleCSVImport(event.target.files?.[0], "voter");
@@ -3694,6 +3801,7 @@
         renderAnalytics();
         renderFamilyHeadTable();
         renderDuplicateListTable();
+        renderVotedTable();
       });
       onValue(ref(db, "staff"), (snapshot) => {
         const data = snapshot.val() || {};
@@ -3721,15 +3829,31 @@
       document.getElementById("maleVoters").textContent = male;
       document.getElementById("staffCount").textContent = state.staff.length;
 
+      const totalVoted = state.voters.filter(v => v.isVoted).length;
+      if (refs.votedSummaryCount) refs.votedSummaryCount.textContent = totalVoted;
+      if (refs.votedCount) refs.votedCount.textContent = totalVoted;
+
+      if (refs.totalVotingPercent) {
+        const percent = total > 0 ? Math.round((totalVoted / total) * 100) : 0;
+        refs.totalVotingPercent.textContent = `${percent}%`;
+      }
+
       // Booth-wise Summary
       const boothMap = {};
       state.voters.forEach(v => {
         const b = (v.boothNo || "Unspecified").toString().trim();
-        if (!boothMap[b]) boothMap[b] = { total: 0, male: 0, female: 0 };
+        if (!boothMap[b]) boothMap[b] = { total: 0, male: 0, female: 0, voted: 0, votedMale: 0, votedFemale: 0 };
         boothMap[b].total++;
         const g = (v.gender || "").toString().trim().toLowerCase();
-        if (g === "male") boothMap[b].male++;
-        else if (g === "female") boothMap[b].female++;
+        if (g === "male") {
+          boothMap[b].male++;
+          if (v.isVoted) boothMap[b].votedMale++;
+        } else if (g === "female") {
+          boothMap[b].female++;
+          if (v.isVoted) boothMap[b].votedFemale++;
+        }
+
+        if (v.isVoted) boothMap[b].voted++;
       });
 
       const boothGrid = document.getElementById("boothStatsGrid");
@@ -3744,33 +3868,42 @@
               const label = lang === "mr" ? `बुथ ${booth} मतदार` : `Booth ${booth} Voters`;
               const maleLabel = lang === "mr" ? "पुरुष" : "Male";
               const femaleLabel = lang === "mr" ? "महिला" : "Female";
+              const votedLabel = lang === 'mr' ? 'झालेले मतदान' : 'Voted';
+              const pendingLabel = lang === 'mr' ? 'बाकी' : 'Pending';
+
+              const totalPercent = stats.total > 0 ? Math.round((stats.voted / stats.total) * 100) : 0;
 
               return `
-              <div class="stat-card" style="position: relative; overflow: hidden; padding: 1.5rem; background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1.5rem; transition: transform 0.3s ease;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
-                  <h3 style="margin: 0; font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">${label}</h3>
-                  <span style="background: rgba(245, 158, 11, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 800;">Total</span>
+              <div class="booth-card">
+                <div class="booth-card-header">
+                  <span class="booth-label">${label}</span>
+                  <span class="booth-percent-pill">${totalPercent}%</span>
                 </div>
                 
-                <div style="text-align: center; margin-bottom: 1.5rem;">
-                  <div style="font-size: 2.75rem; font-weight: 900; color: white; font-family: 'Syne', sans-serif; line-height: 1;">${stats.total}</div>
+                <div class="booth-progress-container" style="margin: 1rem 0;">
+                  <div class="booth-progress-bar" style="width: ${totalPercent}%"></div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                  <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); padding: 0.75rem; border-radius: 1rem; text-align: center;">
-                    <div style="color: var(--primary); font-size: 1.25rem; margin-bottom: 0.25rem;">
-                      <i class="fas fa-mars"></i>
-                    </div>
-                    <div style="font-size: 1.1rem; font-weight: 800; color: white;">${stats.male}</div>
-                    <div style="font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 700;">${maleLabel}</div>
+                <div class="booth-main-stats">
+                  <span class="voted-big-value">${stats.voted}</span>
+                  <span class="total-subtitle">${votedLabel} / ${stats.total} TOTAL</span>
+                </div>
+
+                <div style="text-align: center; margin-top: -0.5rem; font-size: 0.85rem; color: var(--danger); font-weight: 800;">
+                   <i class="fas fa-exclamation-circle" style="margin-right: 4px;"></i> ${dictionary[lang].pending_votes}: ${stats.total - stats.voted}
+                </div>
+
+                <div class="booth-footer-grid">
+                  <div class="gender-box">
+                    <span class="gender-value">${stats.votedMale} / ${stats.male}</span>
+                    <span class="gender-label">${maleLabel}</span>
+                    <span class="pending-small">${pendingLabel}: ${stats.male - stats.votedMale}</span>
                   </div>
                   
-                  <div style="background: rgba(244, 114, 182, 0.1); border: 1px solid rgba(244, 114, 182, 0.2); padding: 0.75rem; border-radius: 1rem; text-align: center;">
-                    <div style="color: #f472b6; font-size: 1.25rem; margin-bottom: 0.25rem;">
-                      <i class="fas fa-venus"></i>
-                    </div>
-                    <div style="font-size: 1.1rem; font-weight: 800; color: white;">${stats.female}</div>
-                    <div style="font-size: 0.7rem; color: #f472b6; text-transform: uppercase; font-weight: 700;">${femaleLabel}</div>
+                  <div class="gender-box">
+                    <span class="gender-value">${stats.votedFemale} / ${stats.female}</span>
+                    <span class="gender-label">${femaleLabel}</span>
+                    <span class="pending-small">${pendingLabel}: ${stats.female - stats.votedFemale}</span>
                   </div>
                 </div>
               </div>`;
@@ -4166,19 +4299,28 @@
         .sort((a, b) => Number(a.listNo || 0) - Number(b.listNo || 0))
         .map(v => {
           const isDeceased = !!v.isDeceased;
+          const isVoted = !!v.isVoted;
+
+          const markVotedBtn = isVoted
+            ? `<button class="action-btn success" data-action="unmark-voted" data-id="${v.id}" title="${dictionary[lang].unmark_voted_btn}"><i class="fas fa-check-double"></i></button>`
+            : `<button class="action-btn" data-action="mark-voted" data-id="${v.id}" title="${dictionary[lang].mark_voted_btn}"><i class="fas fa-check"></i></button>`;
+
           const actions = state.role === "admin"
             ? `<div class="table-actions">
+                ${!isDeceased ? markVotedBtn : ''}
                 <button class="action-btn edit" data-action="edit" data-id="${v.id}">${dictionary[lang].edit}</button>
                 ${!isDeceased ? `<button class="action-btn danger" data-action="mark-deceased" data-id="${v.id}" title="${dictionary[lang].mark_deceased_btn}"><i class="fas fa-user-times"></i></button>` : ''}
                 <button class="action-btn delete" data-action="delete" data-id="${v.id}">${dictionary[lang].delete}</button>
-                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> ${dictionary[lang].print}</button>
               </div>`
             : `<div class="table-actions">
-                <button class="action-btn" data-action="print" data-id="${v.id}"><i class="fas fa-print"></i> ${dictionary[lang].print}</button>
+                ${!isDeceased ? markVotedBtn : ''}
               </div>`;
 
-          const rowStyle = isDeceased ? 'style="background: rgba(239, 68, 68, 0.05);"' : '';
-          const nameStyle = isDeceased ? 'color: var(--danger);' : '';
+          let rowStyle = '';
+          if (isDeceased) rowStyle = 'style="background: rgba(239, 68, 68, 0.05);"';
+          else if (isVoted) rowStyle = 'style="background: rgba(16, 185, 129, 0.05);"';
+
+          const nameStyle = isDeceased ? 'color: var(--danger);' : (isVoted ? 'color: var(--success);' : '');
 
           return `
           <tr ${rowStyle}>
@@ -4188,8 +4330,9 @@
                 ${(v.voterName || "").toUpperCase()}
                 ${v.isFamilyHead ? `<span style="background: var(--primary); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; text-transform: uppercase;">${lang === 'mr' ? 'प्रमुख' : 'HEAD'}</span>` : ''}
                 ${isDeceased ? `<span style="background: var(--danger); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 800;">${(dictionary[lang].status_deceased || "").toUpperCase()}</span>` : ''}
+                ${isVoted ? `<span style="background: var(--success); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 800;">${(dictionary[lang].voted_status || "").toUpperCase()}</span>` : ''}
               </div>
-              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px; ${isDeceased ? 'opacity: 0.7;' : ''}">${v.voterNameMr || ""}</div>
+              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px; ${isDeceased || isVoted ? 'opacity: 0.7;' : ''}">${v.voterNameMr || ""}</div>
             </td>
             <td>${(v.epicNo || "").toUpperCase()}</td>
             <td>${(v.boothNo || "").toString().toUpperCase()}</td>
@@ -4215,6 +4358,99 @@
         : ["LIST NO.", "NAME", "EPIC", "BOOTH", "DISTRICT", "TALUKA", "CASTE", "GENDER", "MOBILE", "ADDRESS", "TYPE", "ACTIONS"];
       headers.forEach((th, i) => { if (labels[i]) th.textContent = labels[i]; });
       console.log("Voter table rendered with", filtered.length, "rows");
+    }
+
+    async function markAsVoted(id) {
+      try {
+        await update(ref(db, `voters/${id}`), { isVoted: true });
+        showToast(state.lang === 'mr' ? "मतदान झाले असे चिन्हांकित केले" : "Marked as voted", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Error updating status", "error");
+      }
+    }
+
+    async function unmarkAsVoted(id) {
+      try {
+        await update(ref(db, `voters/${id}`), { isVoted: null });
+        showToast(state.lang === 'mr' ? "मतदान रद्द केले" : "Unmarked as voted", "info");
+      } catch (error) {
+        console.error(error);
+        showToast("Error updating status", "error");
+      }
+    }
+
+    function renderVotedTable() {
+      const tableBody = refs.votedTableBody;
+      const countSpan = refs.votedCount;
+      if (!tableBody) return;
+      tableBody.innerHTML = "";
+
+      const votedVoters = state.voters.filter(v => v.isVoted);
+      if (countSpan) countSpan.textContent = votedVoters.length;
+
+      if (votedVoters.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No voted voters found.</td></tr>`;
+        return;
+      }
+
+      const lang = state.lang;
+      const label = dictionary[lang].unmark_voted_btn || "Unmark";
+
+      const rows = votedVoters.map(v => `
+           <tr>
+               <td>${v.boothNo}</td>
+               <td>${v.listNo}</td>
+               <td>
+                   <div style="font-weight:600; color:var(--success);">${v.voterName}</div>
+                   <div style="color:var(--text-muted);font-size:0.85em;">${v.voterNameMr || ""}</div>
+               </td>
+               <td>${v.gender}</td>
+               <td>${v.epicNo}</td>
+               <td>
+                   <button class="action-btn unmark-btn" data-id="${v.id}" style="background-color:var(--accent); color:white;">
+                       <i class="fas fa-undo"></i> ${label}
+                   </button>
+               </td>
+           </tr>
+       `).join("");
+
+      tableBody.innerHTML = rows;
+
+      // Add Event Listeners
+      tableBody.querySelectorAll(".unmark-btn").forEach(btn => {
+        btn.addEventListener("click", () => unmarkAsVoted(btn.dataset.id));
+      });
+    }
+
+    function exportVotedList() {
+      const voted = state.voters.filter(v => v.isVoted);
+      if (!voted.length) {
+        showToast(state.lang === 'mr' ? "माहिती उपलब्ध नाही" : "No data to export", "error");
+        return;
+      }
+
+      const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "Gender", "Mobile"];
+      const csvContent = [
+        headers.join(","),
+        ...voted.map(v => [
+          `"${v.listNo || ""}"`,
+          `"${v.voterName || ""}"`,
+          `"${v.voterNameMr || ""}"`,
+          `"${v.epicNo || ""}"`,
+          `"${v.boothNo || ""}"`,
+          `"${v.gender || ""}"`,
+          `"${v.mobileNo || ""}"`
+        ].join(","))
+      ].join("\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Voted_Voters_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function renderAggregates() {

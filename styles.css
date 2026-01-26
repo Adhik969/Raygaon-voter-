@@ -466,30 +466,210 @@ body.login-active .app-header .meta {
 }
 
 .stat-card {
-    background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
-    border: 1px solid var(--bg-card-border);
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1.5rem;
     border-radius: 1.25rem;
-    box-shadow: var(--shadow);
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 160px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 .stat-card h3 {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+
+.stat-card .value-container {
+    margin-top: auto;
 }
 
 .stat-card p {
     font-size: 2.5rem;
-    font-family: var(--font-main);
-    font-weight: 700;
-    margin: 0;
+    font-weight: 800;
     color: white;
-    background: linear-gradient(135deg, white 0%, #94a3b8 100%);
-    background-clip: text;
+    margin: 0;
+    font-family: var(--font-main);
+}
+
+.stat-icon {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 1.5rem;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Specific Card Accents */
+.stat-card[data-type="voted"] {
+    border-left: 4px solid var(--success);
+}
+
+.stat-card[data-type="total"] {
+    border-left: 4px solid var(--primary);
+}
+
+.stat-card[data-type="female"] {
+    border-left: 4px solid #f472b6;
+}
+
+.stat-card[data-type="male"] {
+    border-left: 4px solid #3b82f6;
+}
+
+.percent-badge {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.booth-progress-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 99px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.booth-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    transition: width 1s ease-in-out;
+}
+
+/* Sophisticated Booth Card Colors */
+.booth-card {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.75rem;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+}
+
+.booth-card:hover {
+    transform: translateY(-8px);
+    background: rgba(30, 41, 59, 0.6);
+    border-color: var(--primary);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+.booth-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.booth-percent-pill {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary), var(--success));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.booth-main-stats {
+    text-align: center;
+    margin: 1.25rem 0;
+}
+
+.voted-big-value {
+    font-size: 3rem;
+    font-weight: 900;
+    display: block;
+    line-height: 1;
+    color: var(--success);
+    margin-bottom: 0.25rem;
+}
+
+.total-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.booth-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.gender-box {
+    text-align: center;
+    background: rgba(15, 23, 42, 0.4);
+    padding: 0.8rem 0.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gender-value {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    display: block;
+}
+
+.gender-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: 2px;
+    display: block;
+}
+
+.pending-small {
+    font-size: 0.65rem;
+    color: var(--danger);
+    background: rgba(239, 68, 68, 0.1);
+    padding: 2px 6px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 600;
 }
 
 /* Tables */
@@ -736,6 +916,16 @@ td:nth-child(2) {
 
 .action-btn.delete {
     color: #f87171;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.action-btn.success {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.action-btn.danger {
+    color: #ef4444;
     background: rgba(239, 68, 68, 0.1);
 }
 
