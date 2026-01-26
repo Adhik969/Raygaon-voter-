@@ -1086,7 +1086,7 @@
       "Yavatmal": ["Arni", "Babulgaon", "Darwha", "Digras", "Ghatanji", "Kalamb", "Kelapur", "Mahagaon", "Maregaon", "Ner", "Pandharkaoda", "Pusad", "Ralegaon", "Umarkhed", "Wani", "Yavatmal"]
     };
 
-    const casteOptions = ["MARATHA", "MATANG", "NABIK", "GURAV", "BOUDH", "KOLI", "CHAMBAR", "MUSLIM", "RAMOSHI", "BELDAR", "VANI", "NAMAN", "DHANGAR"];
+    const casteOptions = ["MARATHA", "MATANG", "NABIK", "GURAV", "BOUDH", "KOLI", "CHAMBAR", "MUSLIM", "RAMOSHI", "BELDAR", "VANI", "NAMAN", "DHANGAR", "SONAR"];
     const voterCSVHeaders = ["boothNo", "listNo", "voterName", "voterNameMr", "epicNo", "mobileNo", "district", "taluka", "gender", "voterType", "caste", "village", "address", "isFamilyHead"];
     const staffCSVHeaders = ["name", "boothNo", "caste", "designation", "workplace", "mobile", "houseVoters"];
     const voterSampleData = [
@@ -1503,7 +1503,8 @@
         "BELDAR": "बेलदार",
         "VANI": "वाणी",
         "NAMAN": "नमन",
-        "DHANGAR": "धनगर"
+        "DHANGAR": "धनगर",
+        "SONAR": "सोनार"
       }
     };
 
@@ -2839,7 +2840,8 @@
           if (label === "MALE") displayLabel = dictionary[lang].male_header || "MALE";
           if (label === "FEMALE") displayLabel = dictionary[lang].female_header || "FEMALE";
         } else if (currentAnalyticsTab === "caste") {
-          displayLabel = dictionary[lang][label] || label;
+          const mrName = dictionary['mr'][label?.toUpperCase()];
+          displayLabel = `<div>${label}</div><div style="color: var(--accent); font-size: 0.8rem; font-weight: normal;">${mrName || ""}</div>`;
         }
 
         let actionButtons = `
@@ -2948,7 +2950,10 @@
             <td>${(v.boothNo || "").toString().toUpperCase()}</td>
             <td>${(v.district || "").toUpperCase()}</td>
             <td>${(v.taluka || "").toUpperCase()}</td>
-            <td>${(v.caste || "").toUpperCase()}</td>
+            <td>
+              <div>${(v.caste || "").toUpperCase()}</div>
+              <div style="color: var(--accent); font-size: 0.8rem;">${dictionary['mr'][v.caste?.toUpperCase()] || v.casteMr || ""}</div>
+            </td>
             <td>${(v.gender || "").toUpperCase()}</td>
             <td>${(v.mobileNo || "").toUpperCase()}</td>
             <td>${(v.address || "").toUpperCase()}</td>
@@ -3272,6 +3277,10 @@
             <span class="value">${voter.voterNameMr || ''}</span>
           </div>
           <div class="field">
+            <span class="label">${state.lang === 'mr' ? 'जात' : 'CASTE'}:</span>
+            <span class="value">${state.lang === 'mr' ? (voter.casteMr || dictionary['mr'][voter.caste?.toUpperCase()] || voter.caste) : (voter.caste || 'N/A')}</span>
+          </div>
+          <div class="field">
             <span class="label">VOTER LIST SR NO:</span>
             <span class="value">${voter.listNo || 'N/A'}</span>
           </div>
@@ -3350,6 +3359,9 @@
                   </div>
                   <div class="meta-item">
                     <i class="fas fa-city"></i> <strong>District:</strong> ${v.district || 'N/A'}
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-users"></i> <strong>${state.lang === 'mr' ? 'जात' : 'Caste'}:</strong> ${state.lang === 'mr' ? (v.casteMr || dictionary['mr'][v.caste?.toUpperCase()] || v.caste || 'N/A') : (v.caste || 'N/A')}
                   </div>
                 </div>
               </div>
@@ -3834,8 +3846,10 @@
             </td>
             <td>${staff.boothNo || ""}</td>
             <td>
-              <div>${staff.caste || ""}</div>
-              <div style="color: var(--accent); font-size: 0.8rem;">${staff.casteMr || ""}</div>
+              ${lang === 'mr' ?
+              `<div>${staff.casteMr || dictionary['mr'][staff.caste?.toUpperCase()] || staff.caste || ""}</div>` :
+              `<div>${(staff.caste || "").toUpperCase()}</div>`
+            }
             </td>
             <td>
               <div>${staff.designation || ""}</div>
@@ -4181,7 +4195,10 @@
             <td>${(v.boothNo || "").toString().toUpperCase()}</td>
             <td>${lang === 'mr' ? (v.districtMr || v.district) : (v.district || "").toUpperCase()}</td>
             <td>${lang === 'mr' ? (v.talukaMr || v.taluka) : (v.taluka || "").toUpperCase()}</td>
-            <td>${lang === 'mr' ? (v.casteMr || dictionary[lang][v.caste] || v.caste) : (v.caste || "").toUpperCase()}</td>
+            <td>
+              <div>${(v.caste || "").toUpperCase()}</div>
+              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${dictionary['mr'][v.caste?.toUpperCase()] || v.casteMr || ""}</div>
+            </td>
             <td>${lang === 'mr' ? (v.genderMr || (v.gender === 'Male' ? 'पुरुष' : (v.gender === 'Female' ? 'महिला' : v.gender))) : (v.gender || "").toUpperCase()}</td>
             <td>${(v.mobileNo || "").toUpperCase()}</td>
             <td>${lang === 'mr' ? (v.addressMr || v.address || "") : (v.address || "").toUpperCase()}</td>
