@@ -524,6 +524,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th data-translate="sr_no">SR NO</th>
                     <th data-translate="name_col">Name</th>
                     <th data-translate="booth">Booth</th>
                     <th data-translate="caste">Caste</th>
@@ -536,7 +537,7 @@
                 </thead>
                 <tbody id="staffDirectoryBody">
                   <tr>
-                    <td colspan="8" data-translate="no_staff_found">No staff records found.</td>
+                    <td colspan="9" data-translate="no_staff_found">No staff records found.</td>
                   </tr>
                 </tbody>
               </table>
@@ -1435,6 +1436,7 @@
         headers_match_template: "Headers must match template.",
         booth_no_label: "Booth No.",
         select_booth: "Select booth",
+        sr_no: "SR NO",
         voter_list_no_label: "Voter List No.",
         voter_name_label: "Voter Name (English)",
         voter_name_mr_label: "Voter Name (Marathi)",
@@ -1540,6 +1542,7 @@
         address: "पत्ता",
         type: "प्रकार",
         list_no: "यादी क्र.",
+        sr_no: "अ.क्र.",
         nav_death_voter_list: "मृत्यू मतदार यादी",
         death_voter_list_title: "मृत्यू मतदार यादी",
         death_voter_list_desc: "मयत घोषित केलेले मतदार. गरज असल्यास तुम्ही त्यांना पुन्हा यादीत घेऊ शकता.",
@@ -1654,7 +1657,14 @@
         "VANI": "वाणी",
         "NAMAN": "नमन",
         "DHANGAR": "धनगर",
-        "SONAR": "सोनार"
+        "SONAR": "सोनार",
+        "MALI": "माळी",
+        "TELI": "तेली",
+        "LOHAR": "लोहार",
+        "KUMBHAR": "कुंभार",
+        "BRAHMIN": "ब्राह्मण",
+        "SUTAR": "सुतार",
+        "WANI": "वाणी"
       }
     };
 
@@ -3714,10 +3724,14 @@
         const payload = {
           village: "Raygaon",
           name: row.name || "",
+          nameMr: row.nameMr || "",
           boothNo: row.boothNo || "",
           caste: row.caste || "",
+          casteMr: row.casteMr || "",
           designation: row.designation || "",
+          designationMr: row.designationMr || "",
           workplace: row.workplace || "",
+          workplaceMr: row.workplaceMr || "",
           mobile: row.mobile || "",
           houseVoters: Number(row.houseVoters || 0),
           createdAt: Date.now()
@@ -4115,33 +4129,34 @@
     function renderStaffDirectory() {
       const lang = state.lang;
       if (!state.staff.length) {
-        refs.staffDirectoryBody.innerHTML = "<tr><td colspan='8'>No staff records found.</td></tr>";
+        refs.staffDirectoryBody.innerHTML = "<tr><td colspan='9'>No staff records found.</td></tr>";
         return;
       }
       const rows = getFilteredStaff()
-        .map(staff => {
+        .map((staff, index) => {
           const actions = state.role === "admin"
             ? `<div class="table-actions">
-                <button class="action-btn edit" data-staff-action="edit" data-id="${staff.id}">
-                  <i class="fas fa-edit"></i> ${dictionary[lang].edit}
+                <button class="action-btn edit" data-staff-action="edit" data-id="${staff.id}" title="${dictionary[lang].edit}">
+                  <i class="fas fa-edit"></i>
                 </button>
-                <button class="action-btn delete" data-staff-action="delete" data-id="${staff.id}">
-                  <i class="fas fa-trash-alt"></i> ${dictionary[lang].delete}
+                <button class="action-btn delete" data-staff-action="delete" data-id="${staff.id}" title="${dictionary[lang].delete}">
+                  <i class="fas fa-trash-alt"></i>
                 </button>
               </div>`
             : "<span style='color:var(--muted);'>Read-only</span>";
           return `
           <tr>
+            <td>${index + 1}</td>
             <td>
               <div style="font-weight: 600;">${staff.name || ""}</div>
               <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">${staff.nameMr || ""}</div>
             </td>
             <td>${staff.boothNo || ""}</td>
             <td>
-              ${lang === 'mr' ?
-              `<div>${staff.casteMr || dictionary['mr'][staff.caste?.toUpperCase()] || staff.caste || ""}</div>` :
-              `<div>${(staff.caste || "").toUpperCase()}</div>`
-            }
+              <div>${(staff.caste || "").toUpperCase()}</div>
+              <div style="color: var(--accent); font-size: 0.85rem; margin-top: 2px;">
+                ${dictionary['mr'][(staff.caste || "").trim().toUpperCase()] || staff.casteMr || ""}
+              </div>
             </td>
             <td>
               <div>${staff.designation || ""}</div>
@@ -4163,7 +4178,7 @@
             <td>${actions}</td>
           </tr>`;
         }).join("");
-      refs.staffDirectoryBody.innerHTML = rows || "<tr><td colspan='8'>No staff records match current filters.</td></tr>";
+      refs.staffDirectoryBody.innerHTML = rows || "<tr><td colspan='9'>No staff records match current filters.</td></tr>";
     }
 
     function renderUserLogins() {

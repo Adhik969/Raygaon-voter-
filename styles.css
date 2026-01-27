@@ -682,15 +682,30 @@ table {
 
 th {
     background: #1e293b;
-    padding: 0.75rem;
+    padding: 0.5rem 0.4rem;
     text-align: left;
     color: var(--text-muted);
     font-weight: 600;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    white-space: nowrap;
+    white-space: normal;
+    /* Changed from nowrap to allow columns to be smaller */
+    line-height: 1.2;
+    font-size: 0.8rem;
     position: sticky;
     top: 0;
     z-index: 10;
+}
+
+/* Center SR NO Header */
+th:nth-child(1) {
+    text-align: center;
+}
+
+/* Actions Column Width */
+th:last-child,
+td:last-child {
+    width: 80px;
+    text-align: center;
 }
 
 td {
@@ -712,20 +727,27 @@ tr:hover td {
 /* Address and Designation Column wrapping */
 td:nth-child(10),
 /* Voter Directory Address */
-#staffDirectoryBody td:nth-child(4),
-/* Staff Designation */
 #staffDirectoryBody td:nth-child(5),
+/* Staff Designation */
+#staffDirectoryBody td:nth-child(6),
 /* Staff Workplace */
 #assignVotersList td:nth-child(5)
 
 /* Assign Voters Address */
     {
     white-space: normal;
-    min-width: 150px;
-    max-width: 200px;
-    /* Reduced max-width to save space */
+    min-width: 140px;
+    max-width: 220px;
     line-height: 1.4;
     word-break: break-word;
+}
+
+/* SR NO Column in Staff Directory */
+#staffDirectoryBody td:nth-child(1) {
+    width: 50px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--primary);
 }
 
 /* Columns that should not wrap */
@@ -740,31 +762,70 @@ td:nth-child(9)
     white-space: nowrap;
 }
 
-/* Minimize Booth Column Width */
-td:nth-child(4),
-/* Booth (Voter Dir) */
-#staffDirectoryBody td:nth-child(2),
-/* Booth (Staff Dir) */
-#staffDirectoryBody td:nth-child(6),
-/* Mobile (Staff Dir) */
-#staffDirectoryBody td:nth-child(7)
+/* Staff Directory Specific Column Controls */
+#staffDirectoryBody td {
+    padding: 0.5rem 0.4rem;
+}
 
-/* House Voters */
-    {
-    white-space: nowrap;
-    width: 60px;
-    /* Minimal width for Booth */
+/* SR NO (Col 1) */
+#staffDirectoryBody td:nth-child(1) {
+    width: 40px !important;
+    text-align: center;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* NAME (Col 2) - Balanced */
+#staffDirectoryBody td:nth-child(2) {
+    min-width: 220px !important;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+/* BOOTH (Col 3) - MINIMIZE */
+#staffDirectoryBody td:nth-child(3) {
+    width: 40px !important;
     text-align: center;
 }
 
-/* Wrap Name Column in Voter Directory */
-td:nth-child(2) {
-    white-space: normal;
-    min-width: 140px;
-    max-width: 180px;
-    /* Limit width of Name column */
-    line-height: 1.3;
-    word-break: break-word;
+/* CASTE (Col 4) - MINIMIZE */
+#staffDirectoryBody td:nth-child(4) {
+    width: 80px !important;
+    font-size: 0.85rem;
+}
+
+/* DESIGNATION (Col 5) - Compact */
+#staffDirectoryBody td:nth-child(5) {
+    min-width: 100px;
+    max-width: 140px;
+    font-size: 0.85rem;
+}
+
+/* WORKPLACE / COLLEGE (Col 6) - ENHANCED WIDTH */
+#staffDirectoryBody td:nth-child(6) {
+    min-width: 250px;
+    max-width: 380px;
+    font-size: 0.85rem;
+}
+
+/* MOBILE (Col 7) */
+#staffDirectoryBody td:nth-child(7) {
+    width: 100px !important;
+    white-space: nowrap;
+}
+
+/* HOUSE VOTERS (Col 8) - MINIMIZE AS MUCH AS POSSIBLE */
+#staffDirectoryBody td:nth-child(8) {
+    width: 30px !important;
+    text-align: center;
+    padding: 0.5rem 0.1rem !important;
+}
+
+/* ACTIONS (Col 9) - COMPACT */
+#staffDirectoryBody td:nth-child(9) {
+    width: 70px !important;
+    text-align: center;
 }
 
 .table-wrapper {
@@ -900,13 +961,13 @@ td:nth-child(2) {
 }
 
 .action-btn {
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     border: 1px solid transparent;
     background: rgba(255, 255, 255, 0.05);
     color: white;
-    margin-right: 0.5rem;
+    margin-right: 0.2rem;
 }
 
 .action-btn.edit {
