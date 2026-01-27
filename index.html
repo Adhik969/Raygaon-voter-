@@ -98,16 +98,19 @@
               <i class="fas fa-address-book"></i> <span data-translate="nav_directory">Voter Directory</span>
             </button>
             <button class="nav-button" data-target="deceasedListSection" data-requires-admin="true">
-              <i class="fas fa-user-times"></i> <span data-translate="nav_deceased_list">Deceased List</span>
+              <i class="fas fa-user-times"></i> <span data-translate="nav_death_voter_list">Death Voter List</span>
             </button>
             <button class="nav-button" data-target="votedListSection" data-requires-admin="true">
               <i class="fas fa-check-circle"></i> <span data-translate="nav_voted_list">Voted List</span>
             </button>
             <button class="nav-button" data-target="staffSection" data-requires-admin="true">
-              <i class="fas fa-chalkboard-teacher"></i> <span data-translate="nav_staff_info">Staff Info</span>
+              <i class="fas fa-chalkboard-teacher"></i> <span data-translate="nav_add_staff">Add Staff</span>
             </button>
             <button class="nav-button" data-target="staffDirectorySection">
               <i class="fas fa-users"></i> <span data-translate="nav_staff_directory">Staff Directory</span>
+            </button>
+            <button class="nav-button" data-target="villageLeadersSection">
+              <i class="fas fa-user-shield"></i> <span data-translate="nav_village_leaders">Village Leaders</span>
             </button>
             <button class="nav-button" data-target="familyManagementSection">
               <i class="fas fa-home"></i> <span data-translate="nav_family_management">Family Management</span>
@@ -173,6 +176,45 @@
 
             <div id="boothStatsGrid" class="stat-grid" style="margin-top: 1.5rem;">
               <!-- Booth cards will be injected here -->
+            </div>
+          </section>
+
+          <section id="villageLeadersSection" class="panel" style="margin-top: 0 !important; padding-top: 1rem;">
+            <div class="panel-header"
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <div>
+                <h2 data-translate="village_leaders_title">Village Leaders List</h2>
+                <p style="color:var(--text-muted);" data-translate="village_leaders_desc">List of identified village
+                  leaders.</p>
+              </div>
+              <div>
+                <button type="button" class="export-btn" id="exportLeadersList" style="margin-right: 1rem;">
+                  <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
+                </button>
+                <span style="background:var(--primary); color:white; padding: 0.2rem 0.6rem; border-radius:4px;">Total
+                  Leaders:
+                  <span id="leadersCount">0</span></span>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-translate="booth">Booth</th>
+                    <th data-translate="voter_list_no_label">List No</th>
+                    <th data-translate="name_col">Name</th>
+                    <th data-translate="gender_label">Gender</th>
+                    <th data-translate="mobile_no_label">Mobile</th>
+                    <th data-translate="epic">EPIC</th>
+                    <th data-translate="actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="leadersTableBody">
+                  <tr>
+                    <td colspan="7" style="text-align:center;">No village leaders identified yet.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 
@@ -350,6 +392,13 @@
                     <span class="slider"></span>
                   </label>
                 </div>
+                <div class="toggle-group">
+                  <label for="isLeader" data-translate="is_village_leader">Is Village Leader?</label>
+                  <label class="switch">
+                    <input type="checkbox" id="isLeader" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
               </div>
               <div>
                 <label for="address" data-translate="address_label">Address</label>
@@ -499,8 +548,8 @@
             <div class="panel-header"
               style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
               <div>
-                <h2 data-translate="deceased_list_title">Deceased Voter List</h2>
-                <p style="color:var(--text-muted);" data-translate="deceased_list_desc">List of voters marked as
+                <h2 data-translate="death_voter_list_title">Death Voter List</h2>
+                <p style="color:var(--text-muted);" data-translate="death_voter_list_desc">List of voters marked as
                   deceased. You can restore them if needed.</p>
               </div>
               <div>
@@ -862,6 +911,13 @@
             <label for="editIsFamilyHead" data-translate="is_family_head">Is Family Head?</label>
             <label class="switch">
               <input type="checkbox" id="editIsFamilyHead" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-group">
+            <label for="editIsLeader" data-translate="is_village_leader">Is Village Leader?</label>
+            <label class="switch">
+              <input type="checkbox" id="editIsLeader" />
               <span class="slider"></span>
             </label>
           </div>
@@ -1277,7 +1333,12 @@
       linkMembersSave: document.getElementById("linkMembersSave"),
       linkMembersSearch: document.getElementById("linkMembersSearch"),
       linkMembersList: document.getElementById("linkMembersList"),
-      exportFamilyData: document.getElementById("exportFamilyData")
+      exportFamilyData: document.getElementById("exportFamilyData"),
+      leadersTableBody: document.getElementById("leadersTableBody"),
+      leadersCount: document.getElementById("leadersCount"),
+      exportLeadersList: document.getElementById("exportLeadersList"),
+      isLeader: document.getElementById("isLeader"),
+      editIsLeader: document.getElementById("editIsLeader")
     };
 
     let editingVoterId = null;
@@ -1291,7 +1352,7 @@
         sign_out: "Sign Out",
         nav_overview: "Overview",
         nav_add_voter: "Add Voter",
-        nav_staff_info: "Staff Info",
+        nav_add_staff: "Add Staff",
         nav_search: "Search Voter",
         nav_analytics: "Analytics",
         nav_smart_tools: "Duplicate Voter",
@@ -1406,9 +1467,9 @@
         user_logins_title: "User Logins",
         user_logins_desc: "List of users who have logged in via Google.",
         user_name_col: "User Name",
-        nav_deceased_list: "Deceased List",
-        deceased_list_title: "Deceased Voter List",
-        deceased_list_desc: "List of voters marked as deceased. You can restore them if needed.",
+        nav_death_voter_list: "Death Voter List",
+        death_voter_list_title: "Death Voter List",
+        death_voter_list_desc: "List of voters marked as deceased. You can restore them if needed.",
         restore_btn: "Restore to List",
         mark_deceased_btn: "Mark Deceased",
         edit: "EDIT",
@@ -1429,13 +1490,17 @@
         mark_voted_btn: "Mark Voted",
         unmark_voted_btn: "Unmark Voted",
         voted_status: "VOTED",
-        pending_votes: "PENDING VOTES"
+        pending_votes: "PENDING VOTES",
+        nav_village_leaders: "Village Leaders",
+        village_leaders_title: "Village Leaders List",
+        village_leaders_desc: "List of identified village leaders.",
+        is_village_leader: "Is Village Leader?"
       },
       mr: {
         sign_out: "साइन आउट",
         nav_overview: "डॅशबोर्ड माहिती",
         nav_add_voter: "मतदार जोडा",
-        nav_staff_info: "कर्मचारी माहिती",
+        nav_add_staff: "कर्मचारी जोडा",
         nav_search: "मतदार शोधा",
         nav_analytics: "माहिती विश्लेषण",
         nav_smart_tools: "दुप्पट नावे शोधक",
@@ -1475,9 +1540,9 @@
         address: "पत्ता",
         type: "प्रकार",
         list_no: "यादी क्र.",
-        nav_deceased_list: "मयत मतदार यादी",
-        deceased_list_title: "मयत मतदार यादी",
-        deceased_list_desc: "मयत घोषित केलेले मतदार. गरज असल्यास तुम्ही त्यांना पुन्हा यादीत घेऊ शकता.",
+        nav_death_voter_list: "मृत्यू मतदार यादी",
+        death_voter_list_title: "मृत्यू मतदार यादी",
+        death_voter_list_desc: "मयत घोषित केलेले मतदार. गरज असल्यास तुम्ही त्यांना पुन्हा यादीत घेऊ शकता.",
         restore_btn: "पुन्हा यादीत घ्या",
         mark_deceased_btn: "मयत घोषित करा",
         edit: "सुधारा",
@@ -1572,6 +1637,10 @@
         unmark_voted_btn: "मतदान रद्द करा",
         voted_status: "मतदान झाले",
         pending_votes: "बाकी मतदान",
+        nav_village_leaders: "गावातील पुढारी",
+        village_leaders_title: "गावातील पुढारी यादी",
+        village_leaders_desc: "गावातील मान्यवर आणि पुढाऱ्यांची यादी.",
+        is_village_leader: "गावातील पुढारी आहे का?",
         "MARATHA": "मराठा",
         "MATANG": "मातंग",
         "NABIK": "नाभिक",
@@ -2004,6 +2073,7 @@
           if (targetId === "analyticsSection") renderAnalytics();
           if (targetId === "deceasedListSection") renderDeceasedTable();
           if (targetId === "votedListSection") renderVotedTable();
+          if (targetId === "villageLeadersSection") renderLeadersTable();
         }
 
         // Auto-hide sidebar on selection (especially for mobile)
@@ -2111,6 +2181,7 @@
         village: document.getElementById("villageName").value.trim(),
         address: document.getElementById("address").value.trim(),
         isFamilyHead: document.getElementById("isFamilyHead").checked,
+        isLeader: document.getElementById("isLeader").checked,
         createdAt: Date.now()
       };
       try {
@@ -2229,6 +2300,7 @@
       f.village.value = voter.village || "";
       f.address.value = voter.address || "";
       f.isFamilyHead.checked = !!voter.isFamilyHead;
+      refs.editIsLeader.checked = !!voter.isLeader;
       refs.editModal.classList.add("visible");
     }
 
@@ -2267,7 +2339,8 @@
         caste: refs.editFields.caste.value.trim(),
         village: refs.editFields.village.value.trim(),
         address: refs.editFields.address.value.trim(),
-        isFamilyHead: refs.editFields.isFamilyHead.checked
+        isFamilyHead: refs.editFields.isFamilyHead.checked,
+        isLeader: refs.editIsLeader.checked
       };
       try {
         await update(ref(db, `voters/${editingVoterId}`), payload);
@@ -3783,6 +3856,91 @@
       tableBody.innerHTML = rows;
     }
 
+    function renderLeadersTable() {
+      const tableBody = refs.leadersTableBody;
+      const countSpan = refs.leadersCount;
+      if (!tableBody) return;
+      tableBody.innerHTML = "";
+
+      const leaders = state.voters.filter(v => v.isLeader);
+      if (countSpan) countSpan.textContent = leaders.length;
+
+      if (leaders.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">${state.lang === 'mr' ? 'अद्याप कोणतेही पुढारी ओळखले गेलेले नाहीत.' : 'No village leaders identified yet.'}</td></tr>`;
+        return;
+      }
+
+      const lang = state.lang;
+      const rows = leaders.map(v => {
+        const isVoted = !!v.isVoted;
+        const nameStyle = isVoted ? 'color: var(--success);' : '';
+
+        return `
+          <tr>
+            <td>${v.boothNo}</td>
+            <td>${v.listNo}</td>
+            <td>
+              <div style="font-weight:600; ${nameStyle}">${v.voterName}</div>
+              <div style="color:var(--text-muted);font-size:0.85em;">${v.voterNameMr || ""}</div>
+            </td>
+            <td>${lang === 'mr' ? (v.genderMr || v.gender || "") : (v.gender || "").toUpperCase()}</td>
+            <td>${v.mobileNo || ""}</td>
+            <td>${v.epicNo}</td>
+            <td>
+              <div class="table-actions">
+                <button class="action-btn edit" data-action="edit" data-id="${v.id}">${dictionary[lang].edit}</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      tableBody.innerHTML = rows;
+
+      // Add Event Listeners if needed
+      tableBody.querySelectorAll("[data-action='edit']").forEach(btn => {
+        btn.onclick = () => {
+          const voter = state.voters.find(v => v.id === btn.dataset.id);
+          if (voter) openEditModal(voter);
+        };
+      });
+    }
+
+    if (refs.exportLeadersList) {
+      refs.exportLeadersList.onclick = () => {
+        const leaders = state.voters.filter(v => v.isLeader);
+        if (!leaders.length) {
+          showToast(state.lang === 'mr' ? "माहिती उपलब्ध नाही" : "No data to export", "error");
+          return;
+        }
+
+        const headers = ["Booth", "List No", "Name (EN)", "Name (MR)", "EPIC No", "Gender", "Mobile", "Caste", "Address"];
+        const csvContent = [
+          headers.join(","),
+          ...leaders.map(v => [
+            `"${v.boothNo || ""}"`,
+            `"${v.listNo || ""}"`,
+            `"${v.voterName || ""}"`,
+            `"${v.voterNameMr || ""}"`,
+            `"${v.epicNo || ""}"`,
+            `"${v.gender || ""}"`,
+            `"${v.mobileNo || ""}"`,
+            `"${v.caste || ""}"`,
+            `"${v.address || ""}"`
+          ].join(","))
+        ].join("\n");
+
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Village_Leaders_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast("Leaders list exported successfully", "success");
+      };
+    }
+
     function subscribeToData() {
       onValue(ref(db, "voters"), (snapshot) => {
         const data = snapshot.val() || {};
@@ -3802,6 +3960,7 @@
         renderFamilyHeadTable();
         renderDuplicateListTable();
         renderVotedTable();
+        renderLeadersTable();
       });
       onValue(ref(db, "staff"), (snapshot) => {
         const data = snapshot.val() || {};
