@@ -22,7 +22,12 @@
       </button>
       <div class="title"
         style="position: absolute; left: 50%; transform: translateX(-50%); text-align: center; line-height: 1.2; display: flex; flex-direction: column; align-items: center; width: max-content;">
-        <div style="font-size: 1.4rem;">RAYGAON VOTER MANAGEMENT</div>
+        <div style="font-size: 1.4rem; display: flex; align-items: center; gap: 8px;">
+          RAYGAON VOTER MANAGEMENT
+          <span id="connectionStatus"
+            style="width: 10px; height: 10px; border-radius: 50%; background: #666; display: inline-block;"
+            title="Checking connection..."></span>
+        </div>
         <div style="font-size: 1rem; font-weight: 500;">रायगाव मतदार व्यवस्थापन</div>
       </div>
       <div class="meta">
@@ -4160,49 +4165,112 @@
     }
 
     function subscribeToData() {
-      // Listen to the root path to capture orphaned users pushed by mobile app to root
-      onValue(ref(db, "/"), (snapshot) => {
-        const data = snapshot.val() || {};
+      console.log("Subscribing to Firebase data...");
+      const connDot = document.getElementById("connectionStatus");
+      if (connDot) {
+        connDot.style.background = "#64748b"; // neutral
+        connDot.title = "Attempting to connect...";
+      }
 
-        // 1. Voters
-        state.voters = Object.entries(data.voters || {}).map(([id, value]) => ({ id, ...value }));
+      // 0. Connection Status Monitoring
+      onValue(ref(db, ".info/connected"), (snapshot) => {
+        const isConnected = snapshot.val() === true;
+        console.log("Firebase connection state:", isConnected ? "CONNECTED" : "DISCONNECTED");
 
-        // 2. Staff
-        state.staff = Object.entries(data.staff || {}).map(([id, value]) => ({ id, ...value }));
+        if (connDot) {
+          connDot.style.background = isConnected ? "#10b981" : "#ef4444";
+          connDot.title = isConnected ? "Connected to Firebase" : "Disconnected from Firebase";
 
-        // 3. Admins
-        state.admins = Object.entries(data.admins || {}).map(([id, value]) => ({ id, ...value }));
-
-        // 4. Users (Combine 'users' node + root-level Push ID entries)
-        const explicitUsers = data.users || {};
-        const rootEntries = Object.entries(data).filter(([key, val]) => {
-          // Identify root entries that look like mobile app user registrations (Push ID format starting with '-')
-          return key.startsWith("-") && val && typeof val === 'object' && (val.mobile || val.mobileNo || val.mobile_model || val.name);
-        });
-
-        const combinedUsersMap = { ...explicitUsers };
-        rootEntries.forEach(([key, val]) => {
-          combinedUsersMap[key] = { id: key, ...val };
-        });
-
-        state.users = Object.entries(combinedUsersMap).map(([id, value]) => ({ id: (value.id || id), ...value }));
-
-        // Auto-fix Sangli spelling
-        if (state.voters.length > 0) {
-          const hasSangali = state.voters.some(v => v.district && v.district.trim().toUpperCase() === "SANGALI");
-          if (hasSangali) fixSangli();
+          if (isConnected) {
+            // Pulse effect when connected
+            connDot.style.boxShadow = "0 0 8px #10b981";
+            setTimeout(() => { if (connDot) connDot.style.boxShadow = "none"; }, 1000);
+          }
         }
+      }, (err) => {
+        console.error("Connection status monitor error:", err);
+        if (connDot) {
+          connDot.style.background = "#f59e0b"; // warning
+          connDot.title = "Connection Error: " + err.message;
+        }
+      });
 
-        // Trigger all refreshes
-        updateOverview();
-        renderVoterTable();
-        renderAnalytics();
-        renderFamilyHeadTable();
-        renderDuplicateListTable();
-        renderVotedTable();
-        renderLeadersTable();
-        renderUserLogins();
-        renderAdmins();
+      // Separate listeners for core data nodes
+      const nodes = ["voters", "staff", "admins", "users"];
+
+      nodes.forEach(node => {
+        console.log(`Setting up listener for node: ${node}`);
+        onValue(ref(db, node), (snapshot) => {
+          const data = snapshot.val() || {};
+          const recordCount = Object.keys(data).length;
+          console.log(`Node [${node}] updated: ${recordCount} records`);
+
+          if (node === "voters") {
+            state.voters = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+            const hasSangali = state.voters.some(v => v.district && v.district.trim().toUpperCase() === "SANGALI");
+            if (hasSangali) fixSangli();
+          } else if (node === "staff") {
+            state.staff = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+          } else if (node === "admins") {
+            state.admins = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+          } else if (node === "users") {
+            state.users = Object.entries(data).map(([id, value]) => ({ id, ...value }));
+          }
+
+          // Force refresh UI components
+          try {
+            updateOverview();
+            renderVoterTable();
+            renderAnalytics();
+            renderFamilyHeadTable();
+            renderDuplicateListTable();
+            renderVotedTable();
+            renderLeadersTable();
+            renderUserLogins();
+            renderAdmins();
+          } catch (uiErr) {
+            console.error("UI Refresh error after data update:", uiErr);
+          }
+        }, (err) => {
+          console.error(`Error loading data from [${node}]:`, err);
+          // Show error to user only if it's a permission issue or similar critical failure
+          if (err.code === "PERMISSION_DENIED") {
+            showToast(`Access Denied to ${node}. Check security rules.`, "error");
+          } else {
+            showToast(`Error sync ${node}: ${err.message}`, "error");
+          }
+        });
+      });
+
+      // Support for mobile app entries that might be pushed to root (legacy/orphaned)
+      // We listen to root but only filter keys that start with '-' to avoid overlapping with sub-nodes
+      onValue(ref(db, "/"), (snapshot) => {
+        const rootData = snapshot.val() || {};
+        const orphanedEntries = Object.entries(rootData).filter(([key, val]) => {
+          return key.startsWith("-") && val && typeof val === 'object' && (val.mobile || val.mobileNo || val.name);
+        });
+
+        if (orphanedEntries.length > 0) {
+          console.log(`Found ${orphanedEntries.length} root-level user records. Merging...`);
+          const existingUserIds = new Set(state.users.map(u => u.id));
+          let mergedCount = 0;
+
+          orphanedEntries.forEach(([id, val]) => {
+            if (!existingUserIds.has(id)) {
+              state.users.push({ id, ...val });
+              mergedCount++;
+            }
+          });
+
+          if (mergedCount > 0) {
+            console.log(`Merged ${mergedCount} new root-level users.`);
+            renderUserLogins();
+          }
+        }
+      }, (err) => {
+        if (err.code !== "PERMISSION_DENIED") {
+          console.warn("Root listener error (likely restricted access):", err.message);
+        }
       });
     }
 
