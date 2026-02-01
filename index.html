@@ -234,6 +234,12 @@
               <button type="button" class="export-btn" id="exportVoterDirectory">
                 <i class="fas fa-file-excel"></i> <span data-translate="export_excel_btn">Export Excel</span>
               </button>
+              <label class="download-btn"
+                style="margin-left:0.5rem; cursor: pointer; background: var(--warning); color: #000; border: 1px solid var(--warning);"
+                title="Update Voters from CSV">
+                <i class="fas fa-file-upload"></i> Update Data
+                <input type="file" id="updateVoterCSV" accept=".csv" style="display: none;" />
+              </label>
             </div>
             <div class="filters">
               <input type="text" id="searchText" data-translate-placeholder="search_placeholder"
@@ -565,6 +571,7 @@
               <table>
                 <thead>
                   <tr>
+                    <th data-translate="sr_no">SR NO</th>
                     <th data-translate="booth">Booth</th>
                     <th data-translate="voter_list_no_label">List No</th>
                     <th data-translate="name_col">Name</th>
@@ -769,20 +776,25 @@
           <section id="userLoginsSection" class="panel">
             <h2 data-translate="user_logins_title">User Logins</h2>
             <p style="color:var(--text-muted); margin-bottom:1.5rem;" data-translate="user_logins_desc">List of users
-              who have logged in via Google.</p>
+              who have registered and logged in.</p>
             <div class="table-wrapper">
               <table>
                 <thead>
                   <tr>
                     <th data-translate="user_name_col">User Name</th>
+                    <th data-translate="mobile_no_label">Mobile</th>
                     <th data-translate="email_col">Email</th>
+                    <th data-translate="device_model_col">Device Model</th>
+                    <th data-translate="location_col">Location</th>
+                    <th data-translate="device_id_col">Device ID</th>
+                    <th data-translate="reg_date_col">Reg. Date</th>
                     <th data-translate="last_login_col">Last Login</th>
                     <th data-translate="status_col">Status</th>
                   </tr>
                 </thead>
                 <tbody id="userLoginsBody">
                   <tr>
-                    <td colspan="4">Loading...</td>
+                    <td colspan="8">Loading...</td>
                   </tr>
                 </tbody>
               </table>
@@ -1134,10 +1146,33 @@
     </div>
   </div>
 
+  <div class="modal" id="registrationModal">
+    <div class="modal-card">
+      <header class="modal-header">
+        <h3 style="margin:0;" data-translate="complete_registration">Complete Registration</h3>
+      </header>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;" data-translate="reg_instruction">
+        Please provide your details to continue to the dashboard.</p>
+      <form id="registrationForm">
+        <div style="margin-bottom: 1rem;">
+          <label for="regName" data-translate="full_name_label">Full Name</label>
+          <input type="text" id="regName" placeholder="Enter your full name" required />
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label for="regMobile" data-translate="mobile_no_label">Mobile Number</label>
+          <input type="tel" id="regMobile" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number"
+            required />
+        </div>
+        <button class="primary" type="submit" style="width: 100%; border-radius: 0.75rem;">Complete
+          Registration</button>
+      </form>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getDatabase, ref, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     // Firebase configuration (public client keys intentionally exposed per Firebase guidelines)
@@ -1339,7 +1374,9 @@
       leadersCount: document.getElementById("leadersCount"),
       exportLeadersList: document.getElementById("exportLeadersList"),
       isLeader: document.getElementById("isLeader"),
-      editIsLeader: document.getElementById("editIsLeader")
+      editIsLeader: document.getElementById("editIsLeader"),
+      registrationModal: document.getElementById("registrationModal"),
+      registrationForm: document.getElementById("registrationForm")
     };
 
     let editingVoterId = null;
@@ -1496,7 +1533,13 @@
         nav_village_leaders: "Village Leaders",
         village_leaders_title: "Village Leaders List",
         village_leaders_desc: "List of identified village leaders.",
-        is_village_leader: "Is Village Leader?"
+        is_village_leader: "Is Village Leader?",
+        complete_registration: "Complete Registration",
+        reg_instruction: "Please provide your details to continue to the dashboard.",
+        device_model_col: "Device Model",
+        device_id_col: "Device ID",
+        reg_date_col: "Reg. Date",
+        location_col: "Location"
       },
       mr: {
         sign_out: "साइन आउट",
@@ -1640,10 +1683,20 @@
         unmark_voted_btn: "मतदान रद्द करा",
         voted_status: "मतदान झाले",
         pending_votes: "बाकी मतदान",
+        user_name_col: "वापरकर्त्याचे नाव",
+        email_col: "ईमेल",
+        last_login_col: "शेवटचे लॉगिन",
+        status_col: "स्थिती",
         nav_village_leaders: "गावातील पुढारी",
         village_leaders_title: "गावातील पुढारी यादी",
         village_leaders_desc: "गावातील मान्यवर आणि पुढाऱ्यांची यादी.",
         is_village_leader: "गावातील पुढारी आहे का?",
+        complete_registration: "नोंदणी पूर्ण करा",
+        reg_instruction: "डॅशबोर्डवर जाण्यासाठी कृपया तुमची माहिती भरा.",
+        device_model_col: "डिव्हाइस मॉडेल",
+        device_id_col: "डिव्हाइस आयडी",
+        reg_date_col: "नोंदणी तारीख",
+        location_col: "लोकेशन",
         "MARATHA": "मराठा",
         "MATANG": "मातंग",
         "NABIK": "नाभिक",
@@ -1965,15 +2018,89 @@
     async function saveUserInfo(user) {
       if (!user) return;
       const userRef = ref(db, `users/${user.uid}`);
-      const payload = {
-        uid: user.uid,
-        displayName: user.displayName || "User",
-        email: user.email || "No Email",
-        photoURL: user.photoURL || "",
-        lastLogin: Date.now(),
-        status: "Active"
-      };
-      await update(userRef, payload);
+
+      try {
+        const snapshot = await get(userRef);
+        const existingData = snapshot.val();
+
+        // If user doesn't exist or missing mobile, show registration
+        if (!existingData || !(existingData.mobile || existingData.mobileNo)) {
+          refs.registrationModal.classList.add("visible");
+
+          refs.registrationForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("regName").value.trim();
+            const mobile = document.getElementById("regMobile").value.trim();
+
+            if (!name || mobile.length !== 10) {
+              showToast("Please enter valid details", "error");
+              return;
+            }
+
+            const deviceModel = getDeviceModel();
+            const deviceId = getDeviceId();
+            const registrationDate = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+            const payload = {
+              uid: user.uid,
+              name: name,
+              displayName: name,
+              mobile: mobile,
+              mobileNo: mobile,
+              email: user.email || "No Email",
+              photoURL: user.photoURL || "",
+              deviceModel: deviceModel,
+              device_model: deviceModel,
+              deviceId: deviceId,
+              device_id: deviceId,
+              registrationDate: registrationDate,
+              registration_date: registrationDate,
+              timestamp: Date.now(),
+              lastLogin: Date.now(),
+              status: "Registered"
+            };
+
+            await update(userRef, payload);
+            refs.registrationModal.classList.remove("visible");
+            showToast("Registration completed!", "success");
+            state.profile = payload;
+            applyTranslations();
+          };
+        } else {
+          // Returning user, update last login and sync profile
+          const updateData = {
+            lastLogin: Date.now(),
+            status: "Active"
+          };
+          await update(userRef, updateData);
+          state.profile = { ...existingData, ...updateData };
+          applyTranslations();
+        }
+      } catch (err) {
+        console.error("Error in saveUserInfo:", err);
+      }
+    }
+
+    function getDeviceModel() {
+      const ua = navigator.userAgent;
+      if (ua.match(/Android/i)) {
+        const match = ua.match(/Android\s[^\s]+;\s([^;]+)\)/);
+        return match ? match[1] : "Android Device";
+      } else if (ua.match(/iPhone/i)) {
+        return "iPhone";
+      } else if (ua.match(/Windows/i)) {
+        return "Windows PC";
+      }
+      return "Unknown Device";
+    }
+
+    function getDeviceId() {
+      let id = localStorage.getItem("raygaon_device_id");
+      if (!id) {
+        id = 'WEB-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        localStorage.setItem("raygaon_device_id", id);
+      }
+      return id;
     }
 
     function resetToGuest() {
@@ -3629,6 +3756,14 @@
         showToast(lang === 'mr' ? "ॲडमिन प्रवेश आवश्यक आहे" : "Admin access required", "error");
         return;
       }
+
+      // Reset input value to allow same file selection again
+      if (type === 'update_voter') {
+        document.getElementById('updateVoterCSV').value = '';
+      } else if (type === 'voter') {
+        document.getElementById('importVoterCSV').value = '';
+      }
+
       const reader = new FileReader();
 
       // Feedback to user that import has started
@@ -3637,19 +3772,16 @@
       reader.onload = async ({ target }) => {
         try {
           const { headers, rows } = parseCSV(target.result || "");
-          const expected = type === "voter" ? voterCSVHeaders : staffCSVHeaders;
-          if (!expected.every(field => headers.includes(field))) {
-            showToast(`Missing required headers: ${expected.join(", ")}`, "error");
-            return;
-          }
-          if (!rows.length) {
-            showToast("No records found in CSV", "error");
-            return;
-          }
+
           if (type === "voter") {
+            const expected = voterCSVHeaders;
+            // Basic header check for strict import
+            // if (!expected.every(field => headers.includes(field))) ...
             await importVotersFromRows(rows);
-          } else {
+          } else if (type === "staff") {
             await importStaffFromRows(rows);
+          } else if (type === "update_voter") {
+            await updateVotersFromRows(rows);
           }
         } catch (err) {
           console.error(err);
@@ -3658,6 +3790,51 @@
       };
       reader.readAsText(file);
     }
+
+    async function updateVotersFromRows(rows) {
+      const total = rows.length;
+      let updatedCount = 0;
+      let notFoundCount = 0;
+
+      showToast(state.lang === 'mr' ? `अपडेट सुरू आहे... (${total} नोंदी)` : `Starting update for ${total} records...`, "info");
+
+      for (const row of rows) {
+        // Normalizing keys from CSV
+        const boothNo = (row["Booth No"] || row["boothNo"] || "").trim();
+        const listNo = (row["Voter List No"] || row["listNo"] || "").trim();
+
+        if (!boothNo || !listNo) continue;
+
+        // Find the voter
+        const voter = state.voters.find(v =>
+          (v.boothNo || "").toString() === boothNo &&
+          (v.listNo || "").toString() === listNo
+        );
+
+        if (voter) {
+          const updates = {};
+          if (row["Mobile No"] || row["mobileNo"]) updates.mobileNo = (row["Mobile No"] || row["mobileNo"]);
+          if (row["Taluka"] || row["taluka"]) updates.taluka = (row["Taluka"] || row["taluka"]);
+          if (row["District"] || row["district"]) updates.district = (row["District"] || row["district"]);
+          if (row["Address"] || row["address"]) updates.address = (row["Address"] || row["address"]);
+
+          if (Object.keys(updates).length > 0) {
+            try {
+              await update(ref(db, `voters/${voter.id}`), updates);
+              updatedCount++;
+            } catch (e) {
+              console.error("Failed to update voter", voter.id, e);
+            }
+          }
+        } else {
+          notFoundCount++;
+        }
+      }
+
+      showToast(state.lang === 'mr' ? `अपडेट पूर्ण! ${updatedCount} सुधारित.` : `Update Complete. Updated: ${updatedCount}, Not Found: ${notFoundCount}`, "success");
+    }
+
+
 
     async function importVotersFromRows(rows) {
       const total = rows.length;
@@ -3956,18 +4133,40 @@
     }
 
     function subscribeToData() {
-      onValue(ref(db, "voters"), (snapshot) => {
+      // Listen to the root path to capture orphaned users pushed by mobile app to root
+      onValue(ref(db, "/"), (snapshot) => {
         const data = snapshot.val() || {};
-        state.voters = Object.entries(data).map(([id, value]) => ({ id, ...value }));
 
-        // Auto-fix Sangli spelling if any exist
+        // 1. Voters
+        state.voters = Object.entries(data.voters || {}).map(([id, value]) => ({ id, ...value }));
+
+        // 2. Staff
+        state.staff = Object.entries(data.staff || {}).map(([id, value]) => ({ id, ...value }));
+
+        // 3. Admins
+        state.admins = Object.entries(data.admins || {}).map(([id, value]) => ({ id, ...value }));
+
+        // 4. Users (Combine 'users' node + root-level Push ID entries)
+        const explicitUsers = data.users || {};
+        const rootEntries = Object.entries(data).filter(([key, val]) => {
+          // Identify root entries that look like mobile app user registrations (Push ID format starting with '-')
+          return key.startsWith("-") && val && typeof val === 'object' && (val.mobile || val.mobileNo || val.mobile_model || val.name);
+        });
+
+        const combinedUsersMap = { ...explicitUsers };
+        rootEntries.forEach(([key, val]) => {
+          combinedUsersMap[key] = { id: key, ...val };
+        });
+
+        state.users = Object.entries(combinedUsersMap).map(([id, value]) => ({ id: (value.id || id), ...value }));
+
+        // Auto-fix Sangli spelling
         if (state.voters.length > 0) {
           const hasSangali = state.voters.some(v => v.district && v.district.trim().toUpperCase() === "SANGALI");
-          if (hasSangali) {
-            fixSangli();
-          }
+          if (hasSangali) fixSangli();
         }
 
+        // Trigger all refreshes
         updateOverview();
         renderVoterTable();
         renderAnalytics();
@@ -3975,20 +4174,7 @@
         renderDuplicateListTable();
         renderVotedTable();
         renderLeadersTable();
-      });
-      onValue(ref(db, "staff"), (snapshot) => {
-        const data = snapshot.val() || {};
-        state.staff = Object.entries(data).map(([id, value]) => ({ id, ...value }));
-        updateOverview();
-      });
-      onValue(ref(db, "users"), (snapshot) => {
-        const data = snapshot.val() || {};
-        state.users = Object.entries(data).map(([id, value]) => ({ id, ...value }));
         renderUserLogins();
-      });
-      onValue(ref(db, "admins"), (snapshot) => {
-        const data = snapshot.val() || {};
-        state.admins = Object.entries(data).map(([id, value]) => ({ id, ...value }));
         renderAdmins();
       });
     }
@@ -4185,21 +4371,42 @@
       if (!refs.userLoginsBody) return;
       if (state.role !== "admin") return;
 
-      if (!state.users.length) {
-        refs.userLoginsBody.innerHTML = "<tr><td colspan='4'>No user logins tracked yet.</td></tr>";
+      if (!state.users || !state.users.length) {
+        refs.userLoginsBody.innerHTML = "<tr><td colspan='8' style='text-align:center; padding: 2rem; color: var(--text-muted);'>No user records found.</td></tr>";
         return;
       }
 
       const rows = state.users
-        .sort((a, b) => (b.lastLogin || 0) - (a.lastLogin || 0))
-        .map(u => `
-          <tr>
-            <td>${u.displayName}</td>
-            <td>${u.email}</td>
-            <td>${new Date(u.lastLogin).toLocaleString()}</td>
-            <td><span class="status-badge" style="background:rgba(16,185,129,0.1); color:var(--success); border-color:var(--success);">${u.status}</span></td>
-          </tr>
-        `).join("");
+        .sort((a, b) => (b.lastLogin || b.timestamp || 0) - (a.lastLogin || a.timestamp || 0))
+        .map(u => {
+          const name = u.name || u.displayName || "Unknown";
+          const mobile = u.mobile || u.mobileNo || "-";
+          const email = u.email || "-";
+          const deviceModel = u.mobile_model || u.deviceModel || u.device_model || "-";
+          const deviceId = u.device_id || u.deviceId || "-";
+          const regDate = u.reg_date || u.registration_date || u.registrationDate || "-";
+          const lastLogin = u.lastLogin ? new Date(u.lastLogin).toLocaleString() : (u.timestamp ? new Date(u.timestamp).toLocaleString() : "Never");
+          const status = u.status || "Registered";
+
+          let locationHtml = "-";
+          if (u.location && u.location.maps_link) {
+            locationHtml = `<a href="${u.location.maps_link}" target="_blank" style="color:var(--primary); font-size:1.2rem;" title="View on Maps"><i class="fas fa-map-marker-alt"></i></a>`;
+          }
+
+          return `
+            <tr>
+              <td><div style="font-weight: 600;">${name}</div></td>
+              <td><div style="font-family: monospace;">${mobile}</div></td>
+              <td>${email}</td>
+              <td style="font-size: 0.85rem;">${deviceModel}</td>
+              <td style="text-align:center;">${locationHtml}</td>
+              <td style="font-size: 0.8rem; font-family: monospace;">${deviceId}</td>
+              <td style="font-size: 0.85rem;">${regDate}</td>
+              <td style="font-size: 0.85rem; color: var(--text-muted);">${lastLogin}</td>
+              <td><span class="status-badge" style="background:rgba(16,185,129,0.1); color:var(--success); border-color:var(--success);">${status}</span></td>
+            </tr>
+          `;
+        }).join("");
       refs.userLoginsBody.innerHTML = rows;
     }
 
@@ -4669,15 +4876,16 @@
       if (countSpan) countSpan.textContent = deceasedVoters.length;
 
       if (deceasedVoters.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No deceased voters found.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No deceased voters found.</td></tr>`;
         return;
       }
 
       const lang = state.lang;
       const label = dictionary[lang].restore_btn || "Restore";
 
-      const rows = deceasedVoters.map(v => `
+      const rows = deceasedVoters.map((v, index) => `
            <tr>
+               <td>${index + 1}</td>
                <td>${v.boothNo}</td>
                <td>${v.listNo}</td>
                <td>
@@ -4825,10 +5033,11 @@
           return;
         }
 
-        const headers = ["List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "Gender", "Mobile"];
+        const headers = ["SR NO", "List No", "Name (EN)", "Name (MR)", "EPIC No", "Booth", "Gender", "Mobile"];
         const csvContent = [
           headers.join(","),
-          ...deceased.map(v => [
+          ...deceased.map((v, index) => [
+            `"${index + 1}"`,
             `"${v.listNo || ""}"`,
             `"${v.voterName || ""}"`,
             `"${v.voterNameMr || ""}"`,
@@ -4925,6 +5134,12 @@
         showToast(lang === 'mr' ? "दुप्पट यादी एक्सपोर्ट झाली" : "Duplicate list exported successfully", "success");
       });
     }
+
+    const updateVoterInput = document.getElementById("updateVoterCSV");
+    if (updateVoterInput) {
+      updateVoterInput.addEventListener("change", (e) => handleCSVImport(e.target.files[0], "update_voter"));
+    }
+
   </script>
 </body>
 
