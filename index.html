@@ -2013,6 +2013,7 @@
         localStorage.removeItem(ADMIN_SESSION_KEY);
         if (profile) saveUserInfo(profile);
       }
+      resetInactivityTimer(); // Start timer on login
     }
 
     async function saveUserInfo(user) {
@@ -2103,6 +2104,31 @@
       return id;
     }
 
+    // --- AUTO LOGOUT LOGIC (5 MIN INACTIVITY) ---
+    let inactivityTimer;
+    const INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 minutes in ms
+
+    function resetInactivityTimer() {
+      if (state.role === "guest") return; // No timer if not logged in
+
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        if (state.role !== "guest") {
+          showToast(state.lang === 'mr' ? "निष्क्रियतेमुळे लॉग आऊट केले" : "Logged out due to inactivity", "info");
+          if (state.role === "admin") {
+            resetToGuest();
+          } else {
+            signOut(auth);
+          }
+        }
+      }, INACTIVITY_LIMIT);
+    }
+
+    // Monitor user activity
+    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(eventName => {
+      document.addEventListener(eventName, resetInactivityTimer, true);
+    });
+
     function resetToGuest() {
       state.role = "guest";
       state.profile = null;
@@ -2119,6 +2145,7 @@
       }
       localStorage.removeItem(ADMIN_SESSION_KEY);
       renderVoterTable();
+      clearTimeout(inactivityTimer); // Clear timer on logout
     }
 
     function toggleAdminSections(isAdmin) {
